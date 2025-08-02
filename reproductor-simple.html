@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stream Automático</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #video {
+            width: 100%;
+            height: 100%;
+            background: #000;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <video id="video" autoplay muted></video>
+
+    <script>
+        const video = document.getElementById('video');
+        let url = 'https://deportes2.ksdjugfsddeports.fun:9091/51_/index.m3u8?token=407b55277048507a49edd74874a246bd329c7aa3-5aaad2f4f3256c8e965bfbf43ff7f4c9-1754140344-1754118744&remote=172.96.121.86';
+
+        // Ocultar controles nativos
+        video.controls = false;
+
+        // Función para cargar URL desde archivo
+        async function loadUrlFromFile() {
+            try {
+                const response = await fetch('stream_url.txt');
+                if (response.ok) {
+                    const urlFromFile = await response.text();
+                    url = urlFromFile.trim();
+                    console.log('URL cargada:', url);
+                    return true;
+                }
+            } catch (error) {
+                console.log('Usando URL por defecto');
+            }
+            return false;
+        }
+
+        // Función para cargar el stream
+        function loadStream() {
+            console.log('Cargando stream:', url);
+            
+            // Verificar si el navegador soporta HLS nativamente
+            if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                // Safari soporta HLS nativamente
+                video.src = url;
+                console.log('Usando HLS nativo');
+            } else if (Hls.isSupported()) {
+                // Usar HLS.js para otros navegadores
+                const hls = new Hls({
+                    enableWorker: false,
+                    lowLatencyMode: false
+                });
+                hls.loadSource(url);
+                hls.attachMedia(video);
+                console.log('Usando HLS.js');
+            } else {
+                console.log('HLS no soportado');
+            }
+        }
+
+        // Cargar automáticamente al cargar la página
+        window.addEventListener('load', async () => {
+            console.log('Página cargada');
+            await loadUrlFromFile();
+            loadStream();
+        });
+        
+        // Activar sonido con un solo clic
+        document.addEventListener('click', () => {
+            video.muted = false;
+            console.log('Sonido activado por clic');
+        });
+
+        // Manejo de errores
+        video.addEventListener('error', (e) => {
+            console.error('Error en video:', e);
+        });
+
+        // Log cuando el video está listo
+        video.addEventListener('loadedmetadata', () => {
+            console.log('Video metadata cargada');
+        });
+
+        // Log cuando el video comienza a reproducir
+        video.addEventListener('play', () => {
+            console.log('Video comenzó a reproducir');
+        });
+    </script>
+</body>
+</html> 

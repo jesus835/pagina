@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Movie Banner</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #0c0c0c, #1e1e2f);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .movie-banner {
+      max-width: 400px;
+      padding: 30px;
+    }
+
+    .movie-date {
+      font-size: 14px;
+      color: #ccc;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    .movie-title {
+      font-size: 40px;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .movie-subtitle {
+      margin: 5px 0 20px;
+      font-size: 15px;
+      color: #bbb;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 10px 18px;
+      font-size: 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      border: none;
+      outline: none;
+      transition: 0.3s ease;
+    }
+
+    .btn-primary {
+      background: white;
+      color: black;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid white;
+      color: white;
+    }
+
+    .btn:hover {
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="movie-banner">
+    <div class="movie-date">May, 17 &nbsp;&nbsp; action, thriller</div>
+    <h1 class="movie-title">JOHN WICK</h1>
+    <div class="movie-subtitle">Chapter3–Parabellum (2019)</div>
+    <div class="buttons">
+      <button class="btn btn-primary">▶ Watch now</button>
+      <button class="btn btn-secondary">Trailer</button>
+    </div>
+  </div>
+</body>
+</html> 
