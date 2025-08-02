@@ -1,0 +1,10 @@
+/*
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: GET, POST, OPTIONS
+  Access-Control-Allow-Headers: Content-Type
+
+*.m3u8
+  Content-Type: application/vnd.apple.mpegurl
+
+*.ts
+  Content-Type: video/mp2t
