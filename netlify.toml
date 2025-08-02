@@ -6,6 +6,11 @@
     Access-Control-Allow-Headers = "Content-Type, Range"
 
 [[headers]]
+  for = "*.html"
+  [headers.values]
+    Content-Type = "text/html; charset=utf-8"
+
+[[headers]]
   for = "*.m3u8"
   [headers.values]
     Content-Type = "application/vnd.apple.mpegurl"
@@ -13,4 +18,4 @@
 [[headers]]
   for = "*.ts"
   [headers.values]
-    Content-Type = "video/mp2t"
+    Content-Type = "video/mp2t" 
