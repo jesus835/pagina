@@ -3,6 +3,9 @@
   Access-Control-Allow-Methods: GET, POST, OPTIONS
   Access-Control-Allow-Headers: Content-Type, Range
 
+/index.html
+  Content-Type: text/html; charset=utf-8
+
 *.html
   Content-Type: text/html; charset=utf-8
 
