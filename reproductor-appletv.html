@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Load+ TV - Apple TV MLS Pass</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         * {
             margin: 0;
@@ -24,10 +25,9 @@
             position: relative;
         }
 
-        .reproductor-iframe {
+        .reproductor-video {
             width: 100%;
             height: 100%;
-            border: none;
             background-color: #000;
         }
 
@@ -59,24 +59,75 @@
             font-size: 18px;
             z-index: 999;
         }
+
+        .error-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ff4444;
+            font-size: 16px;
+            text-align: center;
+            z-index: 999;
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div class="reproductor-container">
         <button class="boton-cerrar" onclick="window.close()">Cerrar</button>
         <div class="loading" id="loading">Cargando MLS Pass...</div>
-        <iframe 
-            class="reproductor-iframe" 
-            allowfullscreen="true" 
-            scrolling="no" 
-            src="https://elcanaldeportivo.com/mlspass.php" 
-            allow="encrypted-media" 
-            frameborder="0"
-            onload="document.getElementById('loading').style.display='none';">
-        </iframe>
+        <div class="error-message" id="error">Error al cargar el stream</div>
+        <video 
+            id="video" 
+            class="reproductor-video" 
+            controls 
+            autoplay 
+            muted
+            playsinline>
+            Tu navegador no soporta la reproducción de video.
+        </video>
     </div>
 
     <script>
+        const video = document.getElementById('video');
+        const loading = document.getElementById('loading');
+        const error = document.getElementById('error');
+        const videoSrc = 'https://d7.merichunidya.com:1686/hls/mlsusa2.m3u8?md5=Ji5fRUbBmD29N99XY1d3nA&expires=1754445406';
+
+        // Verificar si HLS.js es compatible
+        if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource(videoSrc);
+            hls.attachMedia(video);
+            
+            hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                loading.style.display = 'none';
+                video.play();
+            });
+
+            hls.on(Hls.Events.ERROR, function(event, data) {
+                console.error('Error HLS:', data);
+                loading.style.display = 'none';
+                error.style.display = 'block';
+            });
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            // Soporte nativo para Safari
+            video.src = videoSrc;
+            video.addEventListener('loadedmetadata', function() {
+                loading.style.display = 'none';
+                video.play();
+            });
+            video.addEventListener('error', function() {
+                loading.style.display = 'none';
+                error.style.display = 'block';
+            });
+        } else {
+            loading.style.display = 'none';
+            error.style.display = 'block';
+            error.textContent = 'Tu navegador no soporta reproducción HLS';
+        }
+
         // Solicitar pantalla completa al cargar
         document.addEventListener('DOMContentLoaded', function() {
             // Intentar entrar en pantalla completa
@@ -94,11 +145,6 @@
             if (event.key === 'Escape') {
                 window.close();
             }
-        });
-
-        // Ocultar loading cuando el iframe se carga
-        document.querySelector('.reproductor-iframe').addEventListener('load', function() {
-            document.getElementById('loading').style.display = 'none';
         });
     </script>
 </body>
