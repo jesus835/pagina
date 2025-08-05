@@ -1,2367 +1,922 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=1920, height=1080, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>Google TV Clone</title>
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Load+ TV</title>
   <style>
     * {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
     }
 
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to top, #111, #333);
-      color: white;
+    html, body {
+      width: 100vw;
+      height: 100vh;
       overflow: hidden;
-      width: 1920px;
-      height: 1080px;
-      position: fixed;
-      top: 0;
-      left: 0;
-      margin: 0;
-      padding: 0;
-      scrollbar-width: none; /* Firefox */
-      -ms-overflow-style: none; /* Internet Explorer 10+ */
-    }
-    
-    body::-webkit-scrollbar {
-      display: none; /* Chrome, Safari, Opera */
-    }
-    
-    html {
-      overflow: hidden;
-      position: fixed;
-      width: 100%;
-      height: 100%;
-    }
-
-    header {
-      display: flex;
-      align-items: center;
-      padding: 40px 80px;
-      justify-content: space-between;
-      position: relative;
-      z-index: 10;
-    }
-
-    nav {
-      display: flex;
-      gap: 40px;
-      font-size: 28px;
-    }
-
-    nav a {
-      padding: 10px 20px;
-      border-radius: 20px;
-      background: #fff2;
-      cursor: pointer;
-      text-decoration: none;
+      font-family: 'Roboto', sans-serif;
       color: white;
     }
 
-    nav a:focus,
-    nav a:active {
-      background: white;
-      color: black;
-      padding: 8px 20px;
-      border-radius: 20px;
-      outline: none;
-    }
-
-    nav a.nav-focused {
-      background: white;
-      color: black;
-      padding: 8px 20px;
-      border-radius: 20px;
-      outline: none;
-      box-shadow: 0 0 10px rgba(255,255,255,0.5);
-    }
-
-                   .highlight {
-        height: 550px;
-        position: relative;
-        display: flex;
-        align-items: flex-end;
-        padding: 40px 80px;
-        z-index: 3;
-      }
-
-    .highlight-content {
-      padding: 20px;
-    }
-
-
-
-         .section {
-       padding: 40px 80px;
-       margin: 20px 0;
-       position: relative;
-       z-index: 10;
-       transition: opacity 0.3s ease;
-     }
-    
-    #destacados-section {
-      transform: translateY(-1225px);
-    }
-    
-
-
-    .section h2 {
-      font-size: 36px;
-      margin-bottom: 20px;
-      margin-top: 20px;
-    }
-    
-    #destacados-section h2 {
-      position: relative;
-      top: 20px;
-    }
-
-              .cards {
-       display: flex;
-       gap: 30px;
-       overflow-x: auto;
-       scrollbar-width: none; /* Firefox */
-       -ms-overflow-style: none; /* Internet Explorer 10+ */
-     }
-     
-                       .cards {
-        padding-left: 80px;
-        padding-right: 80px;
-        padding-top: 40px;
-        padding-bottom: 40px;
-        min-height: 250px;
-        position: relative;
-        top: -10px;
-      }
-    
-    .cards::-webkit-scrollbar {
-      display: none; /* Chrome, Safari, Opera */
-    }
-
-    .card {
-      flex: 0 0 auto;
-      width: 300px;
-      height: 170px;
-      border-radius: 20px;
-      background-color: #222;
-      overflow: hidden;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .card img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-    
-         .card:first-child img {
-       object-fit: contain;
-       object-position: center;
-       padding: 10px;
-     }
-     
-     .card:nth-child(2) img {
-       object-fit: contain;
-       object-position: center;
-       padding: 10px;
-       width: 100%;
-       height: 100%;
-       display: block;
-       margin: 0 auto;
-     }
-     
-     .card:first-child {
-       border: 2px solid transparent;
-       transition: border-color 0.3s ease;
-       background-color: white;
-     }
-     
-     .card:nth-child(2) {
-       border: 2px solid transparent;
-       transition: border-color 0.3s ease;
-       background-color: #202020;
-     }
-     
-     .card:first-child:hover:not(.nav-focused) {
-       border-color: white;
-       transform: scale(1.02);
-     }
-     
-     .card:nth-child(2):hover:not(.nav-focused) {
-       border-color: white;
-       transform: scale(1.02);
-     }
-     
-     /* Asegurar que la primera tarjeta también responda al foco */
-     .card:first-child.nav-focused {
-       box-shadow: 0 0 15px rgba(255,255,255,0.7);
-       outline: 3px solid white;
-       transform: scale(1.05);
-       transition: all 0.3s ease;
-       border-color: white;
-     }
-     
-     /* Asegurar que la segunda tarjeta también responda al foco */
-     .card:nth-child(2).nav-focused {
-       box-shadow: 0 0 15px rgba(255,255,255,0.7);
-       outline: 3px solid white;
-       transform: scale(1.05);
-       transition: all 0.3s ease;
-       border-color: white;
-     }
-     
-     /* Estilos para la tercera tarjeta (TUDN Univision) */
-     .card:nth-child(3) {
-       border: 2px solid transparent;
-       transition: border-color 0.3s ease;
-       background-color: #007350;
-     }
-     
-     .card:nth-child(3) img {
-       object-fit: contain;
-       object-position: center;
-       padding: 10px;
-       width: 100%;
-       height: 100%;
-       display: block;
-       margin: 0 auto;
-     }
-     
-     .card:nth-child(3):hover:not(.nav-focused) {
-       border-color: white;
-       transform: scale(1.02);
-     }
-     
-     .card:nth-child(3).nav-focused {
-       box-shadow: 0 0 15px rgba(255,255,255,0.7);
-       outline: 3px solid white;
-       transform: scale(1.05);
-       transition: all 0.3s ease;
-       border-color: white;
-     }
-     
-     /* Estilos para la cuarta tarjeta (MLS Pass) */
-     .card:nth-child(4) {
-       border: 2px solid transparent;
-       transition: border-color 0.3s ease;
-       background-color: #202020;
-     }
-     
-     .card:nth-child(4) img {
-       object-fit: contain;
-       object-position: center;
-       padding: 5px;
-       width: 100%;
-       height: 100%;
-       display: block;
-       margin: 0 auto;
-       transform: scale(1.6);
-     }
-     
-     .card:nth-child(4):hover:not(.nav-focused) {
-       border-color: white;
-       transform: scale(1.02);
-     }
-     
-     .card:nth-child(4).nav-focused {
-       box-shadow: 0 0 15px rgba(255,255,255,0.7);
-       outline: 3px solid white;
-       transform: scale(1.05);
-       transition: all 0.3s ease;
-       border-color: white;
-     }
-     
-     /* Estilos para la quinta tarjeta (Disney+ y ESPN) */
-     .card:nth-child(5) {
-       border: 2px solid transparent;
-       transition: border-color 0.3s ease;
-       background-color: #202020;
-     }
-     
-     .card:nth-child(5) img {
-       object-fit: contain;
-       object-position: center;
-       padding: 5px;
-       width: 100%;
-       height: 100%;
-       display: block;
-       margin: 0 auto;
-       transform: scale(1.1);
-     }
-     
-     .card:nth-child(5):hover:not(.nav-focused) {
-       border-color: white;
-       transform: scale(1.02);
-     }
-     
-     .card:nth-child(5).nav-focused {
-       box-shadow: 0 0 15px rgba(255,255,255,0.7);
-       outline: 3px solid white;
-       transform: scale(1.05);
-       transition: all 0.3s ease;
-       border-color: white;
-     }
-
-
-
-    .carousel {
+    /* Carrusel de fondo */
+    .background-carousel {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      overflow: hidden;
       z-index: -1;
+      background-color: #000000;
     }
 
-    .slide {
+    .carousel-slide {
       position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
-      opacity: 0;
-      transition: opacity 1.5s ease;
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
+      opacity: 0;
+      transition: opacity 2.5s ease-in-out;
     }
 
-    .slide.active {
+    .carousel-slide.active {
       opacity: 1;
+    }
+
+    .carousel-slide.prev {
+      opacity: 0;
+      transition-delay: 0.5s;
+    }
+
+    /* Indicadores del carrusel */
+    .carousel-indicators {
+      position: absolute;
+      top: 656px;
+      left: calc(50% + 865px);
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 1000;
+    }
+
+    .carousel-indicator {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: #e0e0e0;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .carousel-indicator.active {
+      background-color: #e0e0e0;
+    }
+
+    #static-wrapper {
+      width: 1920px;
+      height: 1080px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: transparent;
+    }
+
+    /* Barra de navegación superior */
+    .navbar {
+      position: absolute;
+      top: 90px;
+      left: 0;
+      width: 100%;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 60px;
+      background: transparent;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 37px;
+      font-weight: bold;
+      color: white;
+      margin-top: 0;
+      margin-left: 25px;
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 25px;
+      align-items: center;
+      justify-content: center;
+      width: 500px;
+      margin-top: 0;
+      margin-left: 25px;
+    }
+
+    .nav-item {
+      font-size: 29px;
+      cursor: pointer;
+      padding: 12px 26px;
+      border-radius: 26px;
+      transition: all 0.3s ease;
+      text-align: center;
+      white-space: nowrap;
+      background-color: rgba(255,255,255,0.1);
+      color: white;
+      text-decoration: none;
+      display: inline-block;
+      line-height: 1.2;
+      vertical-align: middle;
+      box-sizing: border-box;
+    }
+
+    .nav-item:hover {
+      background-color: rgba(255,255,255,0.2);
+    }
+
+    .nav-item:focus,
+    .nav-focused {
+      background-color: white;
+      color: black;
+      outline: none;
+      transform: scale(1.05);
+    }
+
+    /* Estilos para los botones de los títulos del carrusel */
+    #titulocarrosel1 a,
+    #titulocarrosel2 a {
+      transition: all 0.3s ease;
+      padding: 25px 50px !important;
+      margin: 15px !important;
+      display: inline-block !important;
+    }
+
+    #titulocarrosel1 a:focus,
+    #titulocarrosel2 a:focus {
+      background-color: white !important;
+      color: black !important;
+      outline: none;
+      transform: scale(1.05);
+    }
+
+    #titulocarrosel1 a:hover,
+    #titulocarrosel2 a:hover {
+      background-color: rgba(255,255,255,0.2);
+      color: white;
+      transform: scale(1.05);
+    }
+
+    .profile-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #4285f4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    /* Sección principal (Hero) */
+    .hero-section {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
       z-index: 1;
     }
 
-    .slide-text {
-      position: absolute;
-      bottom: 40px;
-      left: 80px;
-      font-size: 64px;
-      background: rgba(0,0,0,0.5);
-      padding: 20px;
-      border-radius: 10px;
+    .hero-bg {
+      width: 100%;
+      height: 100%;
+      background: transparent;
     }
 
-    .slide-description {
+    .hero-content {
       position: absolute;
-      bottom: 20px;
-      left: 80px;
-      font-size: 28px;
-      background: rgba(0,0,0,0.5);
-      padding: 10px 20px;
-      border-radius: 10px;
-      color: #ccc;
-    }
-
-    .carousel-controls {
-      position: absolute;
-      bottom: 20px;
-      right: 80px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
       z-index: 10;
+    }
+
+    .hero-title {
+      font-size: 48px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .hero-description {
+      font-size: 24px;
+      margin-bottom: 30px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    }
+
+    .carousel-dots {
       display: flex;
+      justify-content: center;
       gap: 10px;
     }
 
-    .carousel-btn {
-      background: rgba(255,255,255,0.2);
-      border: none;
-      color: white;
-      padding: 10px 15px;
-      border-radius: 5px;
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: rgba(255,255,255,0.5);
       cursor: pointer;
-      font-size: 16px;
+      transition: background-color 0.3s;
     }
 
-    .carousel-btn:hover {
-      background: rgba(255,255,255,0.3);
+    .dot.active {
+      background-color: white;
+    }
+
+    /* Fila de contenido */
+    .content-row {
+      position: absolute;
+      left: 60px;
+      width: calc(100% - 120px);
+      top: 700px;
+    }
+
+    .row-title {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      margin-top: 50px;
+      color: white;
+    }
+
+    .content-cards {
+      display: flex;
+      gap: 40px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+      padding-left: 20px;
+      padding-right: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .content-card {
+      min-width: 280px;
+      height: 140px;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background-color: rgba(255,255,255,0.1);
+      flex-shrink: 0;
+      margin: 10px;
+    }
+
+    .content-card:hover {
+      transform: scale(1.05);
+      background-color: rgba(255,255,255,0.2);
+    }
+
+    .content-card:focus {
+      transform: scale(1.05);
+      background-color: white;
+      outline: none;
+    }
+
+    .card-bg {
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .card-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 25px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    }
+
+    .card-logo {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .card-subtitle {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .live-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background-color: #ff0000;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    /* Aplicaciones */
+    .apps-section {
+      position: absolute;
+      bottom: 80px;
+      left: 60px;
+      width: calc(100% - 120px);
+    }
+
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .app-icon {
+      width: 120px;
+      height: 120px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    .app-icon:hover {
+      transform: scale(1.1);
+    }
+
+    .app-icon:focus {
+      transform: scale(1.1);
+      outline: none;
+    }
+
+    /* Colores de las apps */
+    .app-youtube {
+      background-color: #ff0000;
+      color: white;
+    }
+
+    .app-netflix {
+      background-color: #e50914;
+      color: white;
+    }
+
+    .app-prime {
+      background-color: #00a8e1;
+      color: white;
+    }
+
+    .app-disney {
+      background-color: #113ccf;
+      color: white;
+    }
+
+    .app-youtube-tv {
+      background-color: #ff0000;
+      color: white;
+    }
+
+    .app-hbo {
+      background-color: #00d4aa;
+      color: white;
+    }
+
+    .app-spotify {
+      background-color: #1db954;
+      color: white;
+    }
+
+    /* Your apps row */
+    .your-apps-row {
+      top: 1100px;
+    }
+
+    /* Karate Kid Promo Container */
+    .promo-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #000000;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 500px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      z-index: 1000;
     }
 
     .promo-content {
-      color: white;
-      padding: 50px;
-      border-radius: 30px;
-      max-width: 700px;
-      font-family: 'Roboto', sans-serif;
-      margin-top: 40px;
-      transform: translateX(0);
-      opacity: 1;
-      transition: transform 0.4s ease, opacity 0.3s ease;
-    }
-
-    .promo-content.slide-out {
-      opacity: 0;
-      transform: translateX(-30px);
-      transition: opacity 0.4s ease, transform 0.4s ease;
-    }
-
-    .promo-content.slide-in {
-      opacity: 0;
-      transform: translateX(30px);
-      transition: opacity 0.4s ease, transform 0.4s ease;
-    }
-
-    .promo-content.slide-in.active {
-      opacity: 1;
-      transform: translateX(0);
-    }
-
-    .promo-header {
-      font-size: 1.6em;
-      color: #ccc;
-      margin-bottom: 15px;
+      text-align: center;
     }
 
     .promo-title {
-      font-size: 3em;
+      font-size: 32px;
       font-weight: bold;
+      color: white;
       margin-bottom: 15px;
     }
 
     .promo-sub {
-      font-size: 1.5em;
-      color: #aaa;
+      font-size: 16px;
+      color: #cccccc;
       margin-bottom: 20px;
+      font-weight: 500;
     }
 
     .promo-desc {
-      font-size: 1.4em;
-      color: #bbb;
+      font-size: 14px;
+      color: #e0e0e0;
+      line-height: 1.6;
       margin-bottom: 30px;
-      line-height: 1.6em;
     }
 
     .promo-btn {
-      background: white;
+      background: #d3d3d3;
       color: black;
-      padding: 18px 35px;
-      font-size: 1.4em;
       border: none;
-      border-radius: 40px;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font-size: 16px;
       font-weight: bold;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
     }
 
     .promo-btn:hover {
-      background: #ddd;
-    }
-
-    .promo-btn.nav-focused {
-      background: #ddd;
-      box-shadow: 0 0 10px rgba(255,255,255,0.5);
-      outline: none;
-    }
-
-    .card.nav-focused {
-      box-shadow: 0 0 15px rgba(255,255,255,0.7);
-      outline: 3px solid white;
       transform: scale(1.05);
-      transition: all 0.3s ease;
+      box-shadow: 0 10px 20px rgba(211,211,211,0.3);
     }
 
-
-    
-         .overlay {
-       position: fixed;
-       top: 0;
-       left: 0;
-       width: 100%;
-       height: 100%;
-       background: linear-gradient(to right, #111, #222);
-       color: white;
-       z-index: 9999;
-       display: none;
-       padding: 40px 60px;
-       overflow-y: auto;
-       opacity: 0;
-       transition: opacity 0.5s ease;
-       pointer-events: auto;
-     }
-    
-    .overlay.active {
-      opacity: 1;
+    .slide-in {
+      animation: slideIn 0.5s ease-out;
     }
-    
-    .overlay-content {
-      max-width: 900px;
-      opacity: 0;
-      transition: opacity 0.3s ease;
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+      }
     }
-    
-    .overlay-content.slide-in {
-      opacity: 0;
+
+    @keyframes slideText1 {
+      0% {
+        transform: translateX(50%);
+      }
+      100% {
+        transform: translateX(0%);
+      }
     }
-    
-    .overlay-content.slide-in.active {
-      opacity: 1;
+
+    @keyframes slideText2 {
+      0% {
+        transform: translateX(50%);
+      }
+      100% {
+        transform: translateX(0%);
+      }
     }
-    
-    .overlay .subtitle {
-      font-size: 1.2em;
-      color: #aaa;
-      margin-bottom: 10px;
-    }
-    
-    .overlay h1 {
-      font-size: 3em;
-      margin: 10px 0;
-    }
-    
-    .tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      margin: 15px 0;
-    }
-    
-    .tags span {
-      background: #333;
-      padding: 6px 12px;
-      border-radius: 15px;
-      font-size: 0.9em;
-    }
-    
-    .tags .green {
-      background: #1db954;
-      color: white;
-    }
-    
-    .tags .rating {
-      background: #222;
-      color: #ff6a00;
-    }
-    
-    .tags .gray {
-      background: #444;
-      color: #ccc;
-    }
-    
-    .description {
-      margin: 20px 0;
-      color: #ccc;
-      font-size: 1.1em;
-      max-width: 800px;
-    }
-    
-    .watch-btn {
-      background: white;
-      color: black;
-      font-size: 1.1em;
-      padding: 12px 24px;
-      border: none;
-      border-radius: 25px;
-      cursor: pointer;
-      font-weight: bold;
-      margin-bottom: 30px;
-    }
-    
-    .close-btn {
-      font-size: 2em;
-      position: absolute;
-      top: 30px;
-      right: 40px;
-      cursor: pointer;
-    }
-    
-    .thumbs {
-      display: flex;
-      gap: 20px;
-      margin-top: 20px;
-    }
-    
-         .thumbs img {
-       width: 160px;
-       height: 90px;
-       object-fit: cover;
-       border-radius: 10px;
-     }
-     
-     .overlay-background {
-       position: absolute;
-       top: 0;
-       left: 0;
-       width: 100%;
-       height: 100%;
-       z-index: -1;
-       padding: 40px 80px;
-       padding-top: 120px;
-     }
-     
-     .overlay-background .section {
-       margin: 40px 0;
-     }
-     
-     /* Estilos para las tarjetas */
-     .card {
-       outline: none;
-     }
-     
-     /* Estilos para el overlay de detalles con animación Google TV */
-     .detail-overlay {
-       position: fixed;
-       top: 0;
-       left: 0;
-       width: 100%;
-       height: 100%;
-       background: linear-gradient(to right, rgba(0,0,0,0.8), rgba(17,17,17,0.8)), url('images/destacado1.jpg');
-       background-size: cover;
-       background-position: center;
-       color: white;
-       z-index: 5;
-       padding: 60px;
-       padding-top: 120px;
-       display: flex;
-       align-items: flex-start;
-       justify-content: flex-start;
-       opacity: 0;
-       transition: opacity 0.2s ease;
-       pointer-events: none;
-     }
-     
-     .detail-overlay.active {
-       opacity: 1;
-       pointer-events: auto;
-     }
-     
-     /* Animación del contenido del overlay */
-     .detail-content {
-       opacity: 0;
-       transform: translateX(-40px) scale(0.95);
-       animation-fill-mode: forwards;
-       animation-duration: 0.4s;
-       animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-     }
-     
-     .detail-overlay.active .detail-content {
-       animation-name: slideFadeScaleIn;
-     }
-     
-     @keyframes slideFadeScaleIn {
-       0% {
-         opacity: 0;
-         transform: translateX(-40px) scale(0.95);
-         filter: drop-shadow(0 0 5px rgba(0,0,0,0.4));
-       }
-       100% {
-         opacity: 1;
-         transform: translateX(0) scale(1);
-         filter: drop-shadow(0 10px 20px rgba(0,0,0,0.8));
-       }
-     }
-     
-     .detail-content {
-       max-width: 800px;
-       position: relative;
-     }
-     
-     .detail-overlay .tags {
-       display: flex;
-       gap: 10px;
-       margin: 10px 0;
-     }
-     
-     .detail-overlay .tags span {
-       background: #444;
-       padding: 6px 12px;
-       border-radius: 15px;
-       font-size: 0.9em;
-     }
-     
-     .detail-overlay button {
-       background: white;
-       color: black;
-       font-size: 1.1em;
-       padding: 10px 20px;
-       border: none;
-       border-radius: 25px;
-       font-weight: bold;
-       cursor: pointer;
-       margin-top: 20px;
-     }
-     
-     .close-btn {
-       position: absolute;
-       top: 15px;
-       right: 20px;
-       font-size: 32px;
-       font-weight: 700;
-       cursor: pointer;
-       user-select: none;
-       color: #bbb;
-       transition: color 0.3s ease;
-       z-index: 10;
-     }
-     
-     .close-btn:hover {
-       color: white;
-     }
-     
-
-     
-     /* Estilos para el texto de Copa Centroamericana */
-     .copa-text {
-       opacity: 0;
-       transform: translateX(30px);
-       transition: opacity 0.4s ease, transform 0.4s ease;
-     }
-     
-     .detail-overlay.active .copa-text {
-       opacity: 1;
-       transform: translateX(0);
-     }
-     
-
-     
-     /* Aplicar la misma animación a todos los overlays */
-     .overlay-text {
-       opacity: 1;
-     }
-     
-     /* Estilos para Power Book II: Ghost */
-     .power-book-card {
-       /* Mantener el tamaño y posición original */
-       width: 1000px;
-       height: 1000px;
-       padding: 80px;
-       background: transparent;
-       border-radius: 25px;
-       box-shadow: none;
-       display: flex;
-       flex-direction: column;
-       justify-content: center;
-       position: relative;
-       top: -248px;
-       left: -80px;
-     }
-     
-
-     
-
-     
-
-     
-
-     
-     .copa-text h1 {
-       font-size: 3.5em;
-       margin-bottom: 20px;
-       color: white;
-       text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-     }
-     
-     .copa-text p {
-       font-size: 1.3em;
-       margin-bottom: 25px;
-       color: #ccc;
-       max-width: 600px;
-       line-height: 1.5;
-     }
-     
-     .copa-tags {
-       display: flex;
-       gap: 15px;
-       flex-wrap: wrap;
-     }
-     
-     .copa-tags span {
-       background: rgba(255,255,255,0.2);
-       color: white;
-       padding: 8px 16px;
-       border-radius: 20px;
-       font-size: 0.9em;
-       border: 1px solid rgba(255,255,255,0.3);
-     }
-     
-     /* Estilos para el elemento destacado de Above Majestic */
-     .highlight-card {
-       width: 500px;
-       padding: 20px;
-       background: linear-gradient(to right, #1a1a1a, #111);
-       border-radius: 10px;
-       box-shadow: 0 0 20px rgba(0,0,0,0.6);
-       margin: 20px;
-     }
-     .top-pick {
-       color: #aaa;
-       font-size: 14px;
-       margin-bottom: 5px;
-     }
-     .title {
-       font-size: 32px;
-       font-weight: bold;
-       margin-bottom: 10px;
-     }
-     .details {
-       display: flex;
-       gap: 10px;
-       align-items: center;
-       margin-bottom: 10px;
-       font-size: 14px;
-     }
-     .badge {
-       background: #1db954;
-       color: black;
-       padding: 2px 8px;
-       border-radius: 4px;
-       font-size: 12px;
-       font-weight: bold;
-     }
-     .rating {
-       background: #222;
-       padding: 2px 6px;
-       border-radius: 4px;
-       border: 1px solid #444;
-     }
-     .desc {
-       font-size: 13px;
-       color: #ccc;
-       margin-bottom: 15px;
-     }
-     .cta {
-       color: white;
-       font-weight: bold;
-       font-size: 14px;
-       background: transparent;
-       border: 1px solid #fff;
-       padding: 8px 16px;
-       border-radius: 4px;
-       display: inline-block;
-       text-decoration: none;
-     }
-     .cta:hover {
-       background: white;
-       color: black;
-     }
-     
-     /* Estilos específicos para Power Book II */
-     .power-book-card .title {
-       color: #fff;
-       text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-       font-size: 72px;
-       font-weight: bold;
-       margin-bottom: 25px;
-     }
-     
-     .power-book-card .top-pick {
-       color: #aaa;
-       font-size: 32px;
-       margin-bottom: 15px;
-     }
-     
-     .power-book-card .details {
-       display: flex;
-       gap: 25px;
-       align-items: center;
-       margin-bottom: 25px;
-       font-size: 28px;
-     }
-     
-     .power-book-card .desc {
-       font-size: 26px;
-       color: #ccc;
-       margin-bottom: 30px;
-       line-height: 1.6;
-     }
-     
-     .power-book-card .badge {
-       background: #e50914;
-       color: white;
-       padding: 8px 20px;
-       border-radius: 10px;
-       font-size: 24px;
-       font-weight: bold;
-     }
-     
-     .power-book-card .rating {
-       background: #222;
-       padding: 8px 18px;
-       border-radius: 10px;
-       border: 1px solid #444;
-       font-size: 24px;
-     }
-     
-     .power-book-card .cta {
-       color: white;
-       font-weight: bold;
-       font-size: 24px;
-       background: transparent;
-       text-decoration: none;
-       display: inline-block;
-       padding: 8px 0;
-       transition: color 0.3s ease;
-       border: none;
-     }
-     
-     .power-book-card .cta:hover {
-       color: #1db954;
-       background: transparent;
-     }
-     
-
-     
-     /* Contenido promocional */
-     .promo-content {
-       /* Sin transformación fija */
-     }
-     
-     /* Ocultar la tarjeta destacada por defecto */
-     .header-title {
-       opacity: 0;
-       transition: opacity 0.5s ease;
-     }
-     
-     /* Mostrar la tarjeta cuando se enfoca la primera tarjeta */
-     .header-title.show {
-       opacity: 1;
-     }
-     
-     /* Estilos para la tarjeta destacada */
-     .highlight-card {
-       width: 1000px;
-       height: 1000px;
-       padding: 80px;
-       background: transparent;
-       border-radius: 25px;
-       box-shadow: none;
-       display: flex;
-       flex-direction: column;
-       justify-content: center;
-       position: relative;
-       top: -300px;
-       left: -100px;
-     }
-     
-     .highlight-card .title {
-       font-size: 72px;
-       font-weight: bold;
-       margin-bottom: 25px;
-     }
-     .highlight-card .top-pick {
-       color: #aaa;
-       font-size: 32px;
-       margin-bottom: 15px;
-     }
-     
-     .highlight-card .details {
-       display: flex;
-       gap: 25px;
-       align-items: center;
-       margin-bottom: 25px;
-       font-size: 28px;
-     }
-     
-     .highlight-card .badge {
-       background: #1db954;
-       color: black;
-       padding: 8px 20px;
-       border-radius: 10px;
-       font-size: 24px;
-       font-weight: bold;
-     }
-     
-     .highlight-card .rating {
-       background: #222;
-       padding: 8px 18px;
-       border-radius: 10px;
-       border: 1px solid #444;
-       font-size: 24px;
-     }
-     
-     .highlight-card .desc {
-       font-size: 26px;
-       color: #ccc;
-       margin-bottom: 30px;
-       line-height: 1.6;
-     }
-     
-     .highlight-card .cta {
-       color: white;
-       font-weight: bold;
-       font-size: 28px;
-       background: transparent;
-       border: 3px solid #fff;
-       padding: 18px 36px;
-       border-radius: 10px;
-       display: inline-block;
-       text-decoration: none;
-     }
-     
-     /* Estilos para los overlays específicos */
-     .overlay-text {
-       text-align: center;
-       color: white;
-     }
-     
-     .overlay-text h1 {
-       font-size: 48px;
-       font-weight: bold;
-       margin-bottom: 20px;
-       color: white;
-     }
-     
-     .overlay-text p {
-       font-size: 18px;
-       margin-bottom: 25px;
-       color: #ccc;
-       line-height: 1.6;
-       max-width: 600px;
-       margin-left: auto;
-       margin-right: auto;
-     }
-     
-     .overlay-tags {
-       display: flex;
-       gap: 15px;
-       justify-content: center;
-       flex-wrap: wrap;
-     }
-     
-     .overlay-tags span {
-       background: rgba(255, 255, 255, 0.1);
-       padding: 8px 16px;
-       border-radius: 20px;
-       font-size: 14px;
-       color: white;
-       border: 1px solid rgba(255, 255, 255, 0.2);
-     }
-     .title {
-       font-size: 32px;
-       font-weight: bold;
-       margin-bottom: 10px;
-     }
-     .details {
-       display: flex;
-       gap: 10px;
-       align-items: center;
-       margin-bottom: 10px;
-       font-size: 14px;
-     }
-     .badge {
-       background: #1db954;
-       color: black;
-       padding: 2px 8px;
-       border-radius: 4px;
-       font-size: 12px;
-       font-weight: bold;
-     }
-     .rating {
-       background: #222;
-       padding: 2px 6px;
-       border-radius: 4px;
-       border: 1px solid #444;
-     }
-     .desc {
-       font-size: 13px;
-       color: #ccc;
-       margin-bottom: 15px;
-     }
-     .cta {
-       color: white;
-       font-weight: bold;
-       font-size: 14px;
-       background: transparent;
-       border: 1px solid #fff;
-       padding: 8px 16px;
-       border-radius: 4px;
-       display: inline-block;
-       text-decoration: none;
-     }
-     .cta:hover {
-       background: white;
-       color: black;
-     }
-     
-     /* Posicionar el contenedor promocional */
-     #promo-container {
-       transform: translateY(-1150px);
-     }
-     
-     /* Estilos para el overlay del reproductor */
-     #player-overlay {
-       position: fixed;
-       top: 0;
-       left: 0;
-       width: 100%;
-       height: 100%;
-       background: rgba(0, 0, 0, 0.95);
-       display: none;
-       justify-content: center;
-       align-items: center;
-       z-index: 9999;
-       opacity: 0;
-       transition: opacity 0.3s ease;
-     }
-     
-     #player-overlay.active {
-       opacity: 1;
-     }
-     
-     .player-overlay-content {
-       width: 1920px;
-       height: 1080px;
-       background: #000;
-       overflow: hidden;
-       position: relative;
-     }
-     
-     .player-container {
-       width: 100%;
-       height: 100%;
-       position: relative;
-     }
-     
-     #stream-video {
-       width: 100%;
-       height: 100%;
-       background: #000;
-       outline: none;
-       cursor: pointer;
-     }
-     
-     .movie-banner {
-       position: absolute;
-       top: 550px;
-       left: 50px;
-       width: 900px;
-       padding: 30px;
-       z-index: 30;
-     }
-
-     .movie-date {
-       font-size: 18px;
-       color: #ccc;
-       letter-spacing: 0.5px;
-       margin-bottom: 15px;
-       margin-top: 5px;
-       font-family: 'Segoe UI', sans-serif;
-     }
-
-     .movie-title {
-       font-size: 80px;
-       font-weight: bold;
-       margin: 0;
-       font-family: 'Segoe UI', sans-serif;
-       color: white;
-     }
-
-     .movie-subtitle {
-       margin: 8px 0 25px;
-       font-size: 20px;
-       color: #bbb;
-       font-family: 'Segoe UI', sans-serif;
-     }
-
-     .buttons {
-       display: flex;
-       gap: 10px;
-     }
-
-     .btn {
-       padding: 20px 36px;
-       font-size: 28px;
-       border-radius: 40px;
-       cursor: pointer;
-       border: none;
-       outline: none;
-       transition: 0.3s ease;
-       font-family: 'Segoe UI', sans-serif;
-     }
-
-     .btn-primary {
-       background: white;
-       color: black;
-     }
-
-     .btn-secondary {
-       background: transparent;
-       border: 1px solid white;
-       color: white;
-     }
-
-     .btn:hover {
-       opacity: 0.8;
-     }
-     
-     .btn:focus {
-       outline: none;
-       transform: scale(1.05);
-     }
-     
-     .live-dot {
-       display: inline-block;
-       width: 12px;
-       height: 12px;
-       background: #ff0000;
-       border-radius: 50%;
-       margin-left: 15px;
-       animation: pulse 2s infinite;
-     }
-     
-     @keyframes pulse {
-       0% {
-         opacity: 1;
-         transform: scale(1);
-       }
-       50% {
-         opacity: 0.7;
-         transform: scale(1.1);
-       }
-       100% {
-         opacity: 1;
-         transform: scale(1);
-       }
-     }
-     
-     .gradient-overlay {
-       position: absolute;
-       top: 0;
-       left: 0;
-       width: 1920px;
-       height: 100%;
-       background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.3) 80%, transparent 100%);
-       z-index: 25;
-       pointer-events: none;
-     }
-     
-
-      
-      
   </style>
 </head>
 <body>
-
-
-  <header>
-    <h1 style="font-size: 32px;">Google TV</h1>
-    <nav>
-      <a href="#">Buscar</a>
-      <a href="#">Para ti</a>
-      <a href="#">En vivo</a>
-      <a href="#">Películas</a>
-      <a href="#">Series</a>
-      <a href="#">Aplicaciones</a>
-      <a href="#">Biblioteca</a>
-    </nav>
-    <img src="https://www.gstatic.com/tv/images/profile-placeholder.png" width="60" style="border-radius: 50%;">
-  </header>
-
-  <header>
-          <div class="header-title">
-        <div class="highlight-card">
-          <div class="top-pick">Top 5 Mundial</div>
-          <div class="title">Movistar La Liga</div>
-          <div class="details">
-            <span>España</span>
-            <span class="badge">Gratis</span>
-            <span>🍅 68%</span>
-            <span class="rating">24/7</span>
-            <span>Deportes</span>
-            <span>2025</span>
-          </div>
-          <div class="desc">
-            Disfruta de la mejor liga de fútbol del mundo con todos los partidos en vivo, resúmenes, análisis y contenido exclusivo de La Liga española...
-          </div>
-          <a href="#" class="cta">▶ Ver ahora, sin suscripción requerida</a>
-        </div>
-      </div>
-    <img src="https://www.gstatic.com/tv/images/profile-placeholder.png" width="60" style="border-radius: 50%;">
-  </header>
+  <!-- Carrusel de fondo -->
+  <div class="background-carousel">
+    <div class="carousel-slide active" style="background-image: url('images/carrosel/carrosel1.png');"></div>
+    <div class="carousel-slide" style="background-image: url('images/carrosel/carrosel2.jpg');"></div>
   </div>
 
-     <div class="carousel">
-     <div class="slide active" style="background-image: url('images/appletv.jpg');"></div>
-     <div class="slide" style="background-image: url('images/copacentroamericana.png');"></div>
-     <div class="slide" style="background-image: url('images/appletv.jpg');"></div>
-     <div class="slide" style="background-image: url('images/copacentroamericana.png');"></div>
-             </div>
- 
-    <!-- Overlay de detalles dinámico -->
-    <div id="detail-overlay" class="detail-overlay" style="display: none;">
-      <div class="detail-content">
-      </div>
+  <div id="static-wrapper">
+    <!-- Indicadores del carrusel -->
+    <div class="carousel-indicators">
+      <div class="carousel-indicator active" data-slide="0"></div>
+      <div class="carousel-indicator" data-slide="1"></div>
+      <div class="carousel-indicator" data-slide="2"></div>
     </div>
-    
-    <!-- Overlay para Movistar La Liga -->
-    <div id="overlay-movistar" class="detail-overlay" style="display: none;">
-      <div class="detail-content">
-        <div class="highlight-card power-book-card" style="position: relative; top: -248px; left: -80px;">
-          <div class="top-pick">Top 5 Mundial</div>
-          <div class="title">Movistar La Liga</div>
-          <div class="details">
-            <span>España</span>
-            <span class="badge">Gratis</span>
-            <span>🍅 68%</span>
-            <span class="rating">24/7</span>
-            <span>Deportes</span>
-            <span>2025</span>
-          </div>
-          <div class="desc">
-            Disfruta de la mejor liga de fútbol del mundo con todos los partidos en vivo, resúmenes, análisis y contenido exclusivo de La Liga española...
-          </div>
-          <a href="#" class="cta">▶ Ver ahora, sin suscripción requerida</a>
+    <!-- Barra de navegación -->
+    <div class="navbar">
+      <div class="logo">Load+ TV</div>
+      <nav class="nav-menu">
+        <a href="#" class="nav-item">Buscar</a>
+        <a href="#" class="nav-item">Para ti</a>
+        <a href="#" class="nav-item">En vivo</a>
+        <a href="#" class="nav-item">Películas</a>
+        <a href="#" class="nav-item">Series</a>
+        <a href="#" class="nav-item">Aplicaciones</a>
+        <a href="#" class="nav-item">Biblioteca</a>
+      </nav>
+      <div class="profile-icon">U</div>
+    </div>
+
+    <!-- Fila Destacados -->
+    <div class="content-row top-picks-row">
+      <div class="row-title">Destacados</div>
+      <div class="content-cards">
+        <div class="content-card">
+          <div class="card-bg" style="background-image: url('images/destacados/destacado1 baner/laligamovisar.png'); background-size: 80%; background-position: center; background-repeat: no-repeat; background-color: white;"></div>
         </div>
-      </div>
-    </div>
-    
-    <!-- Overlay para Sky Sports La Liga -->
-    <div id="overlay-skysports" class="detail-overlay" style="display: none;">
-      <div class="detail-content">
-        <div class="highlight-card power-book-card" style="position: relative; top: -248px; left: -80px;">
-          <div class="top-pick">Top 10 Mundial</div>
-          <div class="title">Sky Sports La Liga</div>
-          <div class="details">
-            <span>México</span>
-            <span class="badge">Gratis</span>
-            <span>🍅 78%</span>
-            <span class="rating">24/7</span>
-            <span>Deportes</span>
-            <span>2025</span>
-          </div>
-          <div class="desc">
-            Disfruta de la mejor liga de fútbol del mundo con todos los partidos en vivo, resúmenes, análisis y contenido exclusivo de La Liga española...
-          </div>
-          <a href="#" class="cta">▶ Ver ahora, sin suscripción requerida</a>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Overlay para Power Book II: Ghost -->
-    <div id="overlay-power" class="detail-overlay" style="display: none;">
-      <div class="detail-content">
-        <div class="highlight-card power-book-card" style="position: relative; top: -248px; left: -80px;">
-          <div class="top-pick">Top 5 Mundial</div>
-          <div class="title">Movistar La Liga</div>
-          <div class="details">
-            <span>España</span>
-            <span class="badge">Gratis</span>
-            <span>🍅 68%</span>
-            <span class="rating">24/7</span>
-            <span>Deportes</span>
-            <span>2025</span>
-          </div>
-          <div class="desc">
-            Disfruta de la mejor liga de fútbol del mundo con todos los partidos en vivo, resúmenes, análisis y contenido exclusivo de La Liga española...
-          </div>
-          <a href="#" class="cta">▶ Ver ahora, sin suscripción requerida</a>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Overlay para primera tarjeta de The Mandalorian -->
-    <div id="overlay-mandalorian-first" class="detail-overlay" style="display: none;">
-      <div class="detail-content">
-        <div class="highlight-card power-book-card" style="position: relative; top: -248px; left: -80px;">
-          <div class="top-pick">Top 5 Mundial</div>
-          <div class="title">Movistar La Liga</div>
-          <div class="details">
-            <span>España</span>
-            <span class="badge">Gratis</span>
-            <span>🍅 68%</span>
-            <span class="rating">24/7</span>
-            <span>Deportes</span>
-            <span>2025</span>
-          </div>
-          <div class="desc">
-            Disfruta de la mejor liga de fútbol del mundo con todos los partidos en vivo, resúmenes, análisis y contenido exclusivo de La Liga española...
-          </div>
-          <a href="#" class="cta">▶ Ver ahora, sin suscripción requerida</a>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Overlay para TUDN Univision -->
-    <div id="overlay-tudn" class="detail-overlay" style="display: none;">
-      <div class="detail-content">
-        <div class="highlight-card power-book-card" style="position: relative; top: -248px; left: -80px;">
-          <div class="top-pick">Top 2 USA</div>
-          <div class="title">TUDN Univision</div>
-          <div class="details">
-            <span>USA</span>
-            <span class="badge" style="background-color: #ff0000;">VPN</span>
-            <span>🍅 89%</span>
-            <span class="rating">24/7</span>
-            <span>Deportes</span>
-            <span>2025</span>
-          </div>
-          <div class="desc">
-            Disfruta de la mejor cobertura deportiva en español con TUDN. VPN REQUERIDO SI NO CARGA EN TU PAIS.
-          </div>
-          <a href="#" class="cta" style="color: white;">▶ Ver ahora, Gratis Con Proton VPN</a>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Overlay para MLS Pass -->
-    <div id="overlay-mls" class="detail-overlay" style="display: none;">
-      <div class="detail-content">
-        <div class="highlight-card power-book-card" style="position: relative; top: -248px; left: -80px;">
-          <div class="top-pick">Top 1 USA</div>
-          <div class="title">MLS Pass</div>
-          <div class="details">
-            <span>USA</span>
-            <span class="badge" style="background-color: #ff0000;">VPN</span>
-            <span>🍅 89%</span>
-            <span class="rating">24/7</span>
-            <span>Deportes</span>
-            <span>2025</span>
-          </div>
-          <div class="desc">
-            Disfruta de la mejor liga de fútbol de Estados Unidos con MLS Pass. VPN REQUERIDO SI NO CARGA EN TU PAIS.
-          </div>
-          <a href="#" class="cta" style="color: white;">▶ Ver ahora, Gratis Con Proton VPN</a>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Overlay para Disney+ y ESPN -->
-    <div id="overlay-disney" class="detail-overlay" style="display: none;">
-      <div class="detail-content">
-        <div class="highlight-card power-book-card" style="position: relative; top: -248px; left: -80px;">
-          <div class="top-pick">Top 1 Latinoamérica</div>
-          <div class="title">Disney+ y ESPN</div>
-          <div class="details">
-            <span>America</span>
-            <span class="badge" style="background-color: #ff0000;">VPN</span>
-            <span>🍅 95%</span>
-            <span class="rating">24/7</span>
-            <span>Entretenimiento</span>
-            <span>2025</span>
-          </div>
-          <div class="desc">
-            Disfruta del mejor contenido de Disney, Marvel, Star Wars y deportes con ESPN. VPN REQUERIDO SI NO CARGA EN TU PAIS.
-          </div>
-          <a href="#" class="cta" style="color: white;">▶ Ver ahora, Gratis Con Proton VPN</a>
-        </div>
-      </div>
-    </div>
-
-              <div class="highlight">
-     <div class="highlight-content">
-       <div id="promo-container"></div>
-     </div>
-   </div>
-
-   <div class="section" id="destacados-section">
-     <h2>Destacados</h2>
-          <div class="cards">
-        <div class="card" tabindex="0" data-title="Movistar La Liga" data-genre="Deportes" data-description="Disfruta de la mejor liga de fútbol del mundo con todos los partidos en vivo, resúmenes, análisis y contenido exclusivo de La Liga española." data-rating="🍅 68%" data-badge="Gratis" data-year="2025"><img src="images/destacados/destacado1 baner/laligamovisar.png" alt="Movistar La Liga" /></div>
-        <div class="card" tabindex="0" data-title="Sky Sports La Liga" data-genre="Deportes" data-description="Disfruta de la mejor liga de fútbol del mundo con todos los partidos en vivo, resúmenes, análisis y contenido exclusivo de La Liga española." data-rating="🍅 78%" data-badge="Gratis" data-year="2025"><img src="images/destacados/destacado2 baner/skysportslaliga.png" alt="Sky Sports La Liga" /></div>
-        <div class="card" tabindex="0" data-title="TUDN Univision" data-genre="Deportes" data-description="Disfruta de la mejor cobertura deportiva en español con TUDN, el canal líder en deportes hispanos en Estados Unidos." data-rating="🍅 89%" data-badge="USA" data-year="2025"><img src="images/destacados/destacado3 baner/univision_00000.png" alt="TUDN Univision" /></div>
-        <div class="card" tabindex="0" data-title="MLS Pass" data-genre="Deportes" data-description="Disfruta de la mejor liga de fútbol de Estados Unidos con MLS Pass. VPN REQUERIDO SI NO CARGA EN TU PAIS." data-rating="🍅 89%" data-badge="USA" data-year="2025"><img src="images/destacados/destacado4 baner/mls.png" alt="MLS Pass" /></div>
-        <div class="card" tabindex="0" data-title="Disney+ y ESPN" data-genre="Entretenimiento" data-description="Disfruta del mejor contenido de Disney, Marvel, Star Wars y deportes con ESPN. VPN REQUERIDO SI NO CARGA EN TU PAIS." data-rating="🍅 95%" data-badge="America" data-year="2025"><img src="images/destacados/destacado5 baner/disney.png" alt="Disney+ y ESPN" /></div>
-     </div>
-   </div>
-
-
- 
-   <div id="overlay" class="overlay">
-     <div class="overlay-content slide-in">
-       <span class="close-btn" onclick="closeOverlay()">✕</span>
-       <p class="subtitle">Top picks for you</p>
-       <h1>Contenido Destacado</h1>
-       <div class="tags">
-         <span>Streaming</span>
-         <span class="green">Disponible</span>
-         <span class="rating">⭐⭐⭐⭐⭐</span>
-         <span class="gray">Todas las edades</span>
-         <span>Entretenimiento</span>
-         <span>2024</span>
-       </div>
-       <p class="description">
-         Descubre el mejor contenido de entretenimiento seleccionado especialmente para ti...
-       </p>
-       <button class="watch-btn">▶ Ver ahora</button>
- 
-       <div class="thumbs">
-         <img src="https://img.example.com/placeholder1.jpg" />
-         <img src="https://img.example.com/placeholder2.jpg" />
-         <img src="https://img.example.com/placeholder3.jpg" />
-         <img src="https://img.example.com/placeholder4.jpg" />
-       </div>
-     </div>
-     
-     <!-- Fondo con solo destacados -->
-     <div class="overlay-background">
-       <div class="section">
-         <h2>Destacados</h2>
-         <div class="cards">
-           <div class="card" tabindex="0" data-title="Movistar La Liga" data-genre="Deportes" data-description="Disfruta de la mejor liga de fútbol del mundo con todos los partidos en vivo, resúmenes, análisis y contenido exclusivo de La Liga española." data-rating="🍅 68%" data-badge="Gratis" data-year="2025"><img src="images/destacados/destacado1 baner/laligamovisar.png" alt="Movistar La Liga" /></div>
-           <div class="card" tabindex="0" data-title="Sky Sports La Liga" data-genre="Deportes" data-description="Disfruta de la mejor liga de fútbol del mundo con todos los partidos en vivo, resúmenes, análisis y contenido exclusivo de La Liga española." data-rating="🍅 78%" data-badge="Gratis" data-year="2025"><img src="images/destacados/destacado2 baner/skysportslaliga.png" alt="Sky Sports La Liga" /></div>
-           <div class="card" tabindex="0" data-title="TUDN Univision" data-genre="Deportes" data-description="Disfruta de la mejor cobertura deportiva en español con TUDN, el canal líder en deportes hispanos en Estados Unidos." data-rating="🍅 89%" data-badge="USA" data-year="2025"><img src="images/destacados/destacado3 baner/univision_00000.png" alt="TUDN Univision" /></div>
-           <div class="card" tabindex="0" data-title="MLS Pass" data-genre="Deportes" data-description="Disfruta de la mejor liga de fútbol de Estados Unidos con MLS Pass. VPN REQUERIDO SI NO CARGA EN TU PAIS." data-rating="🍅 89%" data-badge="USA" data-year="2025"><img src="images/destacados/destacado4 baner/mls.png" alt="MLS Pass" /></div>
-           <div class="card" tabindex="0" data-title="Disney+ y ESPN" data-genre="Entretenimiento" data-description="Disfruta del mejor contenido de Disney, Marvel, Star Wars y deportes con ESPN. VPN REQUERIDO SI NO CARGA EN TU PAIS." data-rating="🍅 95%" data-badge="America" data-year="2025"><img src="images/destacados/destacado5 baner/disney.png" alt="Disney+ y ESPN" /></div>
-         </div>
-       </div>
- 
-
-     </div>
-          </div>
-
-
-  
-    <script>
-    let index = 0;
-    const slides = document.querySelectorAll('.slide');
-
-         function showSlide(newIndex) {
-       
-       const promoContainer = document.getElementById('promo-container');
-       const currentPromoContent = promoContainer.querySelector('.promo-content');
-       
-       // Hacer que el contenido actual se deslice hacia la izquierda y se desvanezca
-       if (currentPromoContent) {
-         currentPromoContent.classList.add('slide-out');
-       }
-      
-      // Después de 0.2 segundos, cambiar la imagen y el contenido
-      setTimeout(() => {
-        slides[index].classList.remove('active');
-        index = newIndex;
-        slides[index].classList.add('active');
         
-                                   // Cambiar contenido según la imagen
-          if (slides[index].style.backgroundImage.includes('appletv')) {
-            // Mostrar contenido promocional para Apple TV
-            promoContainer.innerHTML = `
-              <div class="promo-content slide-in">
-                <div class="promo-header">Apple TV</div>
-                <div class="promo-title">Leagues Cup</div>
-                <div class="promo-sub">En vivo ahora • Fútbol de élite</div>
-                <div class="promo-desc">
-                  La competencia más emocionante entre las mejores ligas del mundo con los clubes más prestigiosos
-                </div>
-                <button class="promo-btn">Ver en vivo ahora</button>
-              </div>
-            `;
-            
-            // Hacer que el nuevo contenido aparezca con fade
-            setTimeout(() => {
-              const newPromoContent = promoContainer.querySelector('.promo-content');
-              if (newPromoContent) {
-                newPromoContent.classList.add('active');
-              }
-              // Actualizar la lista de elementos interactivos después de crear el botón
-              allInteractiveElements = getAllInteractiveElements();
-            }, 50);
-            
-            // Después de 0.4 segundos, quitar las clases de animación
-            setTimeout(() => {
-              const newPromoContent = promoContainer.querySelector('.promo-content');
-              if (newPromoContent) {
-                newPromoContent.classList.remove('slide-in', 'active');
-              }
-            }, 400);
-                  } else {
-                      // Mostrar contenido promocional para Copa Centroamericana
-            promoContainer.innerHTML = `
-              <div class="promo-content slide-in">
-                <div class="promo-header">Concacaf</div>
-                <div class="promo-title">Copa Centroamericana</div>
-                <div class="promo-sub">En vivo ahora • Fútbol internacional</div>
-                <div class="promo-desc">
-                  La máxima competencia de fútbol centroamericano con los mejores equipos de la región en acción
-                </div>
-                <button class="promo-btn">Ver en vivo ahora</button>
-              </div>
-            `;
+        <div class="content-card">
+          <div class="card-bg" style="background-image: url('images/destacados/destacado2 baner/skysportslaliga.png'); background-size: cover; background-position: center;"></div>
+        </div>
+        
+        <div class="content-card">
+          <div class="card-bg" style="background-image: url('images/destacados/destacado3 baner/univision_00000.png'); background-size: cover; background-position: center;"></div>
+        </div>
+        
+        <div class="content-card">
+          <div class="card-bg" style="background-image: url('images/destacados/destacado4 baner/mls.png'); background-size: cover; background-position: center;"></div>
+        </div>
+        
+        <div class="content-card">
+          <div class="card-bg" style="background-image: url('images/destacados/destacado5 baner/disney.png'); background-size: cover; background-position: center;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fila Your Apps - GUARDADA PARA USO POSTERIOR
+    <div class="content-row your-apps-row">
+      <div class="row-title">Your apps</div>
+      <div class="apps-grid">
+        <div class="app-icon app-youtube">YouTube</div>
+        <div class="app-icon app-netflix">Netflix</div>
+        <div class="app-icon app-prime">Prime Video</div>
+        <div class="app-icon app-disney">Disney+</div>
+        <div class="app-icon app-youtube-tv">YouTube TV</div>
+        <div class="app-icon app-hbo">HBO Max</div>
+        <div class="app-icon app-spotify">Spotify</div>
+      </div>
+    </div>
+    -->
+
+    <!-- Título del Carrousel 1 -->
+    <div id="titulocarrosel1" style="font-family: Arial, sans-serif; color: white; width: 780px; position: absolute; top: 270px; left: 120px; opacity: 1; overflow: hidden; white-space: nowrap; transition: opacity 1.2s ease-in-out;">
+      <div class="text-carousel-track" style="display: inline-block; padding-left: 0%;">
+        <div style="font-size: 27px; opacity: 0.8; margin-bottom: 20px;">Concacaf</div>
+        <div style="font-size: 55px; font-weight: bold; margin-bottom: 20px;">Copa Centroamericana</div>
+        <div style="color: #aaa; font-size: 31px; font-weight: bold; margin-bottom: 20px;">En Vivo Ahora - Futbol Internacional</div>
+        <div style="font-size: 29px; color: #ccc; margin-bottom: 39px;">
+          La Competencia de Futbol Centroamericano con los<br>
+          mejores equipos de la región en acción
+        </div>
+        <a href="#" style="display: inline-block; background-color: white; color: black; font-weight: bold; font-size: 31px; padding: 20px 39px; border-radius: 39px; text-decoration: none;">
+          Ver en vivo ahora
+        </a>
+      </div>
+    </div>
+
+    <!-- Título del Carrousel 2 -->
+    <div id="titulocarrosel2" style="font-family: Arial, sans-serif; color: white; width: 780px; position: absolute; top: 270px; left: 120px; opacity: 0; overflow: hidden; white-space: nowrap; transition: opacity 1.2s ease-in-out;">
+      <div class="text-carousel-track" style="display: inline-block; padding-left: 0%;">
+        <div style="font-size: 27px; opacity: 0.8; margin-bottom: 20px;">Apple TV</div>
+        <div style="font-size: 55px; font-weight: bold; margin-bottom: 20px;">Leagues Cup</div>
+        <div style="color: #aaa; font-size: 31px; font-weight: bold; margin-bottom: 20px;">En Vivo Ahora - Futbol de elite</div>
+        <div style="font-size: 29px; color: #ccc; margin-bottom: 39px;">
+          La competencia más emocionante MLS y Liga MX<br>
+          Disfruta del fútbol de élite en vivo con la mejor calidad
+        </div>
+        <a href="#" style="display: inline-block; background-color: white; color: black; font-weight: bold; font-size: 31px; padding: 20px 39px; border-radius: 39px; text-decoration: none;">
+          Ver en vivo ahora
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Función para escalar el contenido al tamaño de la ventana
+    function scaleToFit() {
+      const wrapper = document.getElementById('static-wrapper');
+      const scaleX = window.innerWidth / 1920;
+      const scaleY = window.innerHeight / 1080;
+      const scale = Math.max(scaleX, scaleY);
+      
+      wrapper.style.transform = `translate(-50%, -50%) scale(${scale})`;
+    }
+
+    // Escalar al cargar y al cambiar el tamaño de la ventana
+    window.addEventListener('load', scaleToFit);
+    window.addEventListener('resize', scaleToFit);
+
+    // Efectos de hover para las tarjetas
+    document.querySelectorAll('.content-card').forEach(card => {
+      card.addEventListener('mouseenter', function() {
+        this.style.transform = 'scale(1.05)';
+      });
+      
+      card.addEventListener('mouseleave', function() {
+        this.style.transform = 'scale(1)';
+      });
+    });
+
+    // Efectos para los iconos de apps - DESHABILITADO (sección oculta)
+    /*
+    document.querySelectorAll('.app-icon').forEach(icon => {
+      icon.addEventListener('mouseenter', function() {
+        this.style.transform = 'scale(1.1)';
+      });
+      
+      icon.addEventListener('mouseleave', function() {
+        this.style.transform = 'scale(1)';
+      });
+    });
+    */
+
+    // Navegación por teclado estilo Android TV
+    let currentFocus = null;
+    let focusableElements = [];
+
+    function initializeNavigation() {
+      // Obtener todos los elementos navegables
+      focusableElements = [
+        ...document.querySelectorAll('.nav-item'),
+        ...document.querySelectorAll('.content-card')
+      ];
+
+      // Agregar solo los botones de títulos que estén visibles
+      const titulo1 = document.getElementById('titulocarrosel1');
+      const titulo2 = document.getElementById('titulocarrosel2');
+      
+      if (titulo1 && getComputedStyle(titulo1).opacity !== '0') {
+        const botones1 = titulo1.querySelectorAll('a');
+        focusableElements.push(...botones1);
+        console.log('Botón de título 1 agregado');
+      }
+      
+      if (titulo2 && getComputedStyle(titulo2).opacity !== '0') {
+        const botones2 = titulo2.querySelectorAll('a');
+        focusableElements.push(...botones2);
+        console.log('Botón de título 2 agregado');
+      }
+
+      console.log('Elementos navegables encontrados:', focusableElements.length);
+      console.log('Botones de títulos visibles:', document.querySelectorAll('#titulocarrosel1 a, #titulocarrosel2 a').length);
+
+      // Agregar atributos de navegación
+      focusableElements.forEach((element, index) => {
+        element.setAttribute('tabindex', '0');
+        element.setAttribute('data-index', index);
+        
+        // Efecto de foco
+        element.addEventListener('focus', function() {
+          currentFocus = this;
           
-                     // Hacer que el nuevo contenido aparezca con fade
-           setTimeout(() => {
-             const newPromoContent = promoContainer.querySelector('.promo-content');
-             if (newPromoContent) {
-               newPromoContent.classList.add('active');
-             }
-             // Actualizar la lista de elementos interactivos después de crear el botón
-             allInteractiveElements = getAllInteractiveElements();
-           }, 50);
-          
-                     // Después de 0.4 segundos, quitar las clases de animación
-           setTimeout(() => {
-             const newPromoContent = promoContainer.querySelector('.promo-content');
-             if (newPromoContent) {
-               newPromoContent.classList.remove('slide-in', 'active');
-             }
-           }, 400);
+          // Si es un botón de "Ver en vivo ahora", hacer scroll al inicio de la página
+          if (this.closest('#titulocarrosel1') || this.closest('#titulocarrosel2')) {
+            window.scrollTo({
+              top: 0,
+              left: 0,
+              behavior: 'smooth'
+            });
+          }
+        });
+        
+        element.addEventListener('blur', function() {
+          // El CSS se encarga del estilo
+        });
+      });
+    }
+
+    function navigate(direction) {
+      if (!currentFocus) {
+        currentFocus = focusableElements[0];
+        currentFocus.focus();
+        return;
+      }
+
+      const currentRect = currentFocus.getBoundingClientRect();
+      const currentCenterX = currentRect.left + currentRect.width / 2;
+      const currentCenterY = currentRect.top + currentRect.height / 2;
+      
+      let bestCandidate = null;
+      let bestDistance = Infinity;
+
+      focusableElements.forEach(element => {
+        if (element === currentFocus) return;
+        
+        const rect = element.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        
+        let isValidCandidate = false;
+        
+        switch(direction) {
+          case 'up':
+            // Buscar elementos arriba del elemento actual
+            isValidCandidate = centerY < currentCenterY;
+            break;
+          case 'down':
+            // Buscar elementos abajo del elemento actual
+            isValidCandidate = centerY > currentCenterY;
+            break;
+          case 'left':
+            // Buscar elementos a la izquierda del elemento actual (misma línea)
+            isValidCandidate = centerX < currentCenterX && Math.abs(centerY - currentCenterY) < 100;
+            break;
+          case 'right':
+            // Buscar elementos a la derecha del elemento actual (misma línea)
+            isValidCandidate = centerX > currentCenterX && Math.abs(centerY - currentCenterY) < 100;
+            break;
         }
         
-      }, 200);
+        if (isValidCandidate) {
+          const distanceX = Math.abs(centerX - currentCenterX);
+          const distanceY = Math.abs(centerY - currentCenterY);
+          const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+          
+          if (distance < bestDistance) {
+            bestDistance = distance;
+            bestCandidate = element;
+          }
+        }
+      });
+      
+      // Solo cambiar el foco si se encontró un candidato válido
+      if (bestCandidate) {
+        currentFocus.blur();
+        currentFocus = bestCandidate;
+        currentFocus.focus();
+      }
+      // Si no hay candidato válido, mantener el foco actual (no hacer nada)
+    }
+
+    function handleKeyPress(event) {
+      switch(event.key) {
+        case 'ArrowUp':
+          event.preventDefault();
+          navigate('up');
+          break;
+        case 'ArrowDown':
+          event.preventDefault();
+          navigate('down');
+          break;
+        case 'ArrowLeft':
+          event.preventDefault();
+          navigate('left');
+          break;
+        case 'ArrowRight':
+          event.preventDefault();
+          navigate('right');
+          break;
+        case 'Enter':
+          event.preventDefault();
+          if (currentFocus) {
+            console.log('Elemento seleccionado:', currentFocus.textContent);
+            // Aquí puedes agregar la acción específica para cada elemento
+          }
+          break;
+        case 'Escape':
+          event.preventDefault();
+          if (currentFocus) {
+            currentFocus.blur();
+            currentFocus = null;
+          }
+          break;
+      }
+    }
+
+    // Carrusel de fondo
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const indicators = document.querySelectorAll('.carousel-indicator');
+    const totalSlides = slides.length;
+
+    function showSlide(index) {
+      // Si es la misma slide, no hacer nada
+      if (currentSlide === index) return;
+      
+      // Remover clases activas
+      slides.forEach(slide => slide.classList.remove('active', 'prev'));
+      indicators.forEach(indicator => indicator.classList.remove('active'));
+      
+      // Marcar la slide actual como activa
+      slides[index].classList.add('active');
+      indicators[index].classList.add('active');
+      
+      // Marcar la slide anterior como prev (permanece visible durante la transición)
+      if (currentSlide >= 0) {
+        slides[currentSlide].classList.add('prev');
+      }
+      
+      // Fade y animación de entrada para los títulos
+      const tituloCarrosel1 = document.getElementById('titulocarrosel1');
+      const tituloCarrosel2 = document.getElementById('titulocarrosel2');
+      
+      if (index === 0) {
+        // Ocultar título 2 primero
+        tituloCarrosel2.style.opacity = '0';
+        
+        // Después de un delay, mostrar título 1 con animación
+        setTimeout(() => {
+          tituloCarrosel1.style.opacity = '1';
+          // Reiniciar animación del título 1
+          const track1 = tituloCarrosel1.querySelector('.text-carousel-track');
+          track1.style.animation = 'none';
+          track1.offsetHeight; // Forzar reflow
+          track1.style.animation = 'slideText1 1s ease-out';
+          
+          // Reinicializar navegación después de que aparezca el título
+          setTimeout(() => {
+            initializeNavigation();
+          }, 100);
+        }, 1200);
+      } else if (index === 1) {
+        // Ocultar título 1 primero
+        tituloCarrosel1.style.opacity = '0';
+        
+        // Después de un delay, mostrar título 2 con animación
+        setTimeout(() => {
+          tituloCarrosel2.style.opacity = '1';
+          // Reiniciar animación del título 2
+          const track2 = tituloCarrosel2.querySelector('.text-carousel-track');
+          track2.style.animation = 'none';
+          track2.offsetHeight; // Forzar reflow
+          track2.style.animation = 'slideText2 1s ease-out';
+          
+          // Reinicializar navegación después de que aparezca el título
+          setTimeout(() => {
+            initializeNavigation();
+          }, 100);
+        }, 1200);
+      }
+      
+      currentSlide = index;
     }
 
     function nextSlide() {
-      const newIndex = (index + 1) % slides.length;
-      showSlide(newIndex);
+      const next = (currentSlide + 1) % totalSlides;
+      showSlide(next);
     }
 
-    function previousSlide() {
-      const newIndex = (index - 1 + slides.length) % slides.length;
-      showSlide(newIndex);
-    }
+    // Cambiar slide automáticamente cada 8 segundos
+    setInterval(nextSlide, 8000);
 
-    // Auto-advance cada 11 segundos
-    setInterval(nextSlide, 11000);
-
-    // Navegación con teclado entre botones de navegación y elementos interactivos
-    let currentNavIndex = 0;
-    let currentElementIndex = 0;
-    const navButtons = document.querySelectorAll('nav a');
-    let allInteractiveElements = [];
-
-    // Función para obtener todos los elementos interactivos organizados en filas
-    function getElementsInRows() {
-      const navElements = Array.from(navButtons);
-      const promoButton = document.querySelector('.promo-btn');
-      
-      // Solo contar elementos que NO estén dentro del overlay
-      const cards = document.querySelectorAll('.card:not(.overlay .card):not(.overlay-background .card)');
-      
-      // Fila 1: Botones de navegación
-      const row1 = [...navElements];
-      
-      // Fila 2: Botón promocional (si existe)
-      const row2 = promoButton ? [promoButton] : [];
-      
-      // Fila 3: Tarjetas de destacados (solo las visibles)
-      const row3 = Array.from(cards);
-      
-      return [row1, row2, row3];
-    }
-    
-    // Función para obtener todos los elementos interactivos (planos)
-    function getAllInteractiveElements() {
-      const rows = getElementsInRows();
-      return rows.flat();
-    }
-
-                           // Función para actualizar el foco en los elementos interactivos
-          function updateElementFocus() {
-            // Remover foco de todos los elementos
-            allInteractiveElements.forEach(element => {
-              element.classList.remove('nav-focused');
-            });
-            
-            // Agregar foco al elemento actual
-            if (allInteractiveElements[currentElementIndex]) {
-              const currentElement = allInteractiveElements[currentElementIndex];
-              currentElement.classList.add('nav-focused');
-              currentElement.focus();
-              
-              // Scroll especial para el botón promocional - hacer scroll hacia arriba
-              if (currentElement.classList.contains('promo-btn')) {
-                console.log('BOTÓN PROMOCIONAL ENFOCADO - HACIENDO SCROLL HACIA ARRIBA');
-                window.scrollTo({
-                  top: 0,
-                  behavior: 'smooth'
-                });
-              }
-            }
-          }
-
-    // Función para actualizar el foco en los botones de navegación
-    function updateNavFocus() {
-      // Remover foco de todos los botones
-      navButtons.forEach(btn => {
-        btn.classList.remove('nav-focused');
+    // Eventos para los indicadores
+    indicators.forEach((indicator, index) => {
+      indicator.addEventListener('click', () => {
+        showSlide(index);
       });
+    });
+
+
+
+    // Inicializar carrusel
+    function initializeCarousel() {
+      // Asegurar que la primera slide esté visible
+      slides[0].classList.add('active');
+      indicators[0].classList.add('active');
+      currentSlide = 0;
       
-      // Agregar foco al botón actual
-      if (navButtons[currentNavIndex]) {
-        navButtons[currentNavIndex].classList.add('nav-focused');
-        navButtons[currentNavIndex].focus();
-      }
+      // Mostrar el título para la primera slide (carrosel1)
+      const tituloCarrosel1 = document.getElementById('titulocarrosel1');
+      const tituloCarrosel2 = document.getElementById('titulocarrosel2');
+      tituloCarrosel1.style.opacity = '1';
+      tituloCarrosel2.style.opacity = '0';
     }
 
-    // Control unificado con teclado para carrusel y navegación
-    document.addEventListener('keydown', function(event) {
-      switch(event.key) {
-        case 'ArrowRight':
-          // Navegar horizontalmente hacia la derecha
-          event.preventDefault();
-          navigateHorizontal(1);
-          break;
-        case 'ArrowLeft':
-          // Navegar horizontalmente hacia la izquierda
-          event.preventDefault();
-          navigateHorizontal(-1);
-          break;
-        case 'ArrowUp':
-          // Navegar verticalmente hacia arriba
-          event.preventDefault();
-          navigateVertical(-1);
-          break;
-        case 'ArrowDown':
-          // Navegar verticalmente hacia abajo
-          event.preventDefault();
-          navigateVertical(1);
-          break;
-        case 'Enter':
-          // Verificar si el overlay del reproductor está activo
-          const playerOverlay = document.getElementById('player-overlay');
-          if (playerOverlay && playerOverlay.classList.contains('active')) {
-            // Si el overlay está activo, no hacer nada aquí (lo maneja el otro event listener)
-            break;
-          }
-          
-          // Activar el elemento seleccionado
-          event.preventDefault();
-          if (allInteractiveElements[currentElementIndex]) {
-            const element = allInteractiveElements[currentElementIndex];
-            
-            // Verificar si es la tarjeta de Movistar La Liga
-            if (element.classList.contains('card') && element.getAttribute('data-title') === 'Movistar La Liga') {
-              // Abrir el reproductor overlay
-              openPlayerOverlay();
-            } else {
-              // Comportamiento normal para otros elementos
-              element.click();
-            }
-          }
-          break;
-        case 'PageUp':
-          // Control del carrusel - imagen anterior
-          event.preventDefault();
-          previousSlide();
-          break;
-        case 'PageDown':
-          // Control del carrusel - imagen siguiente
-          event.preventDefault();
-          nextSlide();
-          break;
-      }
+    // Inicializar carrusel y navegación cuando se carga la página
+    window.addEventListener('load', () => {
+      initializeCarousel();
+      initializeNavigation();
+      
+      // Reinicializar navegación después de un delay para asegurar que los títulos estén listos
+      setTimeout(() => {
+        initializeNavigation();
+      }, 1000);
     });
     
-    // Función para navegar horizontalmente
-    function navigateHorizontal(direction) {
-      const rows = getElementsInRows();
-      allInteractiveElements = getAllInteractiveElements();
-      
-      // Encontrar la fila actual y posición en esa fila
-      let currentRow = 0;
-      let currentPosInRow = 0;
-      let elementCount = 0;
-      
-      for (let i = 0; i < rows.length; i++) {
-        if (elementCount + rows[i].length > currentElementIndex) {
-          currentRow = i;
-          currentPosInRow = currentElementIndex - elementCount;
-          break;
-        }
-        elementCount += rows[i].length;
-      }
-      
-      // Calcular nueva posición en la misma fila (sin navegación circular)
-      const newPosInRow = currentPosInRow + direction;
-      
-      // Verificar límites
-      if (newPosInRow >= 0 && newPosInRow < rows[currentRow].length) {
-        currentElementIndex = elementCount + newPosInRow;
-        updateElementFocus();
-      }
-    }
-    
-    // Función para navegar verticalmente
-    function navigateVertical(direction) {
-      const rows = getElementsInRows();
-      allInteractiveElements = getAllInteractiveElements();
-      
-      // Encontrar la fila actual y posición en esa fila
-      let currentRow = 0;
-      let currentPosInRow = 0;
-      let elementCount = 0;
-      
-      for (let i = 0; i < rows.length; i++) {
-        if (elementCount + rows[i].length > currentElementIndex) {
-          currentRow = i;
-          currentPosInRow = currentElementIndex - elementCount;
-          break;
-        }
-        elementCount += rows[i].length;
-      }
-      
-      // Calcular la fila objetivo (sin navegación circular)
-      const targetRow = currentRow + direction;
-      
-      // Verificar límites
-      if (targetRow >= 0 && targetRow < rows.length && rows[targetRow].length > 0) {
-        const targetPosInRow = Math.min(currentPosInRow, rows[targetRow].length - 1);
-        let targetElementCount = 0;
-        
-        for (let i = 0; i < targetRow; i++) {
-          targetElementCount += rows[i].length;
-        }
-        
-        currentElementIndex = targetElementCount + targetPosInRow;
-        updateElementFocus();
-      }
-    }
-
-    // Inicializar foco en el primer elemento interactivo
-    allInteractiveElements = getAllInteractiveElements();
-    updateElementFocus();
-
-         // Inicializar contenido promocional al cargar la página
-     const promoContainer = document.getElementById('promo-container');
-     promoContainer.innerHTML = `
-       <div class="promo-content slide-in active">
-         <div class="promo-header">Apple TV</div>
-         <div class="promo-title">Leagues Cup</div>
-         <div class="promo-sub">En vivo ahora • Fútbol de élite</div>
-         <div class="promo-desc">
-           La competencia más emocionante entre las mejores ligas del mundo con los clubes más prestigiosos
-         </div>
-         <button class="promo-btn">Ver en vivo ahora</button>
-       </div>
-     `;
-    
-    // Actualizar la lista de elementos interactivos después de crear el botón inicial
-    allInteractiveElements = getAllInteractiveElements();
-    
-    // Después de 0.4 segundos, quitar las clases de animación inicial
-    setTimeout(() => {
-      const initialPromoContent = promoContainer.querySelector('.promo-content');
-      if (initialPromoContent) {
-        initialPromoContent.classList.remove('slide-in', 'active');
-      }
-    }, 400);
-    
-                   function openOverlay() {
-        console.log('Abriendo overlay...');
-        const overlay = document.getElementById("overlay");
-        const overlayContent = overlay.querySelector('.overlay-content');
-        
-        if (overlay && overlayContent) {
-          overlay.style.display = "block";
-          
-          // Activar el overlay con fade
-          setTimeout(() => {
-            overlay.classList.add('active');
-          }, 10);
-          
-          // Activar la animación del contenido
-          setTimeout(() => {
-            overlayContent.classList.add('active');
-          }, 100);
-        } else {
-          console.error('No se encontró el overlay o su contenido');
-        }
-      }
-
-      function closeOverlay() {
-        console.log('Cerrando overlay...');
-        const overlay = document.getElementById("overlay");
-        const overlayContent = overlay.querySelector('.overlay-content');
-        
-        if (overlay && overlayContent) {
-          // Desactivar la animación del contenido
-          overlayContent.classList.remove('active');
-          
-          // Desactivar el overlay con fade
-          overlay.classList.remove('active');
-          
-          // Ocultar el overlay después de la animación
-          setTimeout(() => {
-            overlay.style.display = "none";
-          }, 500);
-                 }
-       }
-       
-       // Funciones para el overlay de detalles
-       function showDetails(title, genre, description, rating, badge, year) {
-         console.log('showDetails llamado para:', title); // Debug
-         const overlay = document.getElementById('detail-overlay');
-         const headerTitle = document.querySelector('.header-title');
-         
-         // Limpiar cualquier timeout pendiente
-         if (window.hideTimeout) {
-           clearTimeout(window.hideTimeout);
-           window.hideTimeout = null;
-         }
-         
-         overlay.style.display = 'flex';
-         
-         // Activar el overlay con fade y mostrar Above Majestic solo para Movistar La Liga
-         setTimeout(() => {
-           overlay.classList.add('active');
-           if (title === 'Movistar La Liga') {
-             headerTitle.classList.add('show');
-           }
-         }, 10);
-         
-         // No cambiar el contenido del overlay - mantener el contenido genérico
-       }
-       
-       function showSpecificOverlay(title, genre, description, rating, badge, year) {
-         console.log('showSpecificOverlay llamado para:', title); // Debug
-         
-         // Ocultar Google TV y botones de navegación con fade
-         const header = document.querySelector('header');
-         const nav = document.querySelector('nav');
-         const promoContainer = document.getElementById('promo-container');
-         
-         if (header) {
-           header.style.transition = 'opacity 0.3s ease';
-           header.style.opacity = '0';
-         }
-         if (nav) {
-           nav.style.transition = 'opacity 0.3s ease';
-           nav.style.opacity = '0';
-         }
-         if (promoContainer) {
-           promoContainer.style.transition = 'opacity 0.3s ease';
-           promoContainer.style.opacity = '0';
-         }
-         
-         // Ocultar todos los overlays primero
-         const overlays = [
-           'detail-overlay',
-           'overlay-movistar',
-           'overlay-skysports',
-           'overlay-tudn',
-           'overlay-mls',
-           'overlay-disney',
-           'overlay-power',
-           'overlay-mandalorian-first',
-           'overlay-motherland',
-           'overlay-mandalorian',
-           'overlay-breaking'
-         ];
-         
-         overlays.forEach(overlayId => {
-           const overlay = document.getElementById(overlayId);
-           if (overlay) {
-             overlay.classList.remove('active');
-             // Ocultar inmediatamente sin delay
-             overlay.style.display = 'none';
-           }
-         });
-         
-         // Ocultar el título destacado
-         const headerTitle = document.querySelector('.header-title');
-         headerTitle.classList.remove('show');
-         
-         // Mostrar overlay específico según el título
-         let targetOverlay = null;
-         
-         if (title === 'Movistar La Liga') {
-           targetOverlay = document.getElementById('overlay-movistar');
-         } else if (title === 'Sky Sports La Liga') {
-           targetOverlay = document.getElementById('overlay-skysports');
-         } else if (title === 'TUDN Univision') {
-           targetOverlay = document.getElementById('overlay-tudn');
-         } else if (title === 'MLS Pass') {
-           targetOverlay = document.getElementById('overlay-mls');
-         } else if (title === 'Disney+ y ESPN') {
-           targetOverlay = document.getElementById('overlay-disney');
-         } else if (title === 'Power Book II: Ghost') {
-           targetOverlay = document.getElementById('overlay-power');
-         } else if (title === 'Motherland: Fort Salem') {
-           targetOverlay = document.getElementById('overlay-motherland');
-         } else if (title === 'The Mandalorian') {
-           targetOverlay = document.getElementById('overlay-mandalorian');
-         } else if (title === 'Breaking Bad') {
-           targetOverlay = document.getElementById('overlay-breaking');
-         }
-         
-         if (targetOverlay) {
-           // Mostrar el overlay inmediatamente para que se vea el fondo
-           targetOverlay.style.display = 'flex';
-           targetOverlay.classList.add('active');
-         }
-       }
-       
-       function hideAllOverlays() {
-         const overlays = [
-           'detail-overlay',
-           'overlay-movistar',
-           'overlay-skysports',
-           'overlay-tudn',
-           'overlay-mls',
-           'overlay-disney',
-           'overlay-power',
-           'overlay-mandalorian-first',
-           'overlay-motherland',
-           'overlay-mandalorian',
-           'overlay-breaking'
-         ];
-         
-         overlays.forEach(overlayId => {
-           const overlay = document.getElementById(overlayId);
-           if (overlay) {
-             overlay.classList.remove('active');
-           }
-         });
-         
-         // Ocultar también el título destacado
-         const headerTitle = document.querySelector('.header-title');
-         headerTitle.classList.remove('show');
-         
-         // Mostrar Google TV y botones de navegación con fade más lento
-         const header = document.querySelector('header');
-         const nav = document.querySelector('nav');
-         const promoContainer = document.getElementById('promo-container');
-         
-         if (header) {
-           header.style.transition = 'opacity 0.8s ease';
-           header.style.opacity = '1';
-         }
-         if (nav) {
-           nav.style.transition = 'opacity 0.8s ease';
-           nav.style.opacity = '1';
-         }
-         if (promoContainer) {
-           promoContainer.style.transition = 'opacity 0.8s ease';
-           promoContainer.style.opacity = '1';
-         }
-       }
-       
-       function hideDetails() {
-         hideAllOverlays();
-       }
-       
-       // Cerrar con ESC
-       document.addEventListener('keydown', function(e) {
-         if (e.key === 'Escape') {
-           hideDetails();
-         }
-       });
-       
-       // Manejar eventos de foco para las tarjetas
-       document.addEventListener('focusin', function(e) {
-         console.log('Focusin event triggered on:', e.target.tagName, e.target.className); // Debug general
-         
-         if (e.target.classList.contains('card')) {
-           console.log('Foco en tarjeta:', e.target.getAttribute('data-title')); // Debug
-           const card = e.target;
-           const title = card.getAttribute('data-title');
-           const genre = card.getAttribute('data-genre');
-           const description = card.getAttribute('data-description');
-           const rating = card.getAttribute('data-rating');
-           const badge = card.getAttribute('data-badge');
-           const year = card.getAttribute('data-year');
-           
-           console.log('Datos de la tarjeta:', { title, genre, description, rating, badge, year }); // Debug
-           
-           if (title && genre && description && rating && badge && year) {
-             // Mostrar overlay específico según la tarjeta
-             console.log('Llamando a showSpecificOverlay para:', title); // Debug
-             showSpecificOverlay(title, genre, description, rating, badge, year);
-           } else {
-             console.log('Faltan datos en la tarjeta:', e.target.getAttribute('data-title')); // Debug
-           }
-         }
-       });
-       
-       // Evento adicional para asegurar que funcione con las tarjetas
-         document.addEventListener('click', function(e) {
-           if (e.target.closest('.card')) {
-             const card = e.target.closest('.card');
-             console.log('Click en tarjeta:', card.getAttribute('data-title')); // Debug
-             
-             // Simular el foco si no está enfocada
-             if (!card.classList.contains('nav-focused')) {
-               card.focus();
-             }
-           }
-         });
-         
-         // Evento para ocultar el overlay cuando se pierde el foco
-         document.addEventListener('focusout', function(e) {
-           if (e.target.classList.contains('card')) {
-             // Solo ocultar si el nuevo foco no es otra tarjeta
-             setTimeout(() => {
-               const activeElement = document.activeElement;
-               if (!activeElement || !activeElement.classList.contains('card')) {
-                 hideDetails();
-               }
-             }, 100);
-           }
-         });
-
-         // Overlay del reproductor
-         const playerOverlay = document.createElement('div');
-         playerOverlay.id = 'player-overlay';
-         playerOverlay.innerHTML = `
-           <div class="player-overlay-content">
-             <div class="gradient-overlay"></div>
-             <div class="movie-banner">
-               <div class="movie-date">24/7 Deportes España</div>
-               <h1 class="movie-title">EN VIVO <span class="live-dot"></span></h1>
-               <div class="movie-subtitle">La Liga española está aquí</div>
-               <div class="buttons">
-                 <button class="btn btn-primary" onclick="activateSound(); return false;" tabindex="0">▶ Ver ahora</button>
-                 <button class="btn btn-secondary" onclick="closePlayerOverlay(); return false;" tabindex="0">Volver</button>
-               </div>
-             </div>
-             <div class="player-container">
-               <video id="stream-video" autoplay muted></video>
-             </div>
-           </div>
-         `;
-         document.body.appendChild(playerOverlay);
-
-         // Función para abrir el reproductor overlay
-         function openPlayerOverlay() {
-           const overlay = document.getElementById('player-overlay');
-           overlay.style.display = 'flex';
-           setTimeout(() => {
-             overlay.classList.add('active');
-             loadStreamInOverlay();
-             
-             // Restaurar banner y gradiente
-             const banner = document.querySelector('.movie-banner');
-             const gradient = document.querySelector('.gradient-overlay');
-             
-             if (banner) {
-               banner.style.display = 'block';
-               banner.style.opacity = '1';
-             }
-             
-             if (gradient) {
-               gradient.style.display = 'block';
-               gradient.style.opacity = '1';
-             }
-             
-             // Foco automático en "Ver ahora"
-             setTimeout(() => {
-               const verAhoraBtn = document.querySelector('.btn-primary');
-               if (verAhoraBtn) {
-                 verAhoraBtn.focus();
-               }
-             }, 100);
-           }, 10);
-         }
-
-         // Función para cerrar el reproductor overlay
-         function closePlayerOverlay() {
-           const overlay = document.getElementById('player-overlay');
-           overlay.classList.remove('active');
-           setTimeout(() => {
-             overlay.style.display = 'none';
-             stopStream();
-             
-             // Restaurar banner y gradiente para la próxima apertura
-             const banner = document.querySelector('.movie-banner');
-             const gradient = document.querySelector('.gradient-overlay');
-             
-             if (banner) {
-               banner.style.display = 'block';
-               banner.style.opacity = '1';
-               banner.style.transition = 'none';
-             }
-             
-             if (gradient) {
-               gradient.style.display = 'block';
-               gradient.style.opacity = '1';
-               gradient.style.transition = 'none';
-             }
-           }, 300);
-         }
-
-
-         
-         // Función para cargar el stream en el overlay
-         async function loadStreamInOverlay() {
-           const video = document.getElementById('stream-video');
-           let url = 'https://deportes2.ksdjugfsddeports.fun:9091/51_/index.m3u8?token=407b55277048507a49edd74874a246bd329c7aa3-5aaad2f4f3256c8e965bfbf43ff7f4c9-1754140344-1754118744&remote=172.96.121.86';
-
-           // Cargar URL desde archivo
-           try {
-             const response = await fetch('stream_url.txt');
-             if (response.ok) {
-               const urlFromFile = await response.text();
-               url = urlFromFile.trim();
-               console.log('URL cargada en overlay:', url);
-             }
-           } catch (error) {
-             console.log('Usando URL por defecto en overlay');
-           }
-
-           // Ocultar controles nativos
-           video.controls = false;
-           video.muted = true; // Empezar muted para autoplay
-           video.autoplay = true;
-
-           // Función para manejar errores
-           function handleError(error) {
-             console.error('Error en stream:', error);
-             // Intentar recargar después de 3 segundos
-             setTimeout(() => {
-               console.log('Reintentando cargar stream...');
-               loadStreamInOverlay();
-             }, 3000);
-           }
-
-           // Cargar stream con mejor manejo de errores
-           if (video.canPlayType('application/vnd.apple.mpegurl')) {
-             // Safari soporta HLS nativamente
-             console.log('Usando HLS nativo');
-             video.src = url;
-             
-             video.addEventListener('error', handleError);
-             video.addEventListener('loadedmetadata', () => {
-               console.log('Stream cargado exitosamente (HLS nativo)');
-             });
-           } else if (window.Hls && Hls.isSupported()) {
-             // Usar HLS.js para otros navegadores
-             console.log('Usando HLS.js');
-             const hls = new Hls({
-               enableWorker: false,
-               lowLatencyMode: false,
-               maxBufferLength: 30,
-               maxMaxBufferLength: 60,
-               maxBufferSize: 60 * 1000 * 1000,
-               maxBufferHole: 0.5,
-               liveSyncDurationCount: 3,
-               liveMaxLatencyDurationCount: 10
-             });
-             
-             hls.loadSource(url);
-             hls.attachMedia(video);
-             
-             hls.on(Hls.Events.MANIFEST_PARSED, () => {
-               console.log('Stream cargado exitosamente (HLS.js)');
-               video.play().catch(e => console.log('Error en autoplay:', e));
-             });
-             
-             hls.on(Hls.Events.ERROR, (event, data) => {
-               console.error('HLS Error:', data);
-               if (data.fatal) {
-                 handleError(data);
-               }
-             });
-           } else {
-             console.error('HLS no soportado en este navegador');
-           }
-
-           // Activar sonido con clic izquierdo, cerrar con clic derecho
-           video.addEventListener('click', (e) => {
-             if (e.button === 0) { // Clic izquierdo
-               video.muted = false;
-             }
-           });
-           
-           // Cerrar con clic derecho
-           video.addEventListener('contextmenu', (e) => {
-             e.preventDefault();
-             closePlayerOverlay();
-           });
-           
-           // Cerrar con doble clic
-           video.addEventListener('dblclick', () => {
-             closePlayerOverlay();
-           });
-           
-
-         }
-
-         // Función para detener el stream
-         function stopStream() {
-           const video = document.getElementById('stream-video');
-           if (video) {
-             video.pause();
-             video.src = '';
-           }
-         }
-         
-         // Función para activar sonido y ocultar elementos
-         function activateSound() {
-           console.log('activateSound ejecutada');
-           
-           const video = document.getElementById('stream-video');
-           const banner = document.querySelector('.movie-banner');
-           const gradient = document.querySelector('.gradient-overlay');
-           
-           console.log('Elementos encontrados:', { video: !!video, banner: !!banner, gradient: !!gradient });
-           
-           if (video) {
-             // Activar sonido
-             video.muted = false;
-             console.log('Sonido activado');
-           }
-           
-           if (banner && gradient) {
-             // Fade out del banner y gradiente
-             banner.style.transition = 'opacity 0.5s ease';
-             gradient.style.transition = 'opacity 0.5s ease';
-             
-             banner.style.opacity = '0';
-             gradient.style.opacity = '0';
-             
-             console.log('Fade iniciado');
-             
-             // Ocultar completamente después del fade
-             setTimeout(() => {
-               banner.style.display = 'none';
-               gradient.style.display = 'none';
-               console.log('Elementos ocultados');
-             }, 500);
-           } else {
-             console.log('Error: No se encontraron banner o gradient');
-           }
-         }
-         
-
-
-         // Cerrar overlay con ESC
-         document.addEventListener('keydown', function(e) {
-           if (e.key === 'Escape') {
-             const overlay = document.getElementById('player-overlay');
-             if (overlay && overlay.classList.contains('active')) {
-               closePlayerOverlay();
-             } else {
-               hideDetails();
-             }
-           }
-           
-           // Navegación con flechas en el overlay del reproductor
-           if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-             const overlay = document.getElementById('player-overlay');
-             if (overlay && overlay.classList.contains('active')) {
-               e.preventDefault();
-               const buttons = document.querySelectorAll('.btn');
-               const currentFocus = document.activeElement;
-               let currentIndex = Array.from(buttons).indexOf(currentFocus);
-               
-               if (currentIndex === -1) currentIndex = 0;
-               
-               if (e.key === 'ArrowLeft') {
-                 currentIndex = (currentIndex - 1 + buttons.length) % buttons.length;
-               } else {
-                 currentIndex = (currentIndex + 1) % buttons.length;
-               }
-               
-               buttons[currentIndex].focus();
-             }
-           }
-           
-           // Activar botón con Enter (solo para botones específicos)
-           if (e.key === 'Enter') {
-             const overlay = document.getElementById('player-overlay');
-             if (overlay && overlay.classList.contains('active')) {
-               const activeElement = document.activeElement;
-               
-               // Solo permitir Enter en los botones específicos
-               if (activeElement.classList.contains('btn-primary') || activeElement.classList.contains('btn-secondary')) {
-                 e.preventDefault();
-                 e.stopPropagation();
-                 
-                 if (activeElement.classList.contains('btn-primary')) {
-                   activateSound();
-                 } else if (activeElement.classList.contains('btn-secondary')) {
-                   closePlayerOverlay();
-                 }
-               } else {
-                 // Bloquear Enter para cualquier otro elemento
-                 e.preventDefault();
-                 e.stopPropagation();
-               }
-             }
-           }
-         });
-
-   </script>
- </body>
- </html>
+    // Escuchar eventos de teclado
+    document.addEventListener('keydown', handleKeyPress);
+  </script>
+</body>
+</html>

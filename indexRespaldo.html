@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Load+ TV</title>
+  <style>
+    * {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Roboto', sans-serif;
+      color: white;
+    }
+
+    /* Carrusel de fondo */
+    .background-carousel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background-color: #000000;
+    }
+
+    .carousel-slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0;
+      transition: opacity 2.5s ease-in-out;
+    }
+
+    .carousel-slide.active {
+      opacity: 1;
+    }
+
+    .carousel-slide.prev {
+      opacity: 0;
+      transition-delay: 0.5s;
+    }
+
+    /* Indicadores del carrusel */
+    .carousel-indicators {
+      position: fixed;
+      top: 656px;
+      left: calc(50% + 865px);
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 1000;
+    }
+
+    .carousel-indicator {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: #e0e0e0;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .carousel-indicator.active {
+      background-color: #e0e0e0;
+    }
+
+    #static-wrapper {
+      width: 1920px;
+      height: 1080px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: transparent;
+    }
+
+    /* Barra de navegación superior */
+    .navbar {
+      position: absolute;
+      top: 90px;
+      left: 0;
+      width: 100%;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 60px;
+      background: transparent;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 37px;
+      font-weight: bold;
+      color: white;
+      margin-top: 0;
+      margin-left: 25px;
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 25px;
+      align-items: center;
+      justify-content: center;
+      width: 500px;
+      margin-top: 0;
+      margin-left: 25px;
+    }
+
+    .nav-item {
+      font-size: 29px;
+      cursor: pointer;
+      padding: 12px 26px;
+      border-radius: 26px;
+      transition: all 0.3s ease;
+      text-align: center;
+      white-space: nowrap;
+      background-color: rgba(255,255,255,0.1);
+      color: white;
+      text-decoration: none;
+      display: inline-block;
+      line-height: 1.2;
+      vertical-align: middle;
+      box-sizing: border-box;
+    }
+
+    .nav-item:hover {
+      background-color: rgba(255,255,255,0.2);
+    }
+
+    .nav-item:focus,
+    .nav-focused {
+      background-color: white;
+      color: black;
+      outline: none;
+      transform: scale(1.05);
+    }
+
+    /* Estilos para los botones de los títulos del carrusel */
+    #titulocarrosel1 a,
+    #titulocarrosel2 a {
+      transition: all 0.3s ease;
+      padding: 25px 50px !important;
+      margin: 15px !important;
+      display: inline-block !important;
+    }
+
+    #titulocarrosel1 a:focus,
+    #titulocarrosel2 a:focus {
+      background-color: white !important;
+      color: black !important;
+      outline: none;
+      transform: scale(1.05);
+    }
+
+    #titulocarrosel1 a:hover,
+    #titulocarrosel2 a:hover {
+      background-color: rgba(255,255,255,0.2);
+      color: white;
+      transform: scale(1.05);
+    }
+
+    .profile-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #4285f4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    /* Sección principal (Hero) */
+    .hero-section {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      z-index: 1;
+    }
+
+    .hero-bg {
+      width: 100%;
+      height: 100%;
+      background: transparent;
+    }
+
+    .hero-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 10;
+    }
+
+    .hero-title {
+      font-size: 48px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .hero-description {
+      font-size: 24px;
+      margin-bottom: 30px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    }
+
+    .carousel-dots {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .dot.active {
+      background-color: white;
+    }
+
+    /* Fila de contenido */
+    .content-row {
+      position: absolute;
+      left: 60px;
+      width: calc(100% - 120px);
+      top: 700px;
+    }
+
+    .row-title {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      margin-top: 50px;
+      color: white;
+    }
+
+    .content-cards {
+      display: flex;
+      gap: 40px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+      padding-left: 20px;
+      padding-right: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .content-card {
+      min-width: 280px;
+      height: 140px;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background-color: rgba(255,255,255,0.1);
+      flex-shrink: 0;
+      margin: 10px;
+    }
+
+    .content-card:hover {
+      transform: scale(1.05);
+      background-color: rgba(255,255,255,0.2);
+    }
+
+    .content-card:focus {
+      transform: scale(1.05);
+      background-color: white;
+      outline: none;
+    }
+
+    .card-bg {
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .card-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 25px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    }
+
+    .card-logo {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .card-subtitle {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .live-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background-color: #ff0000;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    /* Aplicaciones */
+    .apps-section {
+      position: absolute;
+      bottom: 80px;
+      left: 60px;
+      width: calc(100% - 120px);
+    }
+
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .app-icon {
+      width: 120px;
+      height: 120px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    .app-icon:hover {
+      transform: scale(1.1);
+    }
+
+    .app-icon:focus {
+      transform: scale(1.1);
+      outline: none;
+    }
+
+    /* Colores de las apps */
+    .app-youtube {
+      background-color: #ff0000;
+      color: white;
+    }
+
+    .app-netflix {
+      background-color: #e50914;
+      color: white;
+    }
+
+    .app-prime {
+      background-color: #00a8e1;
+      color: white;
+    }
+
+    .app-disney {
+      background-color: #113ccf;
+      color: white;
+    }
+
+    .app-youtube-tv {
+      background-color: #ff0000;
+      color: white;
+    }
+
+    .app-hbo {
+      background-color: #00d4aa;
+      color: white;
+    }
+
+    .app-spotify {
+      background-color: #1db954;
+      color: white;
+    }
+
+    /* Your apps row */
+    .your-apps-row {
+      top: 1100px;
+    }
+
+    /* Karate Kid Promo Container */
+    .promo-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #000000;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 500px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      z-index: 1000;
+    }
+
+    .promo-content {
+      text-align: center;
+    }
+
+    .promo-title {
+      font-size: 32px;
+      font-weight: bold;
+      color: white;
+      margin-bottom: 15px;
+    }
+
+    .promo-sub {
+      font-size: 16px;
+      color: #cccccc;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+
+    .promo-desc {
+      font-size: 14px;
+      color: #e0e0e0;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    .promo-btn {
+      background: #d3d3d3;
+      color: black;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+    }
+
+    .promo-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 20px rgba(211,211,211,0.3);
+    }
+
+    .slide-in {
+      animation: slideIn 0.5s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    @keyframes slideText1 {
+      0% {
+        transform: translateX(50%);
+      }
+      100% {
+        transform: translateX(0%);
+      }
+    }
+
+    @keyframes slideText2 {
+      0% {
+        transform: translateX(50%);
+      }
+      100% {
+        transform: translateX(0%);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Carrusel de fondo -->
+  <div class="background-carousel">
+    <div class="carousel-slide active" style="background-image: url('images/carrosel/carrosel1.png');"></div>
+    <div class="carousel-slide" style="background-image: url('images/carrosel/carrosel2.jpg');"></div>
+  </div>
+
+  <!-- Indicadores del carrusel -->
+  <div class="carousel-indicators">
+    <div class="carousel-indicator active" data-slide="0"></div>
+    <div class="carousel-indicator" data-slide="1"></div>
+    <div class="carousel-indicator" data-slide="2"></div>
+  </div>
+
+  <div id="static-wrapper">
+    <!-- Barra de navegación -->
+    <div class="navbar">
+      <div class="logo">Load+ TV</div>
+      <nav class="nav-menu">
+        <a href="#" class="nav-item">Buscar</a>
+        <a href="#" class="nav-item">Para ti</a>
+        <a href="#" class="nav-item">En vivo</a>
+        <a href="#" class="nav-item">Películas</a>
+        <a href="#" class="nav-item">Series</a>
+        <a href="#" class="nav-item">Aplicaciones</a>
+        <a href="#" class="nav-item">Biblioteca</a>
+      </nav>
+      <div class="profile-icon">U</div>
+    </div>
+
+    <!-- Fila Destacados -->
+    <div class="content-row top-picks-row">
+      <div class="row-title">Destacados</div>
+      <div class="content-cards">
+        <div class="content-card">
+          <div class="card-bg" style="background-image: url('images/destacados/destacado1 baner/laligamovisar.png'); background-size: 80%; background-position: center; background-repeat: no-repeat; background-color: white;"></div>
+        </div>
+        
+        <div class="content-card">
+          <div class="card-bg" style="background-image: url('images/destacados/destacado2 baner/skysportslaliga.png'); background-size: cover; background-position: center;"></div>
+        </div>
+        
+        <div class="content-card">
+          <div class="card-bg" style="background-image: url('images/destacados/destacado3 baner/univision_00000.png'); background-size: cover; background-position: center;"></div>
+        </div>
+        
+        <div class="content-card">
+          <div class="card-bg" style="background-image: url('images/destacados/destacado4 baner/mls.png'); background-size: cover; background-position: center;"></div>
+        </div>
+        
+        <div class="content-card">
+          <div class="card-bg" style="background-image: url('images/destacados/destacado5 baner/disney.png'); background-size: cover; background-position: center;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fila Your Apps - GUARDADA PARA USO POSTERIOR
+    <div class="content-row your-apps-row">
+      <div class="row-title">Your apps</div>
+      <div class="apps-grid">
+        <div class="app-icon app-youtube">YouTube</div>
+        <div class="app-icon app-netflix">Netflix</div>
+        <div class="app-icon app-prime">Prime Video</div>
+        <div class="app-icon app-disney">Disney+</div>
+        <div class="app-icon app-youtube-tv">YouTube TV</div>
+        <div class="app-icon app-hbo">HBO Max</div>
+        <div class="app-icon app-spotify">Spotify</div>
+      </div>
+    </div>
+    -->
+
+    <!-- Título del Carrousel 1 -->
+    <div id="titulocarrosel1" style="font-family: Arial, sans-serif; color: white; width: 780px; position: absolute; top: 270px; left: 120px; opacity: 1; overflow: hidden; white-space: nowrap; transition: opacity 1.2s ease-in-out;">
+      <div class="text-carousel-track" style="display: inline-block; padding-left: 0%;">
+        <div style="font-size: 27px; opacity: 0.8; margin-bottom: 20px;">Concacaf</div>
+        <div style="font-size: 55px; font-weight: bold; margin-bottom: 20px;">Copa Centroamericana</div>
+        <div style="color: #aaa; font-size: 31px; font-weight: bold; margin-bottom: 20px;">En Vivo Ahora - Futbol Internacional</div>
+        <div style="font-size: 29px; color: #ccc; margin-bottom: 39px;">
+          La Competencia de Futbol Centroamericano con los<br>
+          mejores equipos de la región en acción
+        </div>
+        <a href="#" style="display: inline-block; background-color: white; color: black; font-weight: bold; font-size: 31px; padding: 20px 39px; border-radius: 39px; text-decoration: none;">
+          Ver en vivo ahora
+        </a>
+      </div>
+    </div>
+
+    <!-- Título del Carrousel 2 -->
+    <div id="titulocarrosel2" style="font-family: Arial, sans-serif; color: white; width: 780px; position: absolute; top: 270px; left: 120px; opacity: 0; overflow: hidden; white-space: nowrap; transition: opacity 1.2s ease-in-out;">
+      <div class="text-carousel-track" style="display: inline-block; padding-left: 0%;">
+        <div style="font-size: 27px; opacity: 0.8; margin-bottom: 20px;">Apple TV</div>
+        <div style="font-size: 55px; font-weight: bold; margin-bottom: 20px;">Leagues Cup</div>
+        <div style="color: #aaa; font-size: 31px; font-weight: bold; margin-bottom: 20px;">En Vivo Ahora - Futbol de elite</div>
+        <div style="font-size: 29px; color: #ccc; margin-bottom: 39px;">
+          La competencia más emocionante MLS y Liga MX<br>
+          Disfruta del fútbol de élite en vivo con la mejor calidad
+        </div>
+        <a href="#" style="display: inline-block; background-color: white; color: black; font-weight: bold; font-size: 31px; padding: 20px 39px; border-radius: 39px; text-decoration: none;">
+          Ver en vivo ahora
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Función para escalar el contenido al tamaño de la ventana
+    function scaleToFit() {
+      const wrapper = document.getElementById('static-wrapper');
+      const scaleX = window.innerWidth / 1920;
+      const scaleY = window.innerHeight / 1080;
+      const scale = Math.max(scaleX, scaleY);
+      
+      wrapper.style.transform = `translate(-50%, -50%) scale(${scale})`;
+    }
+
+    // Escalar al cargar y al cambiar el tamaño de la ventana
+    window.addEventListener('load', scaleToFit);
+    window.addEventListener('resize', scaleToFit);
+
+    // Efectos de hover para las tarjetas
+    document.querySelectorAll('.content-card').forEach(card => {
+      card.addEventListener('mouseenter', function() {
+        this.style.transform = 'scale(1.05)';
+      });
+      
+      card.addEventListener('mouseleave', function() {
+        this.style.transform = 'scale(1)';
+      });
+    });
+
+    // Efectos para los iconos de apps - DESHABILITADO (sección oculta)
+    /*
+    document.querySelectorAll('.app-icon').forEach(icon => {
+      icon.addEventListener('mouseenter', function() {
+        this.style.transform = 'scale(1.1)';
+      });
+      
+      icon.addEventListener('mouseleave', function() {
+        this.style.transform = 'scale(1)';
+      });
+    });
+    */
+
+    // Navegación por teclado estilo Android TV
+    let currentFocus = null;
+    let focusableElements = [];
+
+    function initializeNavigation() {
+      // Obtener todos los elementos navegables
+      focusableElements = [
+        ...document.querySelectorAll('.nav-item'),
+        ...document.querySelectorAll('.content-card')
+      ];
+
+      // Agregar solo los botones de títulos que estén visibles
+      const titulo1 = document.getElementById('titulocarrosel1');
+      const titulo2 = document.getElementById('titulocarrosel2');
+      
+      if (titulo1 && getComputedStyle(titulo1).opacity !== '0') {
+        const botones1 = titulo1.querySelectorAll('a');
+        focusableElements.push(...botones1);
+        console.log('Botón de título 1 agregado');
+      }
+      
+      if (titulo2 && getComputedStyle(titulo2).opacity !== '0') {
+        const botones2 = titulo2.querySelectorAll('a');
+        focusableElements.push(...botones2);
+        console.log('Botón de título 2 agregado');
+      }
+
+      console.log('Elementos navegables encontrados:', focusableElements.length);
+      console.log('Botones de títulos visibles:', document.querySelectorAll('#titulocarrosel1 a, #titulocarrosel2 a').length);
+
+      // Agregar atributos de navegación
+      focusableElements.forEach((element, index) => {
+        element.setAttribute('tabindex', '0');
+        element.setAttribute('data-index', index);
+        
+        // Efecto de foco
+        element.addEventListener('focus', function() {
+          currentFocus = this;
+          
+          // Si es un botón de "Ver en vivo ahora", hacer scroll al inicio de la página
+          if (this.closest('#titulocarrosel1') || this.closest('#titulocarrosel2')) {
+            window.scrollTo({
+              top: 0,
+              left: 0,
+              behavior: 'smooth'
+            });
+          }
+        });
+        
+        element.addEventListener('blur', function() {
+          // El CSS se encarga del estilo
+        });
+      });
+    }
+
+    function navigate(direction) {
+      if (!currentFocus) {
+        currentFocus = focusableElements[0];
+        currentFocus.focus();
+        return;
+      }
+
+      const currentRect = currentFocus.getBoundingClientRect();
+      const currentCenterX = currentRect.left + currentRect.width / 2;
+      const currentCenterY = currentRect.top + currentRect.height / 2;
+      
+      let bestCandidate = null;
+      let bestDistance = Infinity;
+
+      focusableElements.forEach(element => {
+        if (element === currentFocus) return;
+        
+        const rect = element.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        
+        let isValidCandidate = false;
+        
+        switch(direction) {
+          case 'up':
+            // Buscar elementos arriba del elemento actual
+            isValidCandidate = centerY < currentCenterY;
+            break;
+          case 'down':
+            // Buscar elementos abajo del elemento actual
+            isValidCandidate = centerY > currentCenterY;
+            break;
+          case 'left':
+            // Buscar elementos a la izquierda del elemento actual (misma línea)
+            isValidCandidate = centerX < currentCenterX && Math.abs(centerY - currentCenterY) < 100;
+            break;
+          case 'right':
+            // Buscar elementos a la derecha del elemento actual (misma línea)
+            isValidCandidate = centerX > currentCenterX && Math.abs(centerY - currentCenterY) < 100;
+            break;
+        }
+        
+        if (isValidCandidate) {
+          const distanceX = Math.abs(centerX - currentCenterX);
+          const distanceY = Math.abs(centerY - currentCenterY);
+          const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+          
+          if (distance < bestDistance) {
+            bestDistance = distance;
+            bestCandidate = element;
+          }
+        }
+      });
+      
+      // Solo cambiar el foco si se encontró un candidato válido
+      if (bestCandidate) {
+        currentFocus.blur();
+        currentFocus = bestCandidate;
+        currentFocus.focus();
+      }
+      // Si no hay candidato válido, mantener el foco actual (no hacer nada)
+    }
+
+    function handleKeyPress(event) {
+      switch(event.key) {
+        case 'ArrowUp':
+          event.preventDefault();
+          navigate('up');
+          break;
+        case 'ArrowDown':
+          event.preventDefault();
+          navigate('down');
+          break;
+        case 'ArrowLeft':
+          event.preventDefault();
+          navigate('left');
+          break;
+        case 'ArrowRight':
+          event.preventDefault();
+          navigate('right');
+          break;
+        case 'Enter':
+          event.preventDefault();
+          if (currentFocus) {
+            console.log('Elemento seleccionado:', currentFocus.textContent);
+            // Aquí puedes agregar la acción específica para cada elemento
+          }
+          break;
+        case 'Escape':
+          event.preventDefault();
+          if (currentFocus) {
+            currentFocus.blur();
+            currentFocus = null;
+          }
+          break;
+      }
+    }
+
+    // Carrusel de fondo
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const indicators = document.querySelectorAll('.carousel-indicator');
+    const totalSlides = slides.length;
+
+    function showSlide(index) {
+      // Si es la misma slide, no hacer nada
+      if (currentSlide === index) return;
+      
+      // Remover clases activas
+      slides.forEach(slide => slide.classList.remove('active', 'prev'));
+      indicators.forEach(indicator => indicator.classList.remove('active'));
+      
+      // Marcar la slide actual como activa
+      slides[index].classList.add('active');
+      indicators[index].classList.add('active');
+      
+      // Marcar la slide anterior como prev (permanece visible durante la transición)
+      if (currentSlide >= 0) {
+        slides[currentSlide].classList.add('prev');
+      }
+      
+      // Fade y animación de entrada para los títulos
+      const tituloCarrosel1 = document.getElementById('titulocarrosel1');
+      const tituloCarrosel2 = document.getElementById('titulocarrosel2');
+      
+      if (index === 0) {
+        // Ocultar título 2 primero
+        tituloCarrosel2.style.opacity = '0';
+        
+        // Después de un delay, mostrar título 1 con animación
+        setTimeout(() => {
+          tituloCarrosel1.style.opacity = '1';
+          // Reiniciar animación del título 1
+          const track1 = tituloCarrosel1.querySelector('.text-carousel-track');
+          track1.style.animation = 'none';
+          track1.offsetHeight; // Forzar reflow
+          track1.style.animation = 'slideText1 1s ease-out';
+          
+          // Reinicializar navegación después de que aparezca el título
+          setTimeout(() => {
+            initializeNavigation();
+          }, 100);
+        }, 1200);
+      } else if (index === 1) {
+        // Ocultar título 1 primero
+        tituloCarrosel1.style.opacity = '0';
+        
+        // Después de un delay, mostrar título 2 con animación
+        setTimeout(() => {
+          tituloCarrosel2.style.opacity = '1';
+          // Reiniciar animación del título 2
+          const track2 = tituloCarrosel2.querySelector('.text-carousel-track');
+          track2.style.animation = 'none';
+          track2.offsetHeight; // Forzar reflow
+          track2.style.animation = 'slideText2 1s ease-out';
+          
+          // Reinicializar navegación después de que aparezca el título
+          setTimeout(() => {
+            initializeNavigation();
+          }, 100);
+        }, 1200);
+      }
+      
+      currentSlide = index;
+    }
+
+    function nextSlide() {
+      const next = (currentSlide + 1) % totalSlides;
+      showSlide(next);
+    }
+
+    // Cambiar slide automáticamente cada 8 segundos
+    setInterval(nextSlide, 8000);
+
+    // Eventos para los indicadores
+    indicators.forEach((indicator, index) => {
+      indicator.addEventListener('click', () => {
+        showSlide(index);
+      });
+    });
+
+
+
+    // Inicializar carrusel
+    function initializeCarousel() {
+      // Asegurar que la primera slide esté visible
+      slides[0].classList.add('active');
+      indicators[0].classList.add('active');
+      currentSlide = 0;
+      
+      // Mostrar el título para la primera slide (carrosel1)
+      const tituloCarrosel1 = document.getElementById('titulocarrosel1');
+      const tituloCarrosel2 = document.getElementById('titulocarrosel2');
+      tituloCarrosel1.style.opacity = '1';
+      tituloCarrosel2.style.opacity = '0';
+    }
+
+    // Inicializar carrusel y navegación cuando se carga la página
+    window.addEventListener('load', () => {
+      initializeCarousel();
+      initializeNavigation();
+      
+      // Reinicializar navegación después de un delay para asegurar que los títulos estén listos
+      setTimeout(() => {
+        initializeNavigation();
+      }, 1000);
+    });
+    
+    // Escuchar eventos de teclado
+    document.addEventListener('keydown', handleKeyPress);
+  </script>
+</body>
+</html>
