@@ -565,12 +565,7 @@
       </div>
     </div>
 
-    <!-- Botón de prueba para generar tokens -->
-    <div style="position: absolute; top: 20px; right: 20px; z-index: 1000;">
-      <button onclick="probarGeneracionToken()" style="background: #ff0000; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">
-        Generar Token de Prueba
-      </button>
-    </div>
+
 
     <!-- Fila Your Apps - GUARDADA PARA USO POSTERIOR
     <div class="content-row your-apps-row">
@@ -644,20 +639,7 @@
       return { token, streamUrl, expiracion };
     }
 
-    // Función para probar la generación de tokens
-    function probarGeneracionToken() {
-      const resultado = generarTokenAutomatico();
-      
-      // Mostrar resultado en alerta
-      alert(`Token generado: ${resultado.token}\n\nURL del stream: ${resultado.streamUrl}\n\nExpira: ${new Date(resultado.expiracion * 1000).toLocaleString()}`);
-      
-      // También mostrar en consola
-      console.log('=== TOKEN DE PRUEBA GENERADO ===');
-      console.log('Token:', resultado.token);
-      console.log('URL completa:', resultado.streamUrl);
-      console.log('Expiración:', new Date(resultado.expiracion * 1000));
-      console.log('================================');
-    }
+
 
     // Función para escalar el contenido al tamaño de la ventana
     function scaleToFit() {
