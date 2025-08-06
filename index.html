@@ -626,9 +626,9 @@
         // En móviles, usar el menor de los dos para que quepa todo
         scale = Math.min(scaleX, scaleY) * 0.8; // Reducir un 20% adicional
       } else {
-        // Para desktop, ajustar a 1280x720 manteniendo proporciones
-        const targetScaleX = 1280 / 1920; // 0.6667
-        const targetScaleY = 720 / 1080;  // 0.6667
+        // Para desktop, ajustar a 961x400 manteniendo proporciones
+        const targetScaleX = 961 / 1920; // 0.5005
+        const targetScaleY = 400 / 1080; // 0.3704
         scale = Math.min(targetScaleX, targetScaleY); // Usar el menor para mantener proporciones
       }
       
