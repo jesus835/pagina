@@ -626,10 +626,10 @@
         // En móviles, usar el menor de los dos para que quepa todo
         scale = Math.min(scaleX, scaleY) * 0.8; // Reducir un 20% adicional
       } else {
-        // Para desktop, ajustar a 961x400 manteniendo proporciones
-        const targetScaleX = 961 / 1920; // 0.5005
-        const targetScaleY = 400 / 1080; // 0.3704
-        scale = Math.min(targetScaleX, targetScaleY); // Usar el menor para mantener proporciones
+        // Para desktop, mantener 1920x1080 pero con DPI de 720p
+        // Esto hace que los elementos se vean más grandes como en 720p
+        const dpiScale = 720 / 1080; // 0.6667 - factor de DPI de 720p
+        scale = dpiScale; // Aplicar el escalado de DPI
       }
       
       wrapper.style.transform = `translate(-50%, -50%) scale(${scale})`;
