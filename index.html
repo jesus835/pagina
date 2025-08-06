@@ -620,13 +620,17 @@
       const scaleX = window.innerWidth / 1920;
       const scaleY = window.innerHeight / 1080;
       
-      // Para móviles, usar un escalado más pequeño
       let scale;
       if (window.innerWidth < 768) {
-        // En móviles, usar el menor de los dos para que quepa todo
-        scale = Math.min(scaleX, scaleY) * 0.8; // Reducir un 20% adicional
+        // Para móviles, usar un escalado más pequeño
+        scale = Math.min(scaleX, scaleY) * 0.8;
+      } else if (window.innerWidth >= 1280 && window.innerWidth < 1920) {
+        // Para 720p (1280x720), hacer los elementos más pequeños
+        // Mantener la misma proporción pero escalar menos para que se vean igual que en 1080p
+        const baseScale = Math.min(scaleX, scaleY);
+        scale = baseScale * 0.8; // Hacer los elementos 20% más pequeños en 720p
       } else {
-        // En desktop, mantener el comportamiento original
+        // Para 1080p y otras resoluciones, mantener el comportamiento original
         scale = Math.max(scaleX, scaleY);
       }
       
