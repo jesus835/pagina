@@ -629,8 +629,15 @@
         // Mantener la misma proporción pero escalar menos para que se vean igual que en 1080p
         const baseScale = Math.min(scaleX, scaleY);
         scale = baseScale * 0.655; // Hacer los elementos 5% más pequeños que el escalado anterior
+      } else if (window.innerWidth >= 1920 && window.innerWidth < 3840) {
+        // Para 1080p y resoluciones intermedias, mantener el comportamiento original
+        scale = Math.max(scaleX, scaleY);
+      } else if (window.innerWidth >= 3840) {
+        // Para 4K (3840x2160), hacer los elementos más pequeños para que se vean igual
+        const baseScale = Math.min(scaleX, scaleY);
+        scale = baseScale * 0.5; // Hacer los elementos 50% más pequeños en 4K
       } else {
-        // Para 1080p y otras resoluciones, mantener el comportamiento original
+        // Para otras resoluciones, mantener el comportamiento original
         scale = Math.max(scaleX, scaleY);
       }
       
