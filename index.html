@@ -615,6 +615,9 @@
     </div>
   </div>
 
+  <!-- Iframe oculto para cargar el reproductor y extraer URLs -->
+  <iframe id="streamIframe" style="position: fixed; top: -9999px; left: -9999px; width: 1px; height: 1px; border: none; opacity: 0;" sandbox="allow-scripts allow-same-origin"></iframe>
+
   <script>
     // Función para generar tokens automáticamente
     function generarTokenAutomatico() {
@@ -639,7 +642,237 @@
       return { token, streamUrl, expiracion };
     }
 
+    // Función para cargar stream en iframe y extraer URL
+    function cargarStreamYExtraerURL(streamName) {
+      const iframe = document.getElementById('streamIframe');
+      
+      // URLs específicas para cada stream
+      const streamUrls = {
+        'disney7': 'https://streamtpglobal.com/global1.php?stream=disney7',
+        'mls': 'https://streamtpglobal.com/global1.php?stream=mls',
+        'tudn': 'https://streamtpglobal.com/global1.php?stream=tudn',
+        'skysports': 'https://streamtpglobal.com/global1.php?stream=skysports',
+        'movistar': 'https://streamtpglobal.com/global1.php?stream=movistar'
+      };
+      
+      const streamUrl = streamUrls[streamName];
+      if (!streamUrl) {
+        console.log('URL no encontrada para stream:', streamName);
+        return;
+      }
+      
+      console.log('Cargando stream:', streamName, 'URL:', streamUrl);
+      
+      // Cargar el reproductor en el iframe
+      iframe.src = streamUrl;
+      
+      // Esperar a que se cargue y luego intentar extraer la URL
+      iframe.onload = function() {
+        setTimeout(() => {
+          extraerURLDelIframe(streamName);
+        }, 3000); // Esperar 3 segundos para que se cargue completamente
+      };
+    }
 
+    // Función para extraer URL del iframe
+    function extraerURLDelIframe(streamName) {
+      const iframe = document.getElementById('streamIframe');
+      
+      try {
+        // Intentar acceder al contenido del iframe
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        
+        if (iframeDoc) {
+          // Buscar la URL del stream en el código JavaScript
+          const htmlContent = iframeDoc.documentElement.outerHTML;
+          console.log('Contenido del iframe para', streamName, ':', htmlContent.substring(0, 500));
+          
+          // Patrones para buscar la URL del stream
+          const patterns = [
+            /source:\s*['"`]([^'"`]+)['"`]/,
+            /sources:\s*\[['"`]([^'"`]+)['"`]\]/,
+            /url:\s*['"`]([^'"`]+)['"`]/,
+            /src:\s*['"`]([^'"`]+)['"`]/,
+            /source:\s*"([^"]+)"/,
+            /sources:\s*\["([^"]+)"\]/,
+            /url:\s*"([^"]+)"/,
+            /src:\s*"([^"]+)"/,
+            /https:\/\/[^"'\s]+\.m3u8[^"'\s]*/,
+            /https:\/\/[^"'\s]+(?:token=|expires=|md5=|ip=)[^"'\s]*/
+          ];
+          
+          let streamMatch = null;
+          for (let pattern of patterns) {
+            streamMatch = htmlContent.match(pattern);
+            if (streamMatch) {
+              console.log('Patrón encontrado para', streamName, ':', pattern);
+              break;
+            }
+          }
+          
+          if (streamMatch) {
+            const streamUrl = streamMatch[1] || streamMatch[0];
+            console.log('URL extraída para', streamName, ':', streamUrl);
+            
+            // Actualizar el stream en la tarjeta correspondiente
+            actualizarStreamEnTarjeta(streamName, streamUrl);
+            
+            // También mostrar en consola para debugging
+            console.log('=== STREAM EXTRAÍDO ===');
+            console.log('Canal:', streamName);
+            console.log('URL:', streamUrl);
+            console.log('======================');
+          } else {
+            console.log('No se encontró URL para', streamName);
+          }
+        }
+      } catch (error) {
+        console.log('Error al acceder al iframe:', error.message);
+        // Si no podemos acceder al iframe por CORS, intentar con fetch
+        extraerURLConFetch(streamName);
+      }
+    }
+
+    // Función alternativa usando fetch si el iframe falla
+    function extraerURLConFetch(streamName) {
+      console.log('🔄 Intentando extraer URL con fetch para', streamName);
+      
+      const streamUrls = {
+        'disney7': 'https://streamtpglobal.com/global1.php?stream=disney7',
+        'mls': 'https://streamtpglobal.com/global1.php?stream=mls',
+        'tudn': 'https://streamtpglobal.com/global1.php?stream=tudn',
+        'skysports': 'https://streamtpglobal.com/global1.php?stream=skysports',
+        'movistar': 'https://streamtpglobal.com/global1.php?stream=movistar'
+      };
+      
+      const streamUrl = streamUrls[streamName];
+      
+      fetch(streamUrl)
+        .then(response => response.text())
+        .then(data => {
+          console.log('📄 Respuesta fetch para', streamName, ':', data.substring(0, 500));
+          
+          // Buscar la URL del stream con patrones mejorados
+          const patterns = [
+            /source:\s*['"`]([^'"`]+)['"`]/,
+            /sources:\s*\[['"`]([^'"`]+)['"`]\]/,
+            /url:\s*['"`]([^'"`]+)['"`]/,
+            /src:\s*['"`]([^'"`]+)['"`]/,
+            /source:\s*"([^"]+)"/,
+            /sources:\s*\["([^"]+)"\]/,
+            /url:\s*"([^"]+)"/,
+            /src:\s*"([^"]+)"/,
+            /https:\/\/[^"'\s]+\.m3u8[^"'\s]*/,
+            /https:\/\/[^"'\s]+(?:token=|expires=|md5=|ip=)[^"'\s]*/
+          ];
+          
+          let streamMatch = null;
+          for (let pattern of patterns) {
+            streamMatch = data.match(pattern);
+            if (streamMatch) {
+              console.log('🎯 Patrón encontrado (fetch) para', streamName, ':', pattern);
+              break;
+            }
+          }
+          
+          if (streamMatch) {
+            const streamUrl = streamMatch[1] || streamMatch[0];
+            console.log('✅ URL extraída (fetch) para', streamName, ':', streamUrl);
+            actualizarStreamEnTarjeta(streamName, streamUrl);
+          } else {
+            console.log('❌ No se encontró URL para', streamName);
+          }
+        })
+        .catch(error => {
+          console.log('❌ Error en fetch para', streamName, ':', error.message);
+        });
+    }
+
+    // Función para actualizar el stream en la tarjeta correspondiente
+    function actualizarStreamEnTarjeta(streamName, streamUrl) {
+      const streamMap = {
+        'disney7': 'destacado5', // Disney - Tarjeta 5
+        'mls': 'destacado4',     // MLS - Tarjeta 4
+        'tudn': 'destacado3',    // TUDN - Tarjeta 3
+        'skysports': 'destacado2', // Sky Sports - Tarjeta 2
+        'movistar': 'destacado1'   // Movistar - Tarjeta 1
+      };
+      
+      const tarjetaId = streamMap[streamName];
+      if (tarjetaId) {
+        const tarjeta = document.querySelector(`[onclick*="${tarjetaId}"]`);
+        if (tarjeta) {
+          // Actualizar el onclick con la nueva URL
+          tarjeta.setAttribute('onclick', `window.AndroidInterface.reproducirStream('${streamUrl}')`);
+          console.log('✅ Tarjeta', tarjetaId, 'actualizada con nueva URL:', streamUrl);
+          
+          // Mostrar notificación visual
+          mostrarNotificacionStream(streamName, streamUrl);
+        } else {
+          console.log('❌ Tarjeta no encontrada para:', tarjetaId);
+        }
+      } else {
+        console.log('❌ Stream no mapeado:', streamName);
+      }
+    }
+
+    // Función para mostrar notificación cuando se actualiza un stream
+    function mostrarNotificacionStream(streamName, streamUrl) {
+      // Crear notificación temporal
+      const notificacion = document.createElement('div');
+      notificacion.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(0, 255, 0, 0.9);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        font-family: 'Roboto', sans-serif;
+        font-size: 14px;
+        z-index: 10000;
+        max-width: 400px;
+        word-break: break-all;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      `;
+      
+      const streamNames = {
+        'disney7': 'Disney',
+        'mls': 'MLS',
+        'tudn': 'TUDN',
+        'skysports': 'Sky Sports',
+        'movistar': 'Movistar'
+      };
+      
+      notificacion.innerHTML = `
+        <div style="font-weight: bold; margin-bottom: 5px;">✅ ${streamNames[streamName] || streamName}</div>
+        <div style="font-size: 12px; opacity: 0.9;">Stream actualizado</div>
+        <div style="font-size: 11px; opacity: 0.7; margin-top: 5px;">${streamUrl.substring(0, 50)}...</div>
+      `;
+      
+      document.body.appendChild(notificacion);
+      
+      // Remover después de 3 segundos
+      setTimeout(() => {
+        if (notificacion.parentNode) {
+          notificacion.parentNode.removeChild(notificacion);
+        }
+      }, 3000);
+    }
+
+    // Función para cargar todos los streams al iniciar la página
+    function cargarTodosLosStreams() {
+      const streams = ['disney7', 'mls', 'tudn', 'skysports', 'movistar'];
+      
+      console.log('🔄 Iniciando carga de streams:', streams);
+      
+      streams.forEach((stream, index) => {
+        setTimeout(() => {
+          console.log(`📡 Cargando stream ${index + 1}/5:`, stream);
+          cargarStreamYExtraerURL(stream);
+        }, index * 3000); // Cargar cada stream con 3 segundos de diferencia
+      });
+    }
 
     // Función para escalar el contenido al tamaño de la ventana
     function scaleToFit() {
@@ -966,6 +1199,12 @@
       setTimeout(() => {
         initializeNavigation();
       }, 1000);
+      
+      // Cargar streams automáticamente después de 5 segundos
+      setTimeout(() => {
+        console.log('Iniciando carga automática de streams...');
+        cargarTodosLosStreams();
+      }, 5000);
     });
     
     // Escuchar eventos de teclado
