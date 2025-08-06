@@ -614,25 +614,89 @@
   </div>
 
   <script>
+    // Función para calcular DPI según el tamaño de pantalla
+    function calculateDPI() {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const diagonal = Math.sqrt(width * width + height * height);
+      
+      // Convertir píxeles a pulgadas (asumiendo 96 DPI como base)
+      const diagonalInches = diagonal / 96;
+      
+      // Calcular DPI real
+      const realDPI = diagonal / diagonalInches;
+      
+      return realDPI;
+    }
+
+    // Función para obtener el DPI óptimo según el tipo de dispositivo
+    function getOptimalDPI() {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const diagonal = Math.sqrt(width * width + height * height);
+      const diagonalInches = diagonal / 96; // Aproximación
+      
+      // Detectar tipo de dispositivo por tamaño
+      if (diagonalInches >= 40) {
+        // TV grande (40+ pulgadas)
+        if (width >= 1920) {
+          return 40; // DPI típico para TV 55" 1080p
+        } else if (width >= 1280) {
+          return 34; // DPI típico para TV 65" 720p
+        } else {
+          return 29; // DPI típico para TV 75" SD
+        }
+      } else if (diagonalInches >= 20) {
+        // Monitor de PC
+        if (width >= 1920) {
+          return 82; // DPI típico para monitor 27" 1080p
+        } else if (width >= 1280) {
+          return 69; // DPI típico para monitor 32" 720p
+        } else {
+          return 92; // DPI típico para monitor 24" 1080p
+        }
+      } else {
+        // Laptop o dispositivo pequeño
+        if (width >= 1920) {
+          return 141; // DPI típico para laptop 15.6" 1080p
+        } else if (width >= 1280) {
+          return 127; // DPI típico para laptop 17.3" 720p
+        } else {
+          return 165; // DPI típico para laptop 13.3" 1080p
+        }
+      }
+    }
+
     // Función para escalar el contenido al tamaño de la ventana
     function scaleToFit() {
       const wrapper = document.getElementById('static-wrapper');
       const scaleX = window.innerWidth / 1920;
       const scaleY = window.innerHeight / 1080;
       
-      // Para móviles, usar un escalado más pequeño
       let scale;
       if (window.innerWidth < 768) {
-        // En móviles, usar el menor de los dos para que quepa todo
-        scale = Math.min(scaleX, scaleY) * 0.8; // Reducir un 20% adicional
+        // Para móviles, usar un escalado más pequeño
+        scale = Math.min(scaleX, scaleY) * 0.8;
       } else {
-        // Para desktop, mantener 1920x1080 pero con DPI de 720p
-        // Esto hace que los elementos se vean más grandes como en 720p
-        const dpiScale = 720 / 1080; // 0.6667 - factor de DPI de 720p
-        scale = dpiScale; // Aplicar el escalado de DPI
+        // Para desktop/TV, usar DPI óptimo
+        const optimalDPI = getOptimalDPI();
+        const baseDPI = 96; // DPI base estándar
+        const dpiScale = baseDPI / optimalDPI;
+        
+        // Aplicar escalado de resolución y DPI
+        const resolutionScale = Math.min(scaleX, scaleY);
+        scale = resolutionScale * dpiScale;
+        
+        // Limitar el escalado para que no sea demasiado pequeño o grande
+        scale = Math.max(0.3, Math.min(scale, 1.5));
       }
       
       wrapper.style.transform = `translate(-50%, -50%) scale(${scale})`;
+      
+      // Mostrar información de debug (opcional)
+      console.log(`Resolución: ${window.innerWidth}x${window.innerHeight}`);
+      console.log(`DPI óptimo: ${getOptimalDPI()}`);
+      console.log(`Escalado aplicado: ${scale.toFixed(3)}`);
     }
 
     // Escalar al cargar y al cambiar el tamaño de la ventana
