@@ -628,7 +628,7 @@
         // Para 720p (1280x720), hacer los elementos más pequeños
         // Mantener la misma proporción pero escalar menos para que se vean igual que en 1080p
         const baseScale = Math.min(scaleX, scaleY);
-        scale = baseScale * 0.69; // Hacer los elementos 15% más grandes que el escalado anterior
+        scale = baseScale * 0.655; // Hacer los elementos 5% más pequeños que el escalado anterior
       } else {
         // Para 1080p y otras resoluciones, mantener el comportamiento original
         scale = Math.max(scaleX, scaleY);
