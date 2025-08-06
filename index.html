@@ -581,14 +581,14 @@
     -->
 
     <!-- Título del Carrousel 1 -->
-    <div id="titulocarrosel1" style="font-family: Arial, sans-serif; color: white; width: 780px; position: absolute; top: 270px; left: 120px; opacity: 1; overflow: hidden; white-space: nowrap; transition: opacity 1.2s ease-in-out;">
+            <div id="titulocarrosel1" style="font-family: Arial, sans-serif; color: white; width: 780px; position: absolute; top: 270px; left: 120px; opacity: 1; overflow: hidden; white-space: nowrap; transition: opacity 1.2s ease-in-out;">
       <div class="text-carousel-track" style="display: inline-block; padding-left: 0%;">
-        <div style="font-size: 27px; opacity: 0.8; margin-bottom: 20px;">Concacaf</div>
-        <div style="font-size: 55px; font-weight: bold; margin-bottom: 20px;">Copa Centroamericana</div>
-        <div style="color: #aaa; font-size: 31px; font-weight: bold; margin-bottom: 20px;">En Vivo Ahora - Futbol Internacional</div>
-        <div style="font-size: 29px; color: #ccc; margin-bottom: 39px;">
-          La Competencia de Futbol Centroamericano con los<br>
-          mejores equipos de la región en acción
+                  <div style="font-size: 27px; opacity: 0.8; margin-bottom: 20px;">Concacaf</div>
+                                      <div style="font-size: 55px; font-weight: bold; margin-bottom: 20px;">Copa Centroamericana</div>
+                                      <div style="color: #aaa; font-size: 31px; font-weight: bold; margin-bottom: 20px;">En Vivo Ahora - Futbol Internacional</div>
+                  <div style="font-size: 29px; color: #ccc; margin-bottom: 39px;">
+            La Competencia de Futbol Centroamericano con los<br>
+            mejores equipos de la región en acción
         </div>
         <a href="reproductor.html" target="_blank" style="display: inline-block; background-color: white; color: black; font-weight: bold; font-size: 31px; padding: 20px 39px; border-radius: 39px; text-decoration: none;">
           Ver en vivo ahora
@@ -597,7 +597,7 @@
     </div>
 
     <!-- Título del Carrousel 2 -->
-    <div id="titulocarrosel2" style="font-family: Arial, sans-serif; color: white; width: 780px; position: absolute; top: 270px; left: 120px; opacity: 0; overflow: hidden; white-space: nowrap; transition: opacity 1.2s ease-in-out;">
+            <div id="titulocarrosel2" style="font-family: Arial, sans-serif; color: white; width: 780px; position: absolute; top: 270px; left: 120px; opacity: 0; overflow: hidden; white-space: nowrap; transition: opacity 1.2s ease-in-out;">
       <div class="text-carousel-track" style="display: inline-block; padding-left: 0%;">
         <div style="font-size: 27px; opacity: 0.8; margin-bottom: 20px;">Apple TV</div>
         <div style="font-size: 55px; font-weight: bold; margin-bottom: 20px;">Leagues Cup</div>
@@ -619,7 +619,18 @@
       const wrapper = document.getElementById('static-wrapper');
       const scaleX = window.innerWidth / 1920;
       const scaleY = window.innerHeight / 1080;
-      const scale = Math.max(scaleX, scaleY);
+      
+      // Para móviles, usar un escalado más pequeño
+      let scale;
+      if (window.innerWidth < 768) {
+        // En móviles, usar el menor de los dos para que quepa todo
+        scale = Math.min(scaleX, scaleY) * 0.8; // Reducir un 20% adicional
+      } else {
+        // Para desktop, ajustar a 1280x720 manteniendo proporciones
+        const targetScaleX = 1280 / 1920; // 0.6667
+        const targetScaleY = 720 / 1080;  // 0.6667
+        scale = Math.min(targetScaleX, targetScaleY); // Usar el menor para mantener proporciones
+      }
       
       wrapper.style.transform = `translate(-50%, -50%) scale(${scale})`;
     }
