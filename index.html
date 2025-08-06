@@ -640,7 +640,7 @@
       if (diagonalInches >= 40) {
         // TV grande (40+ pulgadas)
         if (width >= 1920) {
-          return 40; // DPI típico para TV 55" 1080p
+          return 200; // DPI alto para TV 1080p
         } else if (width >= 1280) {
           return 34; // DPI típico para TV 65" 720p
         } else {
@@ -649,7 +649,7 @@
       } else if (diagonalInches >= 20) {
         // Monitor de PC
         if (width >= 1920) {
-          return 82; // DPI típico para monitor 27" 1080p
+          return 200; // DPI alto para monitor 1080p
         } else if (width >= 1280) {
           return 69; // DPI típico para monitor 32" 720p
         } else {
@@ -658,7 +658,7 @@
       } else {
         // Laptop o dispositivo pequeño
         if (width >= 1920) {
-          return 141; // DPI típico para laptop 15.6" 1080p
+          return 200; // DPI alto para laptop 1080p
         } else if (width >= 1280) {
           return 127; // DPI típico para laptop 17.3" 720p
         } else {
