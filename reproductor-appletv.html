@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Load+ TV - Apple TV MLS Pass</title>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         * {
             margin: 0;
@@ -23,6 +22,13 @@
             width: 100%;
             height: 100%;
             position: relative;
+        }
+
+        .reproductor-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: #000;
         }
 
         .reproductor-video {
@@ -70,62 +76,210 @@
             text-align: center;
             z-index: 999;
             display: none;
+            max-width: 80%;
+        }
+
+        .retry-button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .retry-button:hover {
+            background-color: #0056b3;
+        }
+
+        .method-selector {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .method-button {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            margin-right: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .method-button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .method-button.active {
+            background-color: #007bff;
         }
     </style>
 </head>
 <body>
     <div class="reproductor-container">
         <button class="boton-cerrar" onclick="window.close()">Cerrar</button>
+        
+        <div class="method-selector">
+            <button class="method-button active" onclick="switchToIframe()">Iframe</button>
+            <button class="method-button" onclick="switchToVideo()">Video Directo</button>
+        </div>
+
         <div class="loading" id="loading">Cargando MLS Pass...</div>
-        <div class="error-message" id="error">Error al cargar el stream</div>
+        <div class="error-message" id="error">
+            Error al cargar el stream
+            <br><br>
+            <button class="retry-button" onclick="retryCurrentMethod()">Reintentar</button>
+        </div>
+
+        <!-- Método 1: Iframe con proxy -->
+        <iframe 
+            id="iframe-player"
+            class="reproductor-iframe" 
+            allowfullscreen="true" 
+            scrolling="no" 
+            src="https://www.hlsplayer.net/?video=https://d7.merichunidya.com:1686/hls/mlsusa2.m3u8?md5=Ji5fRUbBmD29N99XY1d3nA&expires=1754445406&autoplay=1" 
+            allow="encrypted-media" 
+            frameborder="0"
+            onload="document.getElementById('loading').style.display='none';">
+        </iframe>
+
+        <!-- Método 2: Video directo -->
         <video 
-            id="video" 
+            id="video-player" 
             class="reproductor-video" 
             controls 
             autoplay 
             muted
-            playsinline>
+            playsinline
+            style="display: none;">
             Tu navegador no soporta la reproducción de video.
         </video>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script>
-        const video = document.getElementById('video');
+        const iframePlayer = document.getElementById('iframe-player');
+        const videoPlayer = document.getElementById('video-player');
         const loading = document.getElementById('loading');
         const error = document.getElementById('error');
-        const videoSrc = 'https://d7.merichunidya.com:1686/hls/mlsusa2.m3u8?md5=Ji5fRUbBmD29N99XY1d3nA&expires=1754445406';
+        const methodButtons = document.querySelectorAll('.method-button');
+        
+        let currentMethod = 'iframe';
+        let hls = null;
 
-        // Verificar si HLS.js es compatible
-        if (Hls.isSupported()) {
-            const hls = new Hls();
-            hls.loadSource(videoSrc);
-            hls.attachMedia(video);
-            
-            hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                loading.style.display = 'none';
-                video.play();
-            });
+        // URLs alternativas para el video directo
+        const videoUrls = [
+            'https://d7.merichunidya.com:1686/hls/mlsusa2.m3u8?md5=Ji5fRUbBmD29N99XY1d3nA&expires=1754445406',
+            'https://cors-anywhere.herokuapp.com/https://d7.merichunidya.com:1686/hls/mlsusa2.m3u8?md5=Ji5fRUbBmD29N99XY1d3nA&expires=1754445406',
+            'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://d7.merichunidya.com:1686/hls/mlsusa2.m3u8?md5=Ji5fRUbBmD29N99XY1d3nA&expires=1754445406')
+        ];
 
-            hls.on(Hls.Events.ERROR, function(event, data) {
-                console.error('Error HLS:', data);
-                loading.style.display = 'none';
-                error.style.display = 'block';
-            });
-        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            // Soporte nativo para Safari
-            video.src = videoSrc;
-            video.addEventListener('loadedmetadata', function() {
-                loading.style.display = 'none';
-                video.play();
-            });
-            video.addEventListener('error', function() {
-                loading.style.display = 'none';
-                error.style.display = 'block';
-            });
-        } else {
+        let currentUrlIndex = 0;
+
+        function switchToIframe() {
+            currentMethod = 'iframe';
+            updateMethodButtons();
+            iframePlayer.style.display = 'block';
+            videoPlayer.style.display = 'none';
             loading.style.display = 'none';
-            error.style.display = 'block';
-            error.textContent = 'Tu navegador no soporta reproducción HLS';
+            error.style.display = 'none';
+            
+            // Recargar iframe
+            iframePlayer.src = iframePlayer.src;
+        }
+
+        function switchToVideo() {
+            currentMethod = 'video';
+            updateMethodButtons();
+            iframePlayer.style.display = 'none';
+            videoPlayer.style.display = 'block';
+            loadVideoStream();
+        }
+
+        function updateMethodButtons() {
+            methodButtons.forEach((btn, index) => {
+                if (index === 0 && currentMethod === 'iframe') {
+                    btn.classList.add('active');
+                } else if (index === 1 && currentMethod === 'video') {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        function loadVideoStream() {
+            loading.style.display = 'block';
+            error.style.display = 'none';
+            
+            const url = videoUrls[currentUrlIndex];
+            console.log('Intentando cargar video:', url);
+
+            if (hls) {
+                hls.destroy();
+                hls = null;
+            }
+
+            if (Hls.isSupported()) {
+                hls = new Hls({
+                    debug: false,
+                    enableWorker: true,
+                    lowLatencyMode: true,
+                    backBufferLength: 90
+                });
+                
+                hls.loadSource(url);
+                hls.attachMedia(videoPlayer);
+                
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    console.log('Stream cargado exitosamente');
+                    loading.style.display = 'none';
+                    videoPlayer.play().catch(e => {
+                        console.log('Error en autoplay:', e);
+                    });
+                });
+
+                hls.on(Hls.Events.ERROR, function(event, data) {
+                    console.error('Error HLS:', data);
+                    if (data.fatal) {
+                        loading.style.display = 'none';
+                        error.style.display = 'block';
+                        error.innerHTML = `Error al cargar el stream (${data.type})<br><br><button class="retry-button" onclick="retryCurrentMethod()">Reintentar</button>`;
+                    }
+                });
+            } else if (videoPlayer.canPlayType('application/vnd.apple.mpegurl')) {
+                videoPlayer.src = url;
+                videoPlayer.addEventListener('loadedmetadata', function() {
+                    loading.style.display = 'none';
+                    videoPlayer.play().catch(e => console.log('Error en autoplay:', e));
+                });
+                videoPlayer.addEventListener('error', function(e) {
+                    console.error('Error de video:', e);
+                    loading.style.display = 'none';
+                    error.style.display = 'block';
+                    error.innerHTML = `Error al cargar el stream<br><br><button class="retry-button" onclick="retryCurrentMethod()">Reintentar</button>`;
+                });
+            } else {
+                loading.style.display = 'none';
+                error.style.display = 'block';
+                error.innerHTML = 'Tu navegador no soporta reproducción HLS<br><br><button class="retry-button" onclick="retryCurrentMethod()">Reintentar</button>';
+            }
+        }
+
+        function retryCurrentMethod() {
+            if (currentMethod === 'iframe') {
+                iframePlayer.src = iframePlayer.src;
+            } else {
+                currentUrlIndex = (currentUrlIndex + 1) % videoUrls.length;
+                loadVideoStream();
+            }
         }
 
         // Solicitar pantalla completa al cargar
@@ -144,6 +298,13 @@
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 window.close();
+            }
+        });
+
+        // Manejar clic en el video para reproducir
+        videoPlayer.addEventListener('click', function() {
+            if (videoPlayer.paused) {
+                videoPlayer.play();
             }
         });
     </script>
