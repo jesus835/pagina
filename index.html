@@ -649,9 +649,9 @@
       // URLs específicas para cada stream
       const streamUrls = {
         'disney7': 'https://streamtpglobal.com/global1.php?stream=disney7',
-        'mls': 'https://streamtpglobal.com/global1.php?stream=mls',
+        'mls': 'https://elcanaldeportivo.com/mlspass2.php',
         'tudn': 'https://streamtpglobal.com/global1.php?stream=tudn',
-        'skysports': 'https://streamtpglobal.com/global1.php?stream=skysports',
+        'skysports': 'https://www.futbollibre2.com/sky-sports-la-liga-en-vivo-por-internet.html',
         'movistar': 'https://streamtpglobal.com/global1.php?stream=movistar'
       };
       
@@ -687,19 +687,28 @@
           const htmlContent = iframeDoc.documentElement.outerHTML;
           console.log('Contenido del iframe para', streamName, ':', htmlContent.substring(0, 500));
           
-          // Patrones para buscar la URL del stream
-          const patterns = [
-            /source:\s*['"`]([^'"`]+)['"`]/,
-            /sources:\s*\[['"`]([^'"`]+)['"`]\]/,
-            /url:\s*['"`]([^'"`]+)['"`]/,
-            /src:\s*['"`]([^'"`]+)['"`]/,
-            /source:\s*"([^"]+)"/,
-            /sources:\s*\["([^"]+)"\]/,
-            /url:\s*"([^"]+)"/,
-            /src:\s*"([^"]+)"/,
-            /https:\/\/[^"'\s]+\.m3u8[^"'\s]*/,
-            /https:\/\/[^"'\s]+(?:token=|expires=|md5=|ip=)[^"'\s]*/
-          ];
+                     // Patrones para buscar la URL del stream
+           const patterns = [
+             // Patrones para reproductores de video
+             /source:\s*['"`]([^'"`]+)['"`]/,
+             /sources:\s*\[['"`]([^'"`]+)['"`]\]/,
+             /url:\s*['"`]([^'"`]+)['"`]/,
+             /src:\s*['"`]([^'"`]+)['"`]/,
+             /source:\s*"([^"]+)"/,
+             /sources:\s*\["([^"]+)"\]/,
+             /url:\s*"([^"]+)"/,
+             /src:\s*"([^"]+)"/,
+             // Patrones para iframes embebidos
+             /iframe.*?src=["']([^"']+)["']/,
+             /embed.*?src=["']([^"']+)["']/,
+             // Patrones para URLs de stream directas
+             /https:\/\/[^"'\s]+\.m3u8[^"'\s]*/,
+             /https:\/\/[^"'\s]+(?:token=|expires=|md5=|ip=)[^"'\s]*/,
+             // Patrones específicos para estos sitios
+             /player.*?src=["']([^"']+)["']/,
+             /video.*?src=["']([^"']+)["']/,
+             /stream.*?src=["']([^"']+)["']/
+           ];
           
           let streamMatch = null;
           for (let pattern of patterns) {
@@ -723,7 +732,16 @@
             console.log('URL:', streamUrl);
             console.log('======================');
           } else {
-            console.log('No se encontró URL para', streamName);
+            // Intentar con patrones específicos del sitio
+            console.log('Intentando patrones específicos para', streamName);
+            const specificUrl = extraerURLDeSitioEspecifico(streamName, htmlContent);
+            
+            if (specificUrl) {
+              console.log('✅ URL extraída con patrones específicos para', streamName, ':', specificUrl);
+              actualizarStreamEnTarjeta(streamName, specificUrl);
+            } else {
+              console.log('❌ No se encontró URL para', streamName);
+            }
           }
         }
       } catch (error) {
@@ -739,9 +757,9 @@
       
       const streamUrls = {
         'disney7': 'https://streamtpglobal.com/global1.php?stream=disney7',
-        'mls': 'https://streamtpglobal.com/global1.php?stream=mls',
+        'mls': 'https://elcanaldeportivo.com/mlspass2.php',
         'tudn': 'https://streamtpglobal.com/global1.php?stream=tudn',
-        'skysports': 'https://streamtpglobal.com/global1.php?stream=skysports',
+        'skysports': 'https://www.futbollibre2.com/sky-sports-la-liga-en-vivo-por-internet.html',
         'movistar': 'https://streamtpglobal.com/global1.php?stream=movistar'
       };
       
@@ -754,6 +772,7 @@
           
           // Buscar la URL del stream con patrones mejorados
           const patterns = [
+            // Patrones para reproductores de video
             /source:\s*['"`]([^'"`]+)['"`]/,
             /sources:\s*\[['"`]([^'"`]+)['"`]\]/,
             /url:\s*['"`]([^'"`]+)['"`]/,
@@ -762,8 +781,16 @@
             /sources:\s*\["([^"]+)"\]/,
             /url:\s*"([^"]+)"/,
             /src:\s*"([^"]+)"/,
+            // Patrones para iframes embebidos
+            /iframe.*?src=["']([^"']+)["']/,
+            /embed.*?src=["']([^"']+)["']/,
+            // Patrones para URLs de stream directas
             /https:\/\/[^"'\s]+\.m3u8[^"'\s]*/,
-            /https:\/\/[^"'\s]+(?:token=|expires=|md5=|ip=)[^"'\s]*/
+            /https:\/\/[^"'\s]+(?:token=|expires=|md5=|ip=)[^"'\s]*/,
+            // Patrones específicos para estos sitios
+            /player.*?src=["']([^"']+)["']/,
+            /video.*?src=["']([^"']+)["']/,
+            /stream.*?src=["']([^"']+)["']/
           ];
           
           let streamMatch = null;
@@ -780,7 +807,16 @@
             console.log('✅ URL extraída (fetch) para', streamName, ':', streamUrl);
             actualizarStreamEnTarjeta(streamName, streamUrl);
           } else {
-            console.log('❌ No se encontró URL para', streamName);
+            // Intentar con patrones específicos del sitio
+            console.log('Intentando patrones específicos (fetch) para', streamName);
+            const specificUrl = extraerURLDeSitioEspecifico(streamName, data);
+            
+            if (specificUrl) {
+              console.log('✅ URL extraída con patrones específicos (fetch) para', streamName, ':', specificUrl);
+              actualizarStreamEnTarjeta(streamName, specificUrl);
+            } else {
+              console.log('❌ No se encontró URL para', streamName);
+            }
           }
         })
         .catch(error => {
@@ -814,6 +850,39 @@
       } else {
         console.log('❌ Stream no mapeado:', streamName);
       }
+    }
+
+    // Función para manejar sitios específicos con diferentes estructuras
+    function extraerURLDeSitioEspecifico(streamName, htmlContent) {
+      // Patrones específicos para cada sitio
+      const sitePatterns = {
+        'mls': [
+          // Patrones específicos para elcanaldeportivo.com
+          /player.*?src=["']([^"']+)["']/,
+          /iframe.*?src=["']([^"']+)["']/,
+          /embed.*?src=["']([^"']+)["']/,
+          /https:\/\/[^"'\s]+\.m3u8[^"'\s]*/
+        ],
+        'skysports': [
+          // Patrones específicos para futbollibre2.com
+          /player.*?src=["']([^"']+)["']/,
+          /iframe.*?src=["']([^"']+)["']/,
+          /embed.*?src=["']([^"']+)["']/,
+          /https:\/\/[^"'\s]+\.m3u8[^"'\s]*/
+        ]
+      };
+      
+      const patterns = sitePatterns[streamName] || [];
+      
+      for (let pattern of patterns) {
+        const match = htmlContent.match(pattern);
+        if (match) {
+          console.log('🎯 Patrón específico encontrado para', streamName, ':', pattern);
+          return match[1] || match[0];
+        }
+      }
+      
+      return null;
     }
 
     // Función para mostrar notificación cuando se actualiza un stream
