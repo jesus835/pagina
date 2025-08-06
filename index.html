@@ -547,7 +547,7 @@
           <div class="card-bg" style="background-image: url('images/destacados/destacado1 baner/laligamovisar.png'); background-size: 80%; background-position: center; background-repeat: no-repeat; background-color: white;"></div>
         </div>
         
-        <div class="content-card" onclick="window.AndroidInterface.reproducirStream('https://deportes.ksdjugfsddeports.fun:9092/MTkwLjE0OC4xMjYuNzY=/57_.m3u8?token=msKp0-F39_5s6xORNGMfsQ&expires=1754472894')" style="cursor: pointer;">
+        <div class="content-card" onclick="window.AndroidInterface.reproducirStream('https://deportes.ksdjugfsddeports.fun:9092/MjAwLjc1LjE4NC42OQ==/57_.m3u8?token=CDRLz4rY9SSfeTKIS40vIw&expires=1754475447')" style="cursor: pointer;">
           <div class="card-bg" style="background-image: url('images/destacados/destacado2 baner/skysportslaliga.png'); background-size: cover; background-position: center;"></div>
         </div>
         
@@ -563,6 +563,13 @@
           <div class="card-bg" style="background-image: url('images/destacados/destacado5 baner/disney.png'); background-size: cover; background-position: center;"></div>
         </div>
       </div>
+    </div>
+
+    <!-- Botón de prueba para generar tokens -->
+    <div style="position: absolute; top: 20px; right: 20px; z-index: 1000;">
+      <button onclick="probarGeneracionToken()" style="background: #ff0000; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">
+        Generar Token de Prueba
+      </button>
     </div>
 
     <!-- Fila Your Apps - GUARDADA PARA USO POSTERIOR
@@ -614,6 +621,44 @@
   </div>
 
   <script>
+    // Función para generar tokens automáticamente
+    function generarTokenAutomatico() {
+      const timestamp = Math.floor(Date.now() / 1000);
+      const expiracion = timestamp + (15 * 60 * 60); // 15 horas
+      const ip = '200.75.184.69'; // IP del proxy
+      
+      // Generar token aleatorio (simulado)
+      const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let token = '';
+      for (let i = 0; i < 32; i++) {
+        token += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+      }
+      
+      // Crear URL del stream con token generado
+      const streamUrl = `https://deportes.ksdjugfsddeports.fun:9092/MjAwLjc1LjE4NC42OQ==/57_.m3u8?token=${token}&expires=${expiracion}`;
+      
+      console.log('Token generado:', token);
+      console.log('URL del stream:', streamUrl);
+      console.log('Expira en:', new Date(expiracion * 1000));
+      
+      return { token, streamUrl, expiracion };
+    }
+
+    // Función para probar la generación de tokens
+    function probarGeneracionToken() {
+      const resultado = generarTokenAutomatico();
+      
+      // Mostrar resultado en alerta
+      alert(`Token generado: ${resultado.token}\n\nURL del stream: ${resultado.streamUrl}\n\nExpira: ${new Date(resultado.expiracion * 1000).toLocaleString()}`);
+      
+      // También mostrar en consola
+      console.log('=== TOKEN DE PRUEBA GENERADO ===');
+      console.log('Token:', resultado.token);
+      console.log('URL completa:', resultado.streamUrl);
+      console.log('Expiración:', new Date(resultado.expiracion * 1000));
+      console.log('================================');
+    }
+
     // Función para escalar el contenido al tamaño de la ventana
     function scaleToFit() {
       const wrapper = document.getElementById('static-wrapper');
