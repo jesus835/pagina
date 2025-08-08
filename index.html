@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; connect-src 'self' https://streamtpglobal.com https://*.streamtpglobal.com; frame-src 'self' https://streamtpglobal.com https://*.streamtpglobal.com; img-src 'self' data: https: http:; media-src 'self' data: blob: https: http:;">
+  <meta http-equiv="X-Frame-Options" content="ALLOWALL">
+  <meta http-equiv="Referrer-Policy" content="no-referrer-when-downgrade">
   <title>Load+ TV</title>
   <style>
     * {
@@ -147,6 +150,16 @@
       color: black;
       outline: none;
       transform: scale(1.05);
+    }
+
+    /* Asegurar que button.nav-item se vea igual que a.nav-item */
+    button.nav-item {
+      background: none;
+      border: none;
+      color: inherit;
+      font-family: inherit;
+      text-decoration: none;
+      display: inline-block;
     }
 
     /* Estilos para los botones de los títulos del carrusel */
@@ -530,7 +543,7 @@
       <nav class="nav-menu">
         <a href="#" class="nav-item">Buscar</a>
         <a href="#" class="nav-item">Para ti</a>
-        <a href="https://streamtpglobal.com/eventos.html" target="_blank" class="nav-item">En vivo</a>
+        <button onclick="window.Android.loadUrl('https://streamtpglobal.com/eventos.html')" class="nav-item">En vivo</button>
         <a href="#" class="nav-item">Películas</a>
         <a href="#" class="nav-item">Series</a>
         <a href="#" class="nav-item">Aplicaciones</a>
@@ -616,7 +629,7 @@
   </div>
 
   <!-- Iframe oculto para cargar el reproductor y extraer URLs -->
-  <iframe id="streamIframe" style="position: fixed; top: -9999px; left: -9999px; width: 1px; height: 1px; border: none; opacity: 0;" sandbox="allow-scripts allow-same-origin"></iframe>
+  <iframe id="streamIframe" style="position: fixed; top: -9999px; left: -9999px; width: 1px; height: 1px; border: none; opacity: 0;" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation"></iframe>
 
   <script>
     // Función para generar tokens automáticamente
@@ -1278,6 +1291,8 @@
     
     // Escuchar eventos de teclado
     document.addEventListener('keydown', handleKeyPress);
+
+
   </script>
 </body>
 </html>
