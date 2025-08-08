@@ -1161,10 +1161,14 @@
           navigate('right');
           break;
         case 'Enter':
+        case ' ':
+        case 'OK':
+        case 'Select':
           event.preventDefault();
           if (currentFocus) {
             console.log('Elemento seleccionado:', currentFocus.textContent);
-            // Aquí puedes agregar la acción específica para cada elemento
+            // Simular clic en el elemento enfocado
+            currentFocus.click();
           }
           break;
         case 'Escape':
