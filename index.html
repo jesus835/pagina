@@ -163,28 +163,31 @@
     }
 
     /* Estilos para los botones de los títulos del carrusel */
-    #titulocarrosel1 a,
-    #titulocarrosel2 a {
+    #titulocarrosel1 button,
+    #titulocarrosel2 button {
       transition: all 0.3s ease;
       padding: 25px 50px !important;
       margin: 15px !important;
       display: inline-block !important;
     }
 
-    #titulocarrosel1 a:focus,
-    #titulocarrosel2 a:focus {
+
+    #titulocarrosel1 button:focus,
+    #titulocarrosel2 button:focus {
       background-color: white !important;
       color: black !important;
       outline: none;
       transform: scale(1.05);
     }
 
-    #titulocarrosel1 a:hover,
-    #titulocarrosel2 a:hover {
+    #titulocarrosel1 button:hover,
+    #titulocarrosel2 button:hover {
       background-color: rgba(255,255,255,0.2);
       color: white;
       transform: scale(1.05);
     }
+
+
 
     .profile-icon {
       width: 32px;
@@ -1030,19 +1033,19 @@
       const titulo2 = document.getElementById('titulocarrosel2');
       
       if (titulo1 && getComputedStyle(titulo1).opacity !== '0') {
-        const botones1 = titulo1.querySelectorAll('a');
+        const botones1 = titulo1.querySelectorAll('button');
         focusableElements.push(...botones1);
         console.log('Botón de título 1 agregado');
       }
       
       if (titulo2 && getComputedStyle(titulo2).opacity !== '0') {
-        const botones2 = titulo2.querySelectorAll('a');
+        const botones2 = titulo2.querySelectorAll('button');
         focusableElements.push(...botones2);
         console.log('Botón de título 2 agregado');
       }
 
       console.log('Elementos navegables encontrados:', focusableElements.length);
-      console.log('Botones de títulos visibles:', document.querySelectorAll('#titulocarrosel1 a, #titulocarrosel2 a').length);
+      console.log('Botones de títulos visibles:', document.querySelectorAll('#titulocarrosel1 button, #titulocarrosel2 button').length);
 
       // Agregar atributos de navegación
       focusableElements.forEach((element, index) => {
