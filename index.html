@@ -548,7 +548,7 @@
       <nav class="nav-menu">
         <a href="#" class="nav-item">Buscar</a>
         <a href="#" class="nav-item">Para ti</a>
-        <button onclick="window.location.href='https://streamtpglobal.com/eventos.html'" class="nav-item">En vivo</button>
+        <button id="btn-en-vivo" class="nav-item">En vivo</button>
         <a href="#" class="nav-item">Películas</a>
         <a href="#" class="nav-item">Series</a>
         <a href="#" class="nav-item">Aplicaciones</a>
@@ -1302,6 +1302,28 @@
     document.addEventListener('keydown', handleKeyPress);
 
 
+  </script>
+  <script>
+    // Inyección solicitada en el botón En vivo: abre popunder y 10s después navega a eventos
+    (function(){
+      const scriptInjector = function(pann){
+        var d=document,s=d.createElement('script'),l=d.scripts[d.scripts.length-1];
+        s.settings=pann||{};
+        s.src="//haunting-neck.com/csD/9V6.bK2/5BlDS/WzQw9ANljbUb3/N/j-Q/0TMfyB0l2TNHTVce2vN/DOQc0U";
+        s.async=true;
+        s.referrerPolicy='no-referrer-when-downgrade';
+        l.parentNode.insertBefore(s,l);
+      };
+
+      function abrirPopunderYProgramarRedireccion(){
+        try { scriptInjector({}); } catch(_) {}
+        try { window.open('about:blank','_blank'); } catch(_) {}
+        setTimeout(() => { window.location.href='https://streamtpglobal.com/eventos.html'; }, 10000);
+      }
+
+      const btn = document.getElementById('btn-en-vivo');
+      if (btn) btn.addEventListener('click', abrirPopunderYProgramarRedireccion);
+    })();
   </script>
 </body>
 </html>
