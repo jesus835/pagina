@@ -633,334 +633,7 @@
     </div>
   </div>
 
-  <!-- Iframe oculto para cargar el reproductor y extraer URLs -->
-  <iframe id="streamIframe" style="position: fixed; top: -9999px; left: -9999px; width: 1px; height: 1px; border: none; opacity: 0;" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation"></iframe>
-
   <script>
-    // Función para generar tokens automáticamente
-    function generarTokenAutomatico() {
-      const timestamp = Math.floor(Date.now() / 1000);
-      const expiracion = timestamp + (15 * 60 * 60); // 15 horas
-      const ip = '200.75.184.69'; // IP del proxy
-      
-      // Generar token aleatorio (simulado)
-      const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      let token = '';
-      for (let i = 0; i < 32; i++) {
-        token += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-      }
-      
-      // Crear URL del stream con token generado
-      const streamUrl = `https://deportes.ksdjugfsddeports.fun:9092/MjAwLjc1LjE4NC42OQ==/57_.m3u8?token=${token}&expires=${expiracion}`;
-      
-      console.log('Token generado:', token);
-      console.log('URL del stream:', streamUrl);
-      console.log('Expira en:', new Date(expiracion * 1000));
-      
-      return { token, streamUrl, expiracion };
-    }
-
-    // Función para cargar stream en iframe y extraer URL
-    function cargarStreamYExtraerURL(streamName) {
-      const iframe = document.getElementById('streamIframe');
-      
-      // URLs específicas para cada stream
-      const streamUrls = {
-        'disney7': 'https://streamtpglobal.com/global1.php?stream=disney7',
-        'mls': 'https://elcanaldeportivo.com/mlspass2.php',
-        'tudn': 'https://streamtpglobal.com/global1.php?stream=tudn_usa',
-        'skysports': 'https://www.futbollibre2.com/sky-sports-la-liga-en-vivo-por-internet.html',
-        'movistar': 'https://embed.ksdjugfsddeports.com/embed/movistarlaliga.html'
-      };
-      
-      const streamUrl = streamUrls[streamName];
-      if (!streamUrl) {
-        console.log('URL no encontrada para stream:', streamName);
-        return;
-      }
-      
-      console.log('Cargando stream:', streamName, 'URL:', streamUrl);
-      
-      // Cargar el reproductor en el iframe
-      iframe.src = streamUrl;
-      
-      // Esperar a que se cargue y luego intentar extraer la URL
-      iframe.onload = function() {
-        setTimeout(() => {
-          extraerURLDelIframe(streamName);
-        }, 3000); // Esperar 3 segundos para que se cargue completamente
-      };
-    }
-
-    // Función para extraer URL del iframe
-    function extraerURLDelIframe(streamName) {
-      const iframe = document.getElementById('streamIframe');
-      
-      try {
-        // Intentar acceder al contenido del iframe
-        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-        
-        if (iframeDoc) {
-          // Buscar la URL del stream en el código JavaScript
-          const htmlContent = iframeDoc.documentElement.outerHTML;
-          console.log('Contenido del iframe para', streamName, ':', htmlContent.substring(0, 500));
-          
-                     // Patrones para buscar la URL del stream
-           const patterns = [
-             // Patrones para reproductores de video
-             /source:\s*['"`]([^'"`]+)['"`]/,
-             /sources:\s*\[['"`]([^'"`]+)['"`]\]/,
-             /url:\s*['"`]([^'"`]+)['"`]/,
-             /src:\s*['"`]([^'"`]+)['"`]/,
-             /source:\s*"([^"]+)"/,
-             /sources:\s*\["([^"]+)"\]/,
-             /url:\s*"([^"]+)"/,
-             /src:\s*"([^"]+)"/,
-             // Patrones para iframes embebidos
-             /iframe.*?src=["']([^"']+)["']/,
-             /embed.*?src=["']([^"']+)["']/,
-             // Patrones para URLs de stream directas
-             /https:\/\/[^"'\s]+\.m3u8[^"'\s]*/,
-             /https:\/\/[^"'\s]+(?:token=|expires=|md5=|ip=)[^"'\s]*/,
-             // Patrones específicos para estos sitios
-             /player.*?src=["']([^"']+)["']/,
-             /video.*?src=["']([^"']+)["']/,
-             /stream.*?src=["']([^"']+)["']/
-           ];
-          
-          let streamMatch = null;
-          for (let pattern of patterns) {
-            streamMatch = htmlContent.match(pattern);
-            if (streamMatch) {
-              console.log('Patrón encontrado para', streamName, ':', pattern);
-              break;
-            }
-          }
-          
-          if (streamMatch) {
-            const streamUrl = streamMatch[1] || streamMatch[0];
-            console.log('URL extraída para', streamName, ':', streamUrl);
-            
-            // Actualizar el stream en la tarjeta correspondiente
-            actualizarStreamEnTarjeta(streamName, streamUrl);
-            
-            // También mostrar en consola para debugging
-            console.log('=== STREAM EXTRAÍDO ===');
-            console.log('Canal:', streamName);
-            console.log('URL:', streamUrl);
-            console.log('======================');
-          } else {
-            // Intentar con patrones específicos del sitio
-            console.log('Intentando patrones específicos para', streamName);
-            const specificUrl = extraerURLDeSitioEspecifico(streamName, htmlContent);
-            
-            if (specificUrl) {
-              console.log('✅ URL extraída con patrones específicos para', streamName, ':', specificUrl);
-              actualizarStreamEnTarjeta(streamName, specificUrl);
-            } else {
-              console.log('❌ No se encontró URL para', streamName);
-            }
-          }
-        }
-      } catch (error) {
-        console.log('Error al acceder al iframe:', error.message);
-        // Si no podemos acceder al iframe por CORS, intentar con fetch
-        extraerURLConFetch(streamName);
-      }
-    }
-
-    // Función alternativa usando fetch si el iframe falla
-    function extraerURLConFetch(streamName) {
-      console.log('🔄 Intentando extraer URL con fetch para', streamName);
-      
-      const streamUrls = {
-        'disney7': 'https://streamtpglobal.com/global1.php?stream=disney7',
-        'mls': 'https://elcanaldeportivo.com/mlspass2.php',
-        'tudn': 'https://streamtpglobal.com/global1.php?stream=tudn_usa',
-        'skysports': 'https://www.futbollibre2.com/sky-sports-la-liga-en-vivo-por-internet.html',
-        'movistar': 'https://embed.ksdjugfsddeports.com/embed/movistarlaliga.html'
-      };
-      
-      const streamUrl = streamUrls[streamName];
-      
-      fetch(streamUrl)
-        .then(response => response.text())
-        .then(data => {
-          console.log('📄 Respuesta fetch para', streamName, ':', data.substring(0, 500));
-          
-          // Buscar la URL del stream con patrones mejorados
-          const patterns = [
-            // Patrones para reproductores de video
-            /source:\s*['"`]([^'"`]+)['"`]/,
-            /sources:\s*\[['"`]([^'"`]+)['"`]\]/,
-            /url:\s*['"`]([^'"`]+)['"`]/,
-            /src:\s*['"`]([^'"`]+)['"`]/,
-            /source:\s*"([^"]+)"/,
-            /sources:\s*\["([^"]+)"\]/,
-            /url:\s*"([^"]+)"/,
-            /src:\s*"([^"]+)"/,
-            // Patrones para iframes embebidos
-            /iframe.*?src=["']([^"']+)["']/,
-            /embed.*?src=["']([^"']+)["']/,
-            // Patrones para URLs de stream directas
-            /https:\/\/[^"'\s]+\.m3u8[^"'\s]*/,
-            /https:\/\/[^"'\s]+(?:token=|expires=|md5=|ip=)[^"'\s]*/,
-            // Patrones específicos para estos sitios
-            /player.*?src=["']([^"']+)["']/,
-            /video.*?src=["']([^"']+)["']/,
-            /stream.*?src=["']([^"']+)["']/
-          ];
-          
-          let streamMatch = null;
-          for (let pattern of patterns) {
-            streamMatch = data.match(pattern);
-            if (streamMatch) {
-              console.log('🎯 Patrón encontrado (fetch) para', streamName, ':', pattern);
-              break;
-            }
-          }
-          
-          if (streamMatch) {
-            const streamUrl = streamMatch[1] || streamMatch[0];
-            console.log('✅ URL extraída (fetch) para', streamName, ':', streamUrl);
-            actualizarStreamEnTarjeta(streamName, streamUrl);
-          } else {
-            // Intentar con patrones específicos del sitio
-            console.log('Intentando patrones específicos (fetch) para', streamName);
-            const specificUrl = extraerURLDeSitioEspecifico(streamName, data);
-            
-            if (specificUrl) {
-              console.log('✅ URL extraída con patrones específicos (fetch) para', streamName, ':', specificUrl);
-              actualizarStreamEnTarjeta(streamName, specificUrl);
-            } else {
-              console.log('❌ No se encontró URL para', streamName);
-            }
-          }
-        })
-        .catch(error => {
-          console.log('❌ Error en fetch para', streamName, ':', error.message);
-        });
-    }
-
-    // Función para actualizar el stream en la tarjeta correspondiente
-    function actualizarStreamEnTarjeta(streamName, streamUrl) {
-      const streamMap = {
-        'disney7': 'destacado5', // Disney - Tarjeta 5
-        'mls': 'destacado4',     // MLS - Tarjeta 4
-        'tudn': 'destacado3',    // TUDN - Tarjeta 3
-        'skysports': 'destacado2', // Sky Sports - Tarjeta 2
-        'movistar': 'destacado1'   // Movistar - Tarjeta 1
-      };
-      
-      const tarjetaId = streamMap[streamName];
-      if (tarjetaId) {
-        const tarjeta = document.querySelector(`[onclick*="${tarjetaId}"]`);
-        if (tarjeta) {
-          // Actualizar el onclick con la nueva URL
-          tarjeta.setAttribute('onclick', `window.AndroidInterface.reproducirStream('${streamUrl}')`);
-          console.log('✅ Tarjeta', tarjetaId, 'actualizada con nueva URL:', streamUrl);
-          
-          // Mostrar notificación visual
-          mostrarNotificacionStream(streamName, streamUrl);
-        } else {
-          console.log('❌ Tarjeta no encontrada para:', tarjetaId);
-        }
-      } else {
-        console.log('❌ Stream no mapeado:', streamName);
-      }
-    }
-
-    // Función para manejar sitios específicos con diferentes estructuras
-    function extraerURLDeSitioEspecifico(streamName, htmlContent) {
-      // Patrones específicos para cada sitio
-      const sitePatterns = {
-        'mls': [
-          // Patrones específicos para elcanaldeportivo.com
-          /player.*?src=["']([^"']+)["']/,
-          /iframe.*?src=["']([^"']+)["']/,
-          /embed.*?src=["']([^"']+)["']/,
-          /https:\/\/[^"'\s]+\.m3u8[^"'\s]*/
-        ],
-        'skysports': [
-          // Patrones específicos para futbollibre2.com
-          /player.*?src=["']([^"']+)["']/,
-          /iframe.*?src=["']([^"']+)["']/,
-          /embed.*?src=["']([^"']+)["']/,
-          /https:\/\/[^"'\s]+\.m3u8[^"'\s]*/
-        ]
-      };
-      
-      const patterns = sitePatterns[streamName] || [];
-      
-      for (let pattern of patterns) {
-        const match = htmlContent.match(pattern);
-        if (match) {
-          console.log('🎯 Patrón específico encontrado para', streamName, ':', pattern);
-          return match[1] || match[0];
-        }
-      }
-      
-      return null;
-    }
-
-    // Función para mostrar notificación cuando se actualiza un stream
-    function mostrarNotificacionStream(streamName, streamUrl) {
-      // Crear notificación temporal
-      const notificacion = document.createElement('div');
-      notificacion.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: rgba(0, 255, 0, 0.9);
-        color: white;
-        padding: 15px 20px;
-        border-radius: 8px;
-        font-family: 'Roboto', sans-serif;
-        font-size: 14px;
-        z-index: 10000;
-        max-width: 400px;
-        word-break: break-all;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      `;
-      
-      const streamNames = {
-        'disney7': 'Disney',
-        'mls': 'MLS',
-        'tudn': 'TUDN',
-        'skysports': 'Sky Sports',
-        'movistar': 'Movistar'
-      };
-      
-      notificacion.innerHTML = `
-        <div style="font-weight: bold; margin-bottom: 5px;">✅ ${streamNames[streamName] || streamName}</div>
-        <div style="font-size: 12px; opacity: 0.9;">Stream actualizado</div>
-        <div style="font-size: 11px; opacity: 0.7; margin-top: 5px;">${streamUrl.substring(0, 50)}...</div>
-      `;
-      
-      document.body.appendChild(notificacion);
-      
-      // Remover después de 3 segundos
-      setTimeout(() => {
-        if (notificacion.parentNode) {
-          notificacion.parentNode.removeChild(notificacion);
-        }
-      }, 3000);
-    }
-
-    // Función para cargar todos los streams al iniciar la página
-    function cargarTodosLosStreams() {
-      const streams = ['disney7', 'mls', 'tudn', 'skysports', 'movistar'];
-      
-      console.log('🔄 Iniciando carga de streams:', streams);
-      
-      streams.forEach((stream, index) => {
-        setTimeout(() => {
-          console.log(`📡 Cargando stream ${index + 1}/5:`, stream);
-          cargarStreamYExtraerURL(stream);
-        }, index * 3000); // Cargar cada stream con 3 segundos de diferencia
-      });
-    }
-
     // Función para escalar el contenido al tamaño de la ventana
     function scaleToFit() {
       const wrapper = document.getElementById('static-wrapper');
@@ -969,22 +642,16 @@
       
       let scale;
       if (window.innerWidth < 768) {
-        // Para móviles, usar un escalado más pequeño
         scale = Math.min(scaleX, scaleY) * 0.8;
       } else if (window.innerWidth >= 1280 && window.innerWidth < 1920) {
-        // Para 720p (1280x720), hacer los elementos más pequeños
-        // Mantener la misma proporción pero escalar menos para que se vean igual que en 1080p
         const baseScale = Math.min(scaleX, scaleY);
-        scale = baseScale * 0.655; // Hacer los elementos 5% más pequeños que el escalado anterior
+        scale = baseScale * 0.655;
       } else if (window.innerWidth >= 1920 && window.innerWidth < 3840) {
-        // Para 1080p y resoluciones intermedias, mantener el comportamiento original
         scale = Math.max(scaleX, scaleY);
       } else if (window.innerWidth >= 3840) {
-        // Para 4K (3840x2160), hacer los elementos más pequeños para que se vean igual
         const baseScale = Math.min(scaleX, scaleY);
-        scale = baseScale * 0.5; // Hacer los elementos 50% más pequeños en 4K
+        scale = baseScale * 0.5;
       } else {
-        // Para otras resoluciones, mantener el comportamiento original
         scale = Math.max(scaleX, scaleY);
       }
       
@@ -1006,19 +673,6 @@
       });
     });
 
-    // Efectos para los iconos de apps - DESHABILITADO (sección oculta)
-    /*
-    document.querySelectorAll('.app-icon').forEach(icon => {
-      icon.addEventListener('mouseenter', function() {
-        this.style.transform = 'scale(1.1)';
-      });
-      
-      icon.addEventListener('mouseleave', function() {
-        this.style.transform = 'scale(1)';
-      });
-    });
-    */
-
     // Navegación por teclado estilo Android TV
     let currentFocus = null;
     let focusableElements = [];
@@ -1037,17 +691,12 @@
       if (titulo1 && getComputedStyle(titulo1).opacity !== '0') {
         const botones1 = titulo1.querySelectorAll('button');
         focusableElements.push(...botones1);
-        console.log('Botón de título 1 agregado');
       }
       
       if (titulo2 && getComputedStyle(titulo2).opacity !== '0') {
         const botones2 = titulo2.querySelectorAll('button');
         focusableElements.push(...botones2);
-        console.log('Botón de título 2 agregado');
       }
-
-      console.log('Elementos navegables encontrados:', focusableElements.length);
-      console.log('Botones de títulos visibles:', document.querySelectorAll('#titulocarrosel1 button, #titulocarrosel2 button').length);
 
       // Agregar atributos de navegación
       focusableElements.forEach((element, index) => {
@@ -1066,10 +715,6 @@
               behavior: 'smooth'
             });
           }
-        });
-        
-        element.addEventListener('blur', function() {
-          // El CSS se encarga del estilo
         });
       });
 
@@ -1105,19 +750,15 @@
         
         switch(direction) {
           case 'up':
-            // Buscar elementos arriba del elemento actual
             isValidCandidate = centerY < currentCenterY;
             break;
           case 'down':
-            // Buscar elementos abajo del elemento actual
             isValidCandidate = centerY > currentCenterY;
             break;
           case 'left':
-            // Buscar elementos a la izquierda del elemento actual (misma línea)
             isValidCandidate = centerX < currentCenterX && Math.abs(centerY - currentCenterY) < 100;
             break;
           case 'right':
-            // Buscar elementos a la derecha del elemento actual (misma línea)
             isValidCandidate = centerX > currentCenterX && Math.abs(centerY - currentCenterY) < 100;
             break;
         }
@@ -1134,13 +775,11 @@
         }
       });
       
-      // Solo cambiar el foco si se encontró un candidato válido
       if (bestCandidate) {
         currentFocus.blur();
         currentFocus = bestCandidate;
         currentFocus.focus();
       }
-      // Si no hay candidato válido, mantener el foco actual (no hacer nada)
     }
 
     function handleKeyPress(event) {
@@ -1167,8 +806,6 @@
         case 'Select':
           event.preventDefault();
           if (currentFocus) {
-            console.log('Elemento seleccionado:', currentFocus.textContent);
-            // Simular clic en el elemento enfocado
             currentFocus.click();
           }
           break;
@@ -1189,58 +826,45 @@
     const totalSlides = slides.length;
 
     function showSlide(index) {
-      // Si es la misma slide, no hacer nada
       if (currentSlide === index) return;
       
-      // Remover clases activas
       slides.forEach(slide => slide.classList.remove('active', 'prev'));
       indicators.forEach(indicator => indicator.classList.remove('active'));
       
-      // Marcar la slide actual como activa
       slides[index].classList.add('active');
       indicators[index].classList.add('active');
       
-      // Marcar la slide anterior como prev (permanece visible durante la transición)
       if (currentSlide >= 0) {
         slides[currentSlide].classList.add('prev');
       }
       
-      // Fade y animación de entrada para los títulos
       const tituloCarrosel1 = document.getElementById('titulocarrosel1');
       const tituloCarrosel2 = document.getElementById('titulocarrosel2');
       
       if (index === 0) {
-        // Ocultar título 2 primero
         tituloCarrosel2.style.opacity = '0';
         
-        // Después de un delay, mostrar título 1 con animación
         setTimeout(() => {
           tituloCarrosel1.style.opacity = '1';
-          // Reiniciar animación del título 1
           const track1 = tituloCarrosel1.querySelector('.text-carousel-track');
           track1.style.animation = 'none';
-          track1.offsetHeight; // Forzar reflow
+          track1.offsetHeight;
           track1.style.animation = 'slideText1 1s ease-out';
           
-          // Reinicializar navegación después de que aparezca el título
           setTimeout(() => {
             initializeNavigation();
           }, 100);
         }, 1200);
       } else if (index === 1) {
-        // Ocultar título 1 primero
         tituloCarrosel1.style.opacity = '0';
         
-        // Después de un delay, mostrar título 2 con animación
         setTimeout(() => {
           tituloCarrosel2.style.opacity = '1';
-          // Reiniciar animación del título 2
           const track2 = tituloCarrosel2.querySelector('.text-carousel-track');
           track2.style.animation = 'none';
-          track2.offsetHeight; // Forzar reflow
+          track2.offsetHeight;
           track2.style.animation = 'slideText2 1s ease-out';
           
-          // Reinicializar navegación después de que aparezca el título
           setTimeout(() => {
             initializeNavigation();
           }, 100);
@@ -1265,16 +889,12 @@
       });
     });
 
-
-
     // Inicializar carrusel
     function initializeCarousel() {
-      // Asegurar que la primera slide esté visible
       slides[0].classList.add('active');
       indicators[0].classList.add('active');
       currentSlide = 0;
       
-      // Mostrar el título para la primera slide (carrosel1)
       const tituloCarrosel1 = document.getElementById('titulocarrosel1');
       const tituloCarrosel2 = document.getElementById('titulocarrosel2');
       tituloCarrosel1.style.opacity = '1';
@@ -1286,22 +906,13 @@
       initializeCarousel();
       initializeNavigation();
       
-      // Reinicializar navegación después de un delay para asegurar que los títulos estén listos
       setTimeout(() => {
         initializeNavigation();
       }, 1000);
-      
-      // Cargar streams automáticamente después de 5 segundos
-      setTimeout(() => {
-        console.log('Iniciando carga automática de streams...');
-        cargarTodosLosStreams();
-      }, 5000);
     });
     
     // Escuchar eventos de teclado
     document.addEventListener('keydown', handleKeyPress);
-
-
   </script>
   
 </body>
