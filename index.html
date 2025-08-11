@@ -16,6 +16,131 @@
       box-sizing: border-box;
     }
 
+    /* Overlay de conexión */
+    .connection-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      color: white;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    .connection-overlay.show {
+      display: flex;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .connection-icon {
+      width: 120px;
+      height: 120px;
+      background: #ff4444;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+
+    .connection-icon svg {
+      width: 60px;
+      height: 60px;
+      fill: white;
+    }
+
+    .connection-title {
+      font-size: 48px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .connection-message {
+      font-size: 24px;
+      margin-bottom: 30px;
+      text-align: center;
+      max-width: 600px;
+      line-height: 1.5;
+      color: #cccccc;
+    }
+
+    .connection-details {
+      font-size: 18px;
+      margin-bottom: 40px;
+      text-align: center;
+      color: #999999;
+    }
+
+    .connection-actions {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .connection-btn {
+      background: #4285f4;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+    }
+
+    .connection-btn:hover {
+      background: #3367d6;
+      transform: scale(1.05);
+    }
+
+    .connection-btn.secondary {
+      background: transparent;
+      border: 2px solid #4285f4;
+      color: #4285f4;
+    }
+
+    .connection-btn.secondary:hover {
+      background: #4285f4;
+      color: white;
+    }
+
+    .connection-status {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 14px;
+      color: #00ff00;
+      display: none;
+    }
+
+    .connection-status.offline {
+      color: #ff4444;
+    }
+
     html, body {
       width: 100vw;
       height: 100vh;
@@ -529,6 +654,30 @@
   </style>
 </head>
 <body>
+  <!-- Overlay de conexión -->
+  <div class="connection-overlay" id="connectionOverlay">
+    <div class="connection-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+      </svg>
+    </div>
+    <div class="connection-title">Sin conexión</div>
+    <div class="connection-message">
+      No se puede conectar a Load+ TV. Verifica tu conexión a internet y vuelve a intentar.
+    </div>
+    <div class="connection-details" id="connectionDetails">
+      Intentando reconectar...
+    </div>
+    <div class="connection-actions">
+      <button class="connection-btn" onclick="retryConnection()">Reintentar</button>
+      <button class="connection-btn secondary" onclick="manualCheckConnection()">Verificar conexión</button>
+      <button class="connection-btn secondary" onclick="checkProxyWithTimeout()">Verificar Proxy</button>
+    </div>
+    <div class="connection-status" id="connectionStatus">
+      Estado: Conectando...
+    </div>
+  </div>
+
   <!-- Carrusel de fondo -->
   <div class="background-carousel">
     <div class="carousel-slide active" style="background-image: url('images/carrosel/carrosel1.webp');"></div>
@@ -913,6 +1062,224 @@
     
     // Escuchar eventos de teclado
     document.addEventListener('keydown', handleKeyPress);
+
+    // Sistema de detección de conexión
+    let connectionCheckInterval;
+    let retryCount = 0;
+    const maxRetries = 5;
+    const retryDelay = 3000; // 3 segundos
+
+    // Función para verificar la conexión
+    function checkConnection() {
+      const statusElement = document.getElementById('connectionStatus');
+      const detailsElement = document.getElementById('connectionDetails');
+      
+      // Verificar si hay conexión a internet
+      if (navigator.onLine) {
+        // Verificar conectividad básica
+        Promise.all([
+          // Test 1: Conectividad básica
+          fetch('https://www.google.com/favicon.ico', { 
+            method: 'HEAD',
+            mode: 'no-cors',
+            cache: 'no-cache'
+          }),
+          // Test 2: Verificar acceso a servicios específicos (para detectar bloqueos de proxy)
+          fetch('https://streamtpglobal.com', { 
+            method: 'HEAD',
+            mode: 'no-cors',
+            cache: 'no-cache'
+          }).catch(() => null), // Ignorar errores de CORS
+          // Test 3: Verificar DNS y conectividad general
+          fetch('https://httpbin.org/status/200', { 
+            method: 'GET',
+            cache: 'no-cache'
+          }).catch(() => null)
+        ])
+        .then((results) => {
+          const [basicConnectivity, streamtpAccess, generalAccess] = results;
+          
+          if (basicConnectivity) {
+            // Conexión básica funciona
+            if (!streamtpAccess && !generalAccess) {
+              // Posible problema de proxy o firewall
+              showConnectionOverlay('Problema de Proxy', 'La conexión funciona pero hay restricciones de red. Verifica tu configuración de proxy o firewall.');
+            } else {
+              // Todo funciona correctamente
+              hideConnectionOverlay();
+              statusElement.textContent = 'Estado: Conectado';
+              statusElement.className = 'connection-status';
+              retryCount = 0;
+            }
+          } else {
+            // Error de red general
+            showConnectionOverlay('Error de red', 'No se puede acceder a internet. Verifica tu conexión.');
+          }
+        })
+        .catch((error) => {
+          console.log('Error en verificación de conexión:', error);
+          
+          // Detectar tipos específicos de errores
+          if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+            showConnectionOverlay('Error de Proxy/Red', 'No se puede conectar a través del proxy o hay un problema de red.');
+          } else if (error.name === 'AbortError') {
+            showConnectionOverlay('Timeout de Conexión', 'La conexión tardó demasiado en responder. Posible problema de proxy o red lenta.');
+          } else {
+            showConnectionOverlay('Error de red', 'No se puede acceder a internet. Verifica tu conexión.');
+          }
+        });
+      } else {
+        // Sin conexión a internet
+        showConnectionOverlay('Sin conexión', 'No hay conexión a internet disponible.');
+      }
+    }
+
+    // Función para mostrar el overlay
+    function showConnectionOverlay(title, message) {
+      const overlay = document.getElementById('connectionOverlay');
+      const titleElement = overlay.querySelector('.connection-title');
+      const messageElement = overlay.querySelector('.connection-message');
+      const statusElement = document.getElementById('connectionStatus');
+      
+      titleElement.textContent = title;
+      messageElement.textContent = message;
+      statusElement.textContent = 'Estado: Sin conexión';
+      statusElement.className = 'connection-status offline';
+      
+      overlay.classList.add('show');
+      
+      // Iniciar reintentos automáticos
+      startRetryTimer();
+    }
+
+    // Función para ocultar el overlay
+    function hideConnectionOverlay() {
+      const overlay = document.getElementById('connectionOverlay');
+      overlay.classList.remove('show');
+      
+      // Detener reintentos
+      if (connectionCheckInterval) {
+        clearInterval(connectionCheckInterval);
+        connectionCheckInterval = null;
+      }
+    }
+
+    // Función para reintentar conexión
+    function retryConnection() {
+      retryCount++;
+      const detailsElement = document.getElementById('connectionDetails');
+      const statusElement = document.getElementById('connectionStatus');
+      
+      if (retryCount <= maxRetries) {
+        detailsElement.textContent = `Reintentando... (${retryCount}/${maxRetries})`;
+        statusElement.textContent = 'Estado: Reintentando...';
+        checkConnection();
+      } else {
+        detailsElement.textContent = 'Máximo de reintentos alcanzado. Verifica tu conexión manualmente.';
+        statusElement.textContent = 'Estado: Error';
+      }
+    }
+
+    // Función para iniciar timer de reintentos
+    function startRetryTimer() {
+      if (connectionCheckInterval) {
+        clearInterval(connectionCheckInterval);
+      }
+      
+      connectionCheckInterval = setInterval(() => {
+        if (retryCount < maxRetries) {
+          retryConnection();
+        } else {
+          clearInterval(connectionCheckInterval);
+        }
+      }, retryDelay);
+    }
+
+    // Función para verificar conexión manual
+    function manualCheckConnection() {
+      retryCount = 0;
+      const detailsElement = document.getElementById('connectionDetails');
+      detailsElement.textContent = 'Verificando conexión...';
+      checkConnection();
+    }
+
+    // Eventos de conexión
+    window.addEventListener('online', () => {
+      console.log('Conexión restaurada');
+      checkConnection();
+    });
+
+    window.addEventListener('offline', () => {
+      console.log('Conexión perdida');
+      showConnectionOverlay('Sin conexión', 'Se ha perdido la conexión a internet.');
+    });
+
+    // Verificar conexión al cargar la página
+    window.addEventListener('load', () => {
+      // Pequeño delay para permitir que la página cargue completamente
+      setTimeout(() => {
+        checkConnection();
+      }, 2000);
+    });
+
+    // Verificar conexión periódicamente (cada 30 segundos)
+    setInterval(() => {
+      if (!document.getElementById('connectionOverlay').classList.contains('show')) {
+        checkConnection();
+      }
+    }, 30000);
+
+    // Detectar errores de carga de recursos
+    window.addEventListener('error', (event) => {
+      if (event.target.tagName === 'IMG' || event.target.tagName === 'SCRIPT' || event.target.tagName === 'LINK') {
+        console.log('Error cargando recurso:', event.target.src || event.target.href);
+        // Solo mostrar overlay si es un error crítico
+        if (event.target.dataset.critical === 'true') {
+          showConnectionOverlay('Error de carga', 'No se pueden cargar algunos recursos necesarios.');
+        }
+      }
+    }, true);
+
+    // Función para detectar problemas de proxy con timeout
+    function checkProxyWithTimeout() {
+      const timeout = 10000; // 10 segundos
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), timeout);
+      
+      fetch('https://streamtpglobal.com', {
+        method: 'HEAD',
+        mode: 'no-cors',
+        cache: 'no-cache',
+        signal: controller.signal
+      })
+      .then(() => {
+        clearTimeout(timeoutId);
+        // Proxy funciona correctamente
+      })
+      .catch((error) => {
+        clearTimeout(timeoutId);
+        if (error.name === 'AbortError') {
+          showConnectionOverlay('Proxy Lento/Timeout', 'El proxy está respondiendo muy lento o ha expirado. Verifica tu configuración.');
+        } else if (error.name === 'TypeError') {
+          showConnectionOverlay('Error de Proxy', 'No se puede conectar a través del proxy. Verifica la configuración.');
+        }
+      });
+    }
+
+    // Detectar errores de fetch
+    window.addEventListener('unhandledrejection', (event) => {
+      console.log('Error de red no manejado:', event.reason);
+      if (event.reason && event.reason.name === 'TypeError' && event.reason.message.includes('fetch')) {
+        showConnectionOverlay('Error de red', 'No se puede conectar al servidor.');
+      }
+    });
+
+    // Verificar proxy específicamente cada 2 minutos
+    setInterval(() => {
+      if (!document.getElementById('connectionOverlay').classList.contains('show')) {
+        checkProxyWithTimeout();
+      }
+    }, 120000); // 2 minutos
   </script>
   
 </body>
