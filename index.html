@@ -28,6 +28,129 @@
       color: white;
     }
 
+    /* Overlay de carga */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      color: white;
+      font-family: 'Arial', sans-serif;
+      transition: opacity 0.5s ease-out;
+      overflow: hidden;
+    }
+
+    .loading-overlay.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loading-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .background-gif {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.3) contrast(1.2);
+    }
+
+    .loading-content {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .loading-dots {
+      display: flex;
+      gap: 25px;
+      margin-bottom: 30px;
+      justify-content: center;
+    }
+
+    .dot {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      animation: dotMovement 2s ease-in-out infinite;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    }
+
+    .dot-purple {
+      background: #8B5CF6;
+      animation-delay: 0s;
+    }
+
+    .dot-magenta {
+      background: #EC4899;
+      animation-delay: 0.3s;
+    }
+
+    .dot-pink {
+      background: #F472B6;
+      animation-delay: 0.6s;
+    }
+
+    @keyframes dotMovement {
+      0% { 
+        transform: scale(1) translateY(0px); 
+        opacity: 1; 
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      }
+      25% {
+        transform: scale(1.4) translateY(-15px);
+        opacity: 0.8;
+        box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+      }
+      50% { 
+        transform: scale(1.2) translateY(0px); 
+        opacity: 1; 
+        box-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
+      }
+      75% {
+        transform: scale(1.5) translateY(-10px);
+        opacity: 0.9;
+        box-shadow: 0 0 35px rgba(255, 255, 255, 0.6);
+      }
+      100% { 
+        transform: scale(1) translateY(0px); 
+        opacity: 1; 
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      }
+    }
+
+    .loading-text {
+      font-size: 28px;
+      font-weight: bold;
+      color: white;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-family: 'Arial', sans-serif;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      animation: textGlow 2s ease-in-out infinite;
+    }
+
+    @keyframes textGlow {
+      0%, 100% {
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      }
+      50% {
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6);
+      }
+    }
+
     /* Carrusel de fondo */
     .background-carousel {
       position: fixed;
@@ -532,7 +655,21 @@
     }
   </style>
 </head>
-<body>
+  <body>
+    <!-- Overlay de carga -->
+    <div id="loadingOverlay" class="loading-overlay">
+      <div class="loading-background">
+        <img src="images/gifcarga/gif1.gif" alt="Loading Background" class="background-gif">
+      </div>
+      <div class="loading-content">
+        <div class="loading-dots">
+          <div class="dot dot-purple"></div>
+          <div class="dot dot-magenta"></div>
+          <div class="dot dot-pink"></div>
+        </div>
+        <div class="loading-text">LOADING</div>
+      </div>
+    </div>
 
 
 
@@ -909,14 +1046,73 @@
       tituloCarrosel2.style.opacity = '0';
     }
 
-    // Inicializar carrusel y navegación cuando se carga la página
-    window.addEventListener('load', () => {
-      initializeCarousel();
-      initializeNavigation();
+    // Función para cambiar el GIF de fondo
+    function changeBackgroundGif() {
+      const gifs = ['gif1.gif', 'gif2.gif', 'gif3.gif'];
+      const currentGif = document.querySelector('.background-gif');
+      const randomGif = gifs[Math.floor(Math.random() * gifs.length)];
+      currentGif.src = `images/gifcarga/${randomGif}`;
+    }
+
+    // Función para resetear el estado del overlay (útil para testing)
+    function resetLoadingState() {
+      sessionStorage.removeItem('loadingShown');
+      console.log('Estado del overlay de carga reseteado');
+    }
+
+    // Función para ocultar el overlay de carga
+    function hideLoadingOverlay() {
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      loadingOverlay.classList.add('fade-out');
       
       setTimeout(() => {
+        loadingOverlay.style.display = 'none';
+      }, 500);
+    }
+
+    // Verificar inmediatamente si ya se mostró el overlay
+    document.addEventListener('DOMContentLoaded', () => {
+      const hasShownLoading = sessionStorage.getItem('loadingShown');
+      if (hasShownLoading) {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        loadingOverlay.style.display = 'none';
+      }
+    });
+
+    // Inicializar carrusel y navegación cuando se carga la página
+    window.addEventListener('load', () => {
+      // Verificar si ya se mostró el overlay de carga en esta sesión
+      const hasShownLoading = sessionStorage.getItem('loadingShown');
+      
+      if (!hasShownLoading) {
+        // Primera vez en la sesión - mostrar overlay de carga
+        const gifInterval = setInterval(() => {
+          changeBackgroundGif();
+        }, 2000);
+        
+        // Mostrar overlay de carga por 5 segundos
+        setTimeout(() => {
+          clearInterval(gifInterval);
+          hideLoadingOverlay();
+          initializeCarousel();
+          initializeNavigation();
+          
+          setTimeout(() => {
+            initializeNavigation();
+          }, 1000);
+          
+          // Marcar que ya se mostró el overlay en esta sesión
+          sessionStorage.setItem('loadingShown', 'true');
+        }, 5000); // 5 segundos
+      } else {
+        // Ya se mostró antes - cargar directamente sin overlay
+        initializeCarousel();
         initializeNavigation();
-      }, 1000);
+        
+        setTimeout(() => {
+          initializeNavigation();
+        }, 1000);
+      }
     });
     
     // Escuchar eventos de teclado
@@ -927,6 +1123,352 @@
 
 
 
+    // Verificar IP cada 5 minutos para mayor seguridad
+    setInterval(async () => {
+      if (!document.getElementById('connectionOverlay').classList.contains('show')) {
+        await checkUserIP();
+      }
+    }, 300000); // 5 minutos
+
+    // Protección básica contra manipulación desde consola (TEMPORALMENTE DESHABILITADA)
+    /*
+    let securityCheckInterval = setInterval(() => {
+      // Verificar que las funciones de seguridad no hayan sido sobrescritas
+      if (typeof redirectToAccessDenied !== 'function' || typeof checkUserIP !== 'function') {
+        console.log('🔒 Detección de manipulación - Redirigiendo');
+        redirectToAccessDenied();
+      }
+      
+      // Verificar que la IP permitida no haya sido cambiada
+      if (ALLOWED_IP !== '200.75.184.69') {
+        console.log('🔒 IP permitida modificada - Redirigiendo');
+        redirectToAccessDenied();
+      }
+    }, 10000); // Cada 10 segundos
+    */
+
+    // Protección contra devtools (TEMPORALMENTE DESHABILITADA)
+    /*
+    document.addEventListener('keydown', function(e) {
+      // Detectar F12, Ctrl+Shift+I, Ctrl+U, etc.
+      if (e.key === 'F12' || 
+          (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+          (e.ctrlKey && e.key === 'u') ||
+          (e.ctrlKey && e.shiftKey && e.key === 'C')) {
+        e.preventDefault();
+        redirectToAboutBlank();
+      }
+    });
+
+    // Protección contra clic derecho
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+      redirectToAboutBlank();
+    });
+    */
+
+    // Protección contra manipulación de window.location (TEMPORALMENTE DESHABILITADA)
+    /*
+    const originalLocation = window.location;
+    Object.defineProperty(window, 'location', {
+      get: function() {
+        return originalLocation;
+      },
+      set: function(value) {
+        if (value !== 'about:blank') {
+          redirectToAboutBlank();
+        }
+        return originalLocation;
+      }
+    });
+
+    // Protección contra manipulación de clases CSS del overlay
+    const overlay = document.getElementById('connectionOverlay');
+    if (overlay) {
+      const originalClassList = overlay.classList;
+      Object.defineProperty(overlay, 'classList', {
+        get: function() {
+          return originalClassList;
+        },
+        set: function(value) {
+          // Solo detectar intentos de remover completamente la clase 'show'
+          if (typeof value === 'string' && value.includes('show') === false && originalClassList.contains('show')) {
+            console.log('🔒 Intento de ocultar overlay - Redirigiendo');
+            redirectToAboutBlank();
+            return;
+          }
+          originalClassList.value = value;
+        }
+      });
+    }
+    */
+
+    // Protección contra console.clear (TEMPORALMENTE DESHABILITADA)
+    /*
+    const originalConsoleClear = console.clear;
+    console.clear = function() {
+      redirectToAboutBlank();
+    };
+
+    // Protección contra console.log override
+    const originalConsoleLog = console.log;
+    console.log = function(...args) {
+      // Permitir logs normales pero detectar intentos de manipulación
+      if (args.some(arg => typeof arg === 'string' && arg.includes('disable') || arg.includes('bypass'))) {
+        redirectToAboutBlank();
+      }
+      originalConsoleLog.apply(console, args);
+    };
+
+    // Protección contra clearInterval y clearTimeout
+    const originalClearInterval = clearInterval;
+    const originalClearTimeout = clearTimeout;
+    
+    clearInterval = function(id) {
+      // Permitir limpiar intervalos normales pero detectar manipulación de intervalos de seguridad
+      if (id === securityCheckInterval) {
+        console.log('🔒 Intento de limpiar intervalo de seguridad - Redirigiendo');
+        redirectToAboutBlank();
+        return;
+      }
+      originalClearInterval(id);
+    };
+    
+    clearTimeout = function(id) {
+      // Permitir limpiar timeouts normales
+      originalClearTimeout(id);
+    };
+
+    // Protección contra setInterval override
+    const originalSetInterval = setInterval;
+    setInterval = function(func, delay) {
+      // Detectar intentos de crear intervalos maliciosos
+      if (typeof func === 'string' && func.includes('redirectToAboutBlank')) {
+        console.log('🔒 Intento de manipular setInterval - Redirigiendo');
+        redirectToAboutBlank();
+        return null;
+      }
+      return originalSetInterval(func, delay);
+    };
+    */
+
+    // Protección contra manipulación del DOM (TEMPORALMENTE DESHABILITADA)
+    /*
+    const originalRemoveChild = Node.prototype.removeChild;
+    const originalRemove = Element.prototype.remove;
+    
+    Node.prototype.removeChild = function(child) {
+      // Detectar si intentan remover el overlay
+      if (child && child.id === 'connectionOverlay') {
+        console.log('🔒 Intento de remover overlay - Redirigiendo');
+        redirectToAboutBlank();
+        return child;
+      }
+      return originalRemoveChild.call(this, child);
+    };
+    
+    Element.prototype.remove = function() {
+      // Detectar si intentan remover el overlay
+      if (this.id === 'connectionOverlay') {
+        console.log('🔒 Intento de remover overlay - Redirigiendo');
+        redirectToAboutBlank();
+        return;
+      }
+      return originalRemove.call(this);
+    };
+    */
+
+    // Detectar errores de carga de recursos
+    window.addEventListener('error', (event) => {
+      if (event.target.tagName === 'IMG' || event.target.tagName === 'SCRIPT' || event.target.tagName === 'LINK') {
+        console.log('Error cargando recurso:', event.target.src || event.target.href);
+        // Solo mostrar overlay si es un error crítico
+        if (event.target.dataset.critical === 'true') {
+          showConnectionOverlay('Error de carga', 'No se pueden cargar algunos recursos necesarios.');
+        }
+      }
+    }, true);
+
+
+
+    // Función para mostrar el campo de desbloqueo
+    function showUnlockField() {
+      const unlockField = document.getElementById('unlockField');
+      unlockField.style.display = 'flex';
+      document.getElementById('unlockInput').focus();
+    }
+
+    // Función para ocultar el campo de desbloqueo
+    function hideUnlockField() {
+      const unlockField = document.getElementById('unlockField');
+      unlockField.style.display = 'none';
+      document.getElementById('unlockInput').value = '';
+    }
+
+    // Función para verificar el código de desbloqueo
+    function checkUnlockCode() {
+      const code = document.getElementById('unlockInput').value;
+      
+      if (code === '5241') {
+        console.log('🔓 Código de desbloqueo correcto - Modo desarrollo activado');
+        ipCheckDisabled = true;
+        hideUnlockField();
+        
+        // Ocultar overlay si está visible
+        const overlay = document.getElementById('connectionOverlay');
+        if (overlay && overlay.classList.contains('show')) {
+          overlay.classList.remove('show');
+        }
+        
+        // Permitir acceso
+        checkConnection();
+        
+        // Mostrar mensaje de confirmación
+        alert('🔓 Modo desarrollo activado - Verificación de IP deshabilitada');
+      } else {
+        alert('❌ Código incorrecto. Intenta de nuevo.');
+        document.getElementById('unlockInput').value = '';
+        document.getElementById('unlockInput').focus();
+      }
+    }
+
+    // Función para mostrar overlay de acceso denegado con redirección automática
+    function showAccessDeniedOverlay() {
+      console.log('🔒 Mostrando overlay de acceso denegado');
+      
+      // Mostrar el overlay básico
+      const overlay = document.getElementById('connectionOverlay');
+      const titleElement = overlay.querySelector('.connection-title');
+      const messageElement = overlay.querySelector('.connection-message');
+      const statusElement = document.getElementById('connectionStatus');
+      
+      titleElement.textContent = 'No tienes acceso';
+      messageElement.textContent = `Tu IP actual (${currentIP || 'No detectada'}) no está autorizada. Solo se permite acceso desde la IP: ${ALLOWED_IP}`;
+      statusElement.textContent = 'Estado: Acceso Denegado';
+      statusElement.className = 'connection-status offline';
+      
+      overlay.classList.add('show', 'access-denied');
+      
+      // Agregar información de IP
+      const ipInfo = document.createElement('div');
+      ipInfo.className = 'ip-info';
+      ipInfo.innerHTML = `
+        <strong>IP Permitida:</strong> ${ALLOWED_IP}<br>
+        <strong>Tu IP:</strong> ${currentIP || 'No detectada'}
+      `;
+      messageElement.appendChild(ipInfo);
+      
+      // Contador regresivo simple
+      let countdown = 5;
+      const countdownElement = document.createElement('div');
+      countdownElement.className = 'countdown';
+      countdownElement.style.cssText = `
+        font-size: 18px;
+        color: #ff4444;
+        margin-top: 20px;
+        font-weight: bold;
+      `;
+      messageElement.appendChild(countdownElement);
+      
+      // Contador regresivo con setInterval (más confiable)
+      const countdownInterval = setInterval(() => {
+        countdown--;
+        countdownElement.textContent = `Redirigiendo en ${countdown} segundos...`;
+        
+        if (countdown <= 0) {
+          clearInterval(countdownInterval);
+          redirectToAccessDenied();
+        }
+      }, 1000);
+    }
+
+    // Función para redirigir a la página de acceso denegado
+    function redirectToAccessDenied() {
+      console.log('🔒 Redirigiendo a página de acceso denegado');
+      
+      // Redirección simple a la página about-blank.html
+      window.location.href = 'about-blank.html';
+    }
+
+    // Función para verificar la IP del usuario
+    function checkUserIP() {
+      // Si la verificación de IP está deshabilitada, permitir acceso
+      if (ipCheckDisabled) {
+        console.log('🔓 Verificación de IP deshabilitada - Acceso permitido para desarrollo');
+        return true;
+      }
+      
+      return fetch('https://api.ipify.org?format=json', {
+        method: 'GET',
+        cache: 'no-cache'
+      })
+      .then(response => response.json())
+      .then(data => {
+        currentIP = data.ip;
+        console.log('IP detectada:', currentIP);
+        console.log('IP permitida:', ALLOWED_IP);
+        
+        if (currentIP === ALLOWED_IP) {
+          console.log('✅ IP autorizada - Acceso permitido');
+          return true;
+        } else {
+          console.log('❌ IP no autorizada - Acceso denegado');
+          console.log('Tu IP actual:', currentIP);
+          console.log('IP permitida:', ALLOWED_IP);
+          
+          // Mostrar overlay y redirigir después de 5 segundos
+          showAccessDeniedOverlay();
+          return false;
+        }
+      })
+      .catch(error => {
+        console.log('Error al verificar IP:', error);
+        // Si no se puede verificar la IP, mostrar overlay y redirigir
+        showAccessDeniedOverlay();
+        return false;
+      });
+    }
+
+    // Función para detectar problemas de proxy con timeout
+    function checkProxyWithTimeout() {
+      const timeout = 10000; // 10 segundos
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), timeout);
+      
+      fetch('https://streamtpglobal.com', {
+        method: 'HEAD',
+        mode: 'no-cors',
+        cache: 'no-cache',
+        signal: controller.signal
+      })
+      .then(() => {
+        clearTimeout(timeoutId);
+        // Proxy funciona correctamente
+      })
+      .catch((error) => {
+        clearTimeout(timeoutId);
+        if (error.name === 'AbortError') {
+          showConnectionOverlay('Proxy Lento/Timeout', 'El proxy está respondiendo muy lento o ha expirado. Verifica tu configuración.');
+        } else if (error.name === 'TypeError') {
+          showConnectionOverlay('Error de Proxy', 'No se puede conectar a través del proxy. Verifica la configuración.');
+        }
+      });
+    }
+
+    // Detectar errores de fetch
+    window.addEventListener('unhandledrejection', (event) => {
+      console.log('Error de red no manejado:', event.reason);
+      if (event.reason && event.reason.name === 'TypeError' && event.reason.message.includes('fetch')) {
+        showConnectionOverlay('Error de red', 'No se puede conectar al servidor.');
+      }
+    });
+
+    // Verificar proxy específicamente cada 2 minutos
+    setInterval(() => {
+      if (!document.getElementById('connectionOverlay').classList.contains('show')) {
+        checkProxyWithTimeout();
+      }
+    }, 120000); // 2 minutos
 
 
 
