@@ -28,128 +28,7 @@
       color: white;
     }
 
-    /* Overlay de carga */
-    .loading-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 10000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      color: white;
-      font-family: 'Arial', sans-serif;
-      transition: opacity 0.5s ease-out;
-      overflow: hidden;
-    }
 
-    .loading-overlay.fade-out {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .loading-background {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-    }
-
-    .background-gif {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: brightness(0.3) contrast(1.2);
-    }
-
-    .loading-content {
-      text-align: center;
-      position: relative;
-      z-index: 1;
-    }
-
-    .loading-dots {
-      display: flex;
-      gap: 25px;
-      margin-bottom: 30px;
-      justify-content: center;
-    }
-
-    .dot {
-      width: 35px;
-      height: 35px;
-      border-radius: 50%;
-      animation: dotMovement 2s ease-in-out infinite;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-    }
-
-    .dot-purple {
-      background: #8B5CF6;
-      animation-delay: 0s;
-    }
-
-    .dot-magenta {
-      background: #EC4899;
-      animation-delay: 0.3s;
-    }
-
-    .dot-pink {
-      background: #F472B6;
-      animation-delay: 0.6s;
-    }
-
-    @keyframes dotMovement {
-      0% { 
-        transform: scale(1) translateY(0px); 
-        opacity: 1; 
-        box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-      }
-      25% {
-        transform: scale(1.4) translateY(-15px);
-        opacity: 0.8;
-        box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
-      }
-      50% { 
-        transform: scale(1.2) translateY(0px); 
-        opacity: 1; 
-        box-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
-      }
-      75% {
-        transform: scale(1.5) translateY(-10px);
-        opacity: 0.9;
-        box-shadow: 0 0 35px rgba(255, 255, 255, 0.6);
-      }
-      100% { 
-        transform: scale(1) translateY(0px); 
-        opacity: 1; 
-        box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-      }
-    }
-
-    .loading-text {
-      font-size: 28px;
-      font-weight: bold;
-      color: white;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      font-family: 'Arial', sans-serif;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-      animation: textGlow 2s ease-in-out infinite;
-    }
-
-    @keyframes textGlow {
-      0%, 100% {
-        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-      }
-      50% {
-        text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6);
-      }
-    }
 
     /* Carrusel de fondo */
     .background-carousel {
@@ -656,20 +535,7 @@
   </style>
 </head>
   <body>
-    <!-- Overlay de carga -->
-    <div id="loadingOverlay" class="loading-overlay">
-      <div class="loading-background">
-        <img src="images/gifcarga/gif1.gif" alt="Loading Background" class="background-gif">
-      </div>
-      <div class="loading-content">
-        <div class="loading-dots">
-          <div class="dot dot-purple"></div>
-          <div class="dot dot-magenta"></div>
-          <div class="dot dot-pink"></div>
-        </div>
-        <div class="loading-text">LOADING</div>
-      </div>
-    </div>
+
 
 
 
@@ -1046,73 +912,14 @@
       tituloCarrosel2.style.opacity = '0';
     }
 
-    // Función para cambiar el GIF de fondo
-    function changeBackgroundGif() {
-      const gifs = ['gif1.gif', 'gif2.gif', 'gif3.gif'];
-      const currentGif = document.querySelector('.background-gif');
-      const randomGif = gifs[Math.floor(Math.random() * gifs.length)];
-      currentGif.src = `images/gifcarga/${randomGif}`;
-    }
-
-    // Función para resetear el estado del overlay (útil para testing)
-    function resetLoadingState() {
-      sessionStorage.removeItem('loadingShown');
-      console.log('Estado del overlay de carga reseteado');
-    }
-
-    // Función para ocultar el overlay de carga
-    function hideLoadingOverlay() {
-      const loadingOverlay = document.getElementById('loadingOverlay');
-      loadingOverlay.classList.add('fade-out');
-      
-      setTimeout(() => {
-        loadingOverlay.style.display = 'none';
-      }, 500);
-    }
-
-    // Verificar inmediatamente si ya se mostró el overlay
-    document.addEventListener('DOMContentLoaded', () => {
-      const hasShownLoading = sessionStorage.getItem('loadingShown');
-      if (hasShownLoading) {
-        const loadingOverlay = document.getElementById('loadingOverlay');
-        loadingOverlay.style.display = 'none';
-      }
-    });
-
     // Inicializar carrusel y navegación cuando se carga la página
     window.addEventListener('load', () => {
-      // Verificar si ya se mostró el overlay de carga en esta sesión
-      const hasShownLoading = sessionStorage.getItem('loadingShown');
+      initializeCarousel();
+      initializeNavigation();
       
-      if (!hasShownLoading) {
-        // Primera vez en la sesión - mostrar overlay de carga
-        const gifInterval = setInterval(() => {
-          changeBackgroundGif();
-        }, 2000);
-        
-        // Mostrar overlay de carga por 5 segundos
-        setTimeout(() => {
-          clearInterval(gifInterval);
-          hideLoadingOverlay();
-          initializeCarousel();
-          initializeNavigation();
-          
-          setTimeout(() => {
-            initializeNavigation();
-          }, 1000);
-          
-          // Marcar que ya se mostró el overlay en esta sesión
-          sessionStorage.setItem('loadingShown', 'true');
-        }, 5000); // 5 segundos
-      } else {
-        // Ya se mostró antes - cargar directamente sin overlay
-        initializeCarousel();
+      setTimeout(() => {
         initializeNavigation();
-        
-        setTimeout(() => {
-          initializeNavigation();
-        }, 1000);
-      }
+      }, 1000);
     });
     
     // Escuchar eventos de teclado
