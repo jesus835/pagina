@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disney4 - Con Overlay</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            overflow: hidden;
+        }
+        
+        /* Estilos para el iframe embebido */
+        #disney4-iframe {
+            width: 100%;
+            height: 100vh;
+            border: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        #disney4-iframe.visible {
+            opacity: 1;
+        }
+        
+        /* Estilos para el overlay negro */
+        #overlay-negro {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000000;
+            z-index: 999999;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            color: white;
+            font-size: 18px;
+        }
+        
+        #overlay-negro.oculto {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .overlay-contenido {
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            border: 2px solid #333;
+        }
+        
+        .overlay-titulo {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        /* Botón de regreso */
+        .boton-regreso {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            border: 2px solid #333;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1000000;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .boton-regreso:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-color: #fff;
+        }
+
+        .boton-regreso.visible {
+            display: block;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Botón de regreso -->
+    <button id="boton-regreso" class="boton-regreso" onclick="regresarPaginaAnterior()">
+        ← Volver
+    </button>
+    
+    <!-- Iframe con Disney4 -->
+    <iframe 
+        id="disney4-iframe" 
+        src="https://streamtpglobal.com/global1.php?stream=disney4"
+        allowfullscreen>
+    </iframe>
+    
+    <!-- Overlay negro que oculta toda la página -->
+    <div id="overlay-negro">
+        <div class="overlay-contenido">
+            <div class="overlay-titulo">Cargando Contenido</div>
+        </div>
+    </div>
+
+    <script>
+        // Sistema de historial de navegación
+        (function() {
+            'use strict';
+            
+            // Historial de navegación
+            let historialNavegacion = [];
+            let paginaActual = null;
+            let iframe = document.getElementById('disney4-iframe');
+            let botonRegreso = document.getElementById('boton-regreso');
+            
+            // Función para guardar la página actual en el historial
+            function guardarEnHistorial(url) {
+                if (paginaActual && paginaActual !== url) {
+                    historialNavegacion.push(paginaActual);
+                    console.log('Página guardada en historial:', paginaActual);
+                }
+                paginaActual = url;
+            }
+            
+            // Función para regresar a la página anterior
+            function regresarPaginaAnterior() {
+                if (historialNavegacion.length > 0) {
+                    const paginaAnterior = historialNavegacion.pop();
+                    iframe.src = paginaAnterior;
+                    paginaActual = paginaAnterior;
+                    console.log('Regresando a:', paginaAnterior);
+                    
+                    // Ocultar botón si no hay más páginas en el historial
+                    if (historialNavegacion.length === 0) {
+                        botonRegreso.classList.remove('visible');
+                    }
+                } else {
+                    // Si no hay historial, regresar al index
+                    window.location.href = '../index.html';
+                }
+            }
+            
+            // Función para mostrar el overlay
+            function mostrarOverlay() {
+                const overlay = document.getElementById('overlay-negro');
+                if (overlay) {
+                    overlay.classList.remove('oculto');
+                    console.log('Overlay negro activado');
+                }
+            }
+            
+            // Función para ocultar el overlay
+            function ocultarOverlay() {
+                const overlay = document.getElementById('overlay-negro');
+                if (overlay) {
+                    overlay.classList.add('oculto');
+                    setTimeout(() => {
+                        if (overlay.parentNode) {
+                            overlay.parentNode.removeChild(overlay);
+                        }
+                    }, 300);
+                    console.log('Overlay negro desactivado');
+                }
+            }
+            
+            // Función para alternar el overlay
+            function alternarOverlay() {
+                const overlay = document.getElementById('overlay-negro');
+                if (overlay && overlay.classList.contains('oculto')) {
+                    mostrarOverlay();
+                } else {
+                    ocultarOverlay();
+                }
+            }
+            
+            // Delay de 4 segundos antes de mostrar el iframe
+            setTimeout(() => {
+                iframe.classList.add('visible');
+                // El overlay permanece visible siempre
+            }, 4000);
+            
+            // Detectar cambios en el iframe
+            iframe.addEventListener('load', function() {
+                try {
+                    // Intentar obtener la URL actual del iframe
+                    const urlActual = iframe.contentWindow.location.href;
+                    guardarEnHistorial(urlActual);
+                    
+                    // Mostrar botón de regreso si hay historial
+                    if (historialNavegacion.length > 0) {
+                        botonRegreso.classList.add('visible');
+                    }
+                    
+                    console.log('Iframe cargado:', urlActual);
+                } catch (e) {
+                    // Si hay error de CORS, usar la URL del src
+                    guardarEnHistorial(iframe.src);
+                    console.log('Iframe cargado (CORS):', iframe.src);
+                }
+            });
+            
+            // Detectar navegación dentro del iframe
+            let ultimaUrl = iframe.src;
+            setInterval(() => {
+                try {
+                    const urlActual = iframe.contentWindow.location.href;
+                    if (urlActual !== ultimaUrl) {
+                        guardarEnHistorial(urlActual);
+                        ultimaUrl = urlActual;
+                        
+                        // Mostrar botón de regreso
+                        botonRegreso.classList.add('visible');
+                        console.log('Navegación detectada:', urlActual);
+                    }
+                } catch (e) {
+                    // Error de CORS, no podemos acceder a la URL
+                }
+            }, 1000);
+            
+            // Agregar controles de teclado
+            document.addEventListener('keydown', function(event) {
+                // Ctrl + Shift + O para alternar overlay
+                if (event.ctrlKey && event.shiftKey && event.key === 'O') {
+                    event.preventDefault();
+                    alternarOverlay();
+                }
+                
+                // Escape para ocultar overlay
+                if (event.key === 'Escape') {
+                    ocultarOverlay();
+                }
+                
+                // Tecla Backspace para regresar
+                if (event.key === 'Backspace' && !event.target.matches('input, textarea')) {
+                    event.preventDefault();
+                    regresarPaginaAnterior();
+                }
+            });
+            
+            // Exponer funciones globalmente
+            window.mostrarOverlay = mostrarOverlay;
+            window.ocultarOverlay = ocultarOverlay;
+            window.alternarOverlay = alternarOverlay;
+            window.regresarPaginaAnterior = regresarPaginaAnterior;
+            
+            // Guardar la página inicial
+            guardarEnHistorial(iframe.src);
+            
+            console.log('Disney4 cargado con sistema de historial y delay de 4 segundos. Usa Ctrl+Shift+O para alternar, Escape para ocultar, o Backspace para regresar.');
+            
+        })();
+    </script>
+</body>
+</html>
