@@ -1276,7 +1276,7 @@
 
     // Verificar conexión al cargar la página
     window.addEventListener('load', () => {
-      // Verificación inmediata de IP (sin delay)
+      // Verificación única de IP al cargar
       checkUserIP().then(ipAllowed => {
         if (ipAllowed) {
           // Solo verificar conexión si la IP está permitida
@@ -1284,18 +1284,8 @@
             checkConnection();
           }, 1000);
         }
+        // Si IP no está permitida, checkUserIP ya maneja la redirección
       });
-    });
-
-    // Verificación adicional al DOMContentLoaded
-    document.addEventListener('DOMContentLoaded', () => {
-      // Verificación rápida de IP
-      setTimeout(async () => {
-        const ipAllowed = await checkUserIP();
-        if (!ipAllowed) {
-          redirectToAccessDenied();
-        }
-      }, 500);
     });
 
     // Verificar conexión periódicamente (cada 30 segundos)
@@ -1305,12 +1295,14 @@
       }
     }, 30000);
 
-    // Verificar IP cada 5 minutos para mayor seguridad
+    // Verificar IP cada 5 minutos para mayor seguridad (TEMPORALMENTE DESHABILITADA)
+    /*
     setInterval(async () => {
       if (!document.getElementById('connectionOverlay').classList.contains('show')) {
         await checkUserIP();
       }
     }, 300000); // 5 minutos
+    */
 
     // Protección básica contra manipulación desde consola (TEMPORALMENTE DESHABILITADA)
     /*
@@ -1546,6 +1538,7 @@
 
     // Función para verificar la IP del usuario
     function checkUserIP() {
+      console.log('🔍 Iniciando verificación de IP...');
       return fetch('https://api.ipify.org?format=json', {
         method: 'GET',
         cache: 'no-cache'
@@ -1553,8 +1546,9 @@
       .then(response => response.json())
       .then(data => {
         currentIP = data.ip;
-        console.log('IP detectada:', currentIP);
-        console.log('IPs permitidas:', ALLOWED_IPS);
+        console.log('🌐 IP detectada:', currentIP);
+        console.log('✅ IPs permitidas:', ALLOWED_IPS);
+        console.log('🔍 Verificando si', currentIP, 'está en', ALLOWED_IPS);
         
         if (ALLOWED_IPS.includes(currentIP)) {
           console.log('✅ IP autorizada - Acceso permitido');
@@ -1570,7 +1564,7 @@
         }
       })
       .catch(error => {
-        console.log('Error al verificar IP:', error);
+        console.log('❌ Error al verificar IP:', error);
         // Si no se puede verificar la IP, mostrar overlay y redirigir
         showAccessDeniedOverlay();
         return false;
