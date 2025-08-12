@@ -1536,91 +1536,46 @@
       window.location.href = 'about-blank.html';
     }
 
-    // Función para verificar la IP del usuario con múltiples servicios
+    // Función para verificar la IP del usuario (mismo método que about-blank.html)
     function checkUserIP() {
       console.log('🔍 Iniciando verificación de IP...');
       
-      // Intentar con múltiples servicios de IP
-      const ipServices = [
-        'https://api.ipify.org?format=json',
-        'https://ipapi.co/json/',
-        'https://ipinfo.io/json',
-        'https://api.myip.com'
-      ];
-      
-      // Función para intentar con un servicio específico
-      const tryService = (url) => {
-        return fetch(url, {
-          method: 'GET',
-          cache: 'no-cache',
-          timeout: 5000
-        })
-        .then(response => {
-          if (!response.ok) throw new Error(`HTTP ${response.status}`);
-          return response.json();
-        })
-        .then(data => {
-          // Extraer IP según el formato del servicio
-          let ip = null;
-          if (data.ip) ip = data.ip;
-          else if (data.query) ip = data.query;
-          else if (data.ipAddress) ip = data.ipAddress;
-          
-          if (ip) {
-            console.log('🌐 IP detectada por', url, ':', ip);
-            return ip;
-          } else {
-            throw new Error('No se pudo extraer IP del servicio');
-          }
-        });
-      };
-      
       // Verificar si estamos en localhost basándose en la URL
-      const isLocalhost = () => {
-        const hostname = window.location.hostname;
-        return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '';
-      };
+      const hostname = window.location.hostname;
+      if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '') {
+        console.log('🏠 Detectado localhost - Acceso permitido');
+        currentIP = 'localhost';
+        return Promise.resolve(true);
+      }
       
-      // Intentar con el primer servicio, si falla, probar el siguiente
-      const tryAllServices = async () => {
-        // Primero verificar si estamos en localhost
-        if (isLocalhost()) {
-          console.log('🏠 Detectado localhost - Acceso permitido');
-          currentIP = 'localhost';
-          return true;
-        }
-        
-        for (let i = 0; i < ipServices.length; i++) {
-          try {
-            const ip = await tryService(ipServices[i]);
-            currentIP = ip;
-            console.log('✅ IPs permitidas:', ALLOWED_IPS);
-            console.log('🔍 Verificando si', currentIP, 'está en', ALLOWED_IPS);
+      // Usar el mismo método simple que about-blank.html
+      return fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => {
+          currentIP = data.ip;
+          console.log('🌐 IP detectada:', currentIP);
+          console.log('✅ IPs permitidas:', ALLOWED_IPS);
+          console.log('🔍 Verificando si', currentIP, 'está en', ALLOWED_IPS);
+          
+          if (ALLOWED_IPS.includes(currentIP)) {
+            console.log('✅ IP autorizada - Acceso permitido');
+            return true;
+          } else {
+            console.log('❌ IP no autorizada - Acceso denegado');
+            console.log('Tu IP actual:', currentIP);
+            console.log('IPs permitidas:', ALLOWED_IPS);
             
-            if (ALLOWED_IPS.includes(currentIP)) {
-              console.log('✅ IP autorizada - Acceso permitido');
-              return true;
-            } else {
-              console.log('❌ IP no autorizada - Acceso denegado');
-              console.log('Tu IP actual:', currentIP);
-              console.log('IPs permitidas:', ALLOWED_IPS);
-              
-              // Mostrar overlay y redirigir después de 5 segundos
-              showAccessDeniedOverlay();
-              return false;
-            }
-          } catch (error) {
-            console.log(`❌ Error con servicio ${ipServices[i]}:`, error.message);
-            if (i === ipServices.length - 1) {
-              // Si todos los servicios fallan, permitir acceso temporalmente
-              console.log('⚠️ Todos los servicios de IP fallaron - Permitiendo acceso temporal');
-              return true;
-            }
+            // Mostrar overlay y redirigir después de 5 segundos
+            showAccessDeniedOverlay();
+            return false;
           }
-        }
-      };
-      
-      return tryAllServices();
+        })
+        .catch(error => {
+          console.log('❌ Error al verificar IP:', error);
+          // Si no se puede verificar la IP, permitir acceso temporalmente
+          console.log('⚠️ Error al detectar IP - Permitiendo acceso temporal');
+          return true;
+        });
     }
 
     // Función para detectar problemas de proxy con timeout
