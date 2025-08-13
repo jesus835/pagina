@@ -1,0 +1,29 @@
+{
+  "imagenes_eventos": {
+    "copa centroamericana": {
+      "url": "https://images.unsplash.com/photo-1755043613101-2dbcfc7dba49?w=800&h=600&fit=crop",
+      "descripcion": "Imagen para eventos de Copa Centroamericana"
+    },
+    "copa libertadores": {
+      "url": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop",
+      "descripcion": "Imagen para eventos de Copa Libertadores"
+    },
+    "copa sudamericana": {
+      "url": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop",
+      "descripcion": "Imagen para eventos de Copa Sudamericana"
+    },
+    "liga mx femenil": {
+      "url": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop",
+      "descripcion": "Imagen para eventos de Liga MX Femenil"
+    },
+    "mlb": {
+      "url": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop",
+      "descripcion": "Imagen para eventos de MLB (Baseball)"
+    }
+  },
+  "configuracion": {
+    "tiempo_cache": 300000,
+    "url_base": "./configuracion-imagenes.json",
+    "version": "1.0"
+  }
+}
