@@ -1,29 +1,138 @@
 {
   "imagenes_eventos": {
     "copa centroamericana": {
-      "url": "https://i.imgur.com/i8aS5xQ.jpeg",
-      "descripcion": "Imagen para eventos de Copa Centroamericana"
+      "urls": [
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/"
+      ],
+      "descripcion": "Imágenes para eventos de Copa Centroamericana - Selección aleatoria"
     },
     "copa libertadores": {
-      "url": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop",
-      "descripcion": "Imagen para eventos de Copa Libertadores"
+      "urls": [
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/"
+      ],
+      "descripcion": "Imágenes para eventos de Copa Libertadores - Selección aleatoria"
     },
     "copa sudamericana": {
-      "url": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop",
-      "descripcion": "Imagen para eventos de Copa Sudamericana"
+      "urls": [
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/"
+      ],
+      "descripcion": "Imágenes para eventos de Copa Sudamericana - Selección aleatoria"
     },
     "liga mx femenil": {
-      "url": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop",
-      "descripcion": "Imagen para eventos de Liga MX Femenil"
+      "urls": [
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/"
+      ],
+      "descripcion": "Imágenes para eventos de Liga MX Femenil - Selección aleatoria"
     },
     "mlb": {
-      "url": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop",
-      "descripcion": "Imagen para eventos de MLB (Baseball)"
+      "urls": [
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/",
+        "https://imgur.com/download/i8aS5xQ/"
+      ],
+      "descripcion": "Imágenes para eventos de MLB (Baseball) - Selección aleatoria"
+    }
+  },
+  "equipos_especificos": {
+    "barcelona": {
+      "urls": [
+        "https://imgur.com/download/barcelona-1.jpg",
+        "https://imgur.com/download/barcelona-2.jpg",
+        "https://imgur.com/download/barcelona-3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del FC Barcelona"
+    },
+    "real madrid": {
+      "urls": [
+        "https://imgur.com/download/realmadrid-1.jpg",
+        "https://imgur.com/download/realmadrid-2.jpg",
+        "https://imgur.com/download/realmadrid-3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Real Madrid"
+    },
+    "manchester united": {
+      "urls": [
+        "https://imgur.com/download/manutd-1.jpg",
+        "https://imgur.com/download/manutd-2.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Manchester United"
+    },
+    "liverpool": {
+      "urls": [
+        "https://imgur.com/download/liverpool-1.jpg",
+        "https://imgur.com/download/liverpool-2.jpg",
+        "https://imgur.com/download/liverpool-3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Liverpool"
+    },
+    "bayern munich": {
+      "urls": [
+        "https://imgur.com/download/bayern-1.jpg",
+        "https://imgur.com/download/bayern-2.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Bayern Munich"
+    },
+    "psg": {
+      "urls": [
+        "https://imgur.com/download/psg-1.jpg",
+        "https://imgur.com/download/psg-2.jpg",
+        "https://imgur.com/download/psg-3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del PSG"
+    },
+    "chelsea": {
+      "urls": [
+        "https://imgur.com/download/chelsea-1.jpg",
+        "https://imgur.com/download/chelsea-2.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Chelsea"
+    },
+    "arsenal": {
+      "urls": [
+        "https://imgur.com/download/arsenal-1.jpg",
+        "https://imgur.com/download/arsenal-2.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Arsenal"
+    },
+    "antigua gfc": {
+      "urls": [
+        "https://imgur.com/download/antigua-1.jpg",
+        "https://imgur.com/download/antigua-2.jpg",
+        "https://imgur.com/download/antigua-3.jpg",
+        "https://imgur.com/download/antigua-4.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Antigua GFC"
     }
   },
   "configuracion": {
     "tiempo_cache": 300000,
     "url_base": "./configuracion-imagenes.json",
-    "version": "1.0"
+    "version": "1.3"
   }
 }
+
