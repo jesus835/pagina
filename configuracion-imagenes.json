@@ -129,9 +129,86 @@
       "descripcion": "Imágenes especiales para partidos del Antigua GFC"
     }
   },
+  "logos_canales": {
+    "disney+": {
+      "url": "https://i.imgur.com/disney-plus-logo.png",
+      "alt": "Disney+",
+      "descripcion": "Logo de Disney+"
+    },
+    "espn": {
+      "url": "https://i.imgur.com/espn-logo.png",
+      "alt": "ESPN",
+      "descripcion": "Logo de ESPN"
+    },
+    "sky": {
+      "url": "https://i.imgur.com/sky-logo.png",
+      "alt": "Sky Sports",
+      "descripcion": "Logo de Sky Sports"
+    },
+    "fox sports": {
+      "url": "https://i.imgur.com/fox-sports-logo.png",
+      "alt": "Fox Sports",
+      "descripcion": "Logo de Fox Sports"
+    },
+    "tnt sports": {
+      "url": "https://i.imgur.com/tnt-sports-logo.png",
+      "alt": "TNT Sports",
+      "descripcion": "Logo de TNT Sports"
+    },
+    "paramount+": {
+      "url": "https://i.imgur.com/paramount-plus-logo.png",
+      "alt": "Paramount+",
+      "descripcion": "Logo de Paramount+"
+    },
+    "peacock": {
+      "url": "https://i.imgur.com/peacock-logo.png",
+      "alt": "Peacock",
+      "descripcion": "Logo de Peacock"
+    },
+    "hbo max": {
+      "url": "https://i.imgur.com/hbo-max-logo.png",
+      "alt": "HBO Max",
+      "descripcion": "Logo de HBO Max"
+    },
+    "amazon prime": {
+      "url": "https://i.imgur.com/amazon-prime-logo.png",
+      "alt": "Amazon Prime",
+      "descripcion": "Logo de Amazon Prime Video"
+    },
+    "netflix": {
+      "url": "https://i.imgur.com/netflix-logo.png",
+      "alt": "Netflix",
+      "descripcion": "Logo de Netflix"
+    },
+    "claro sports": {
+      "url": "https://i.imgur.com/claro-sports-logo.png",
+      "alt": "Claro Sports",
+      "descripcion": "Logo de Claro Sports"
+    },
+    "directv": {
+      "url": "https://i.imgur.com/directv-logo.png",
+      "alt": "DIRECTV",
+      "descripcion": "Logo de DIRECTV"
+    },
+    "bein sports": {
+      "url": "https://i.imgur.com/bein-sports-logo.png",
+      "alt": "beIN Sports",
+      "descripcion": "Logo de beIN Sports"
+    },
+    "eurosport": {
+      "url": "https://i.imgur.com/eurosport-logo.png",
+      "alt": "Eurosport",
+      "descripcion": "Logo de Eurosport"
+    },
+    "dazn": {
+      "url": "https://i.imgur.com/dazn-logo.png",
+      "alt": "DAZN",
+      "descripcion": "Logo de DAZN"
+    }
+  },
   "configuracion": {
     "tiempo_cache": 300000,
     "url_base": "./configuracion-imagenes.json",
-    "version": "1.3"
+    "version": "1.4"
   }
 }
