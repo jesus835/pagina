@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI TV - Streaming Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000;
+            color: #ffffff;
+            overflow: hidden;
+            width: 1024px;
+            height: 768px;
+            position: relative;
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+            background: #1a1a1a;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            height: 50%;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(139, 0, 0, 0.8) 0%, 
+                rgba(25, 25, 112, 0.6) 50%, 
+                rgba(0, 0, 0, 0.9) 100%);
+            z-index: 1;
+        }
+
+        .hero-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 30% 50%, rgba(255, 0, 0, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 70% 50%, rgba(0, 0, 255, 0.3) 0%, transparent 50%);
+            z-index: 0;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-link {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link.active {
+            color: #8a2be2;
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #8a2be2;
+        }
+
+        .top-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .control-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .control-icon:hover {
+            color: #8a2be2;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+        }
+
+        /* Hero Content */
+        .hero-content {
+            position: absolute;
+            bottom: 60px;
+            left: 60px;
+            z-index: 5;
+            max-width: 400px;
+        }
+
+        .hero-title {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-play {
+            background: #8a2be2;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-play:hover {
+            background: #7b1fa2;
+            transform: translateY(-2px);
+        }
+
+        .btn-info {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-info:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Content Section */
+        .content-section {
+            height: 50%;
+            background: #0a0a0a;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* App Icons Row */
+        .app-icons-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .left-icons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .icon-item {
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .icon-item:hover {
+            border-color: #8a2be2;
+            color: #8a2be2;
+        }
+
+        .right-apps {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .app-logo {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .app-logo:hover {
+            transform: scale(1.1);
+        }
+
+        .app-netflix {
+            background: #e50914;
+            color: white;
+        }
+
+        .app-prime {
+            background: #00a8e1;
+            color: white;
+            font-size: 8px;
+        }
+
+        .app-youtube {
+            background: #ff0000;
+            color: white;
+        }
+
+        .app-hulu {
+            background: #1ce783;
+            color: white;
+            font-size: 10px;
+        }
+
+        .app-disney {
+            background: #0063e5;
+            color: white;
+            font-size: 10px;
+        }
+
+        .app-fv {
+            background: #ffd700;
+            color: black;
+            font-size: 10px;
+        }
+
+        .app-grid {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .app-settings {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        /* Content Carousel */
+        .content-carousel {
+            flex: 1;
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+        .content-carousel::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .content-carousel::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .content-carousel::-webkit-scrollbar-thumb {
+            background: #8a2be2;
+            border-radius: 4px;
+        }
+
+        .content-card {
+            min-width: 120px;
+            height: 160px;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .content-card:hover {
+            transform: scale(1.05);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            padding: 15px 10px 10px;
+        }
+
+        .card-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Specific card backgrounds */
+        .card-pokemon {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+        }
+
+        .card-attack-titan {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+        }
+
+        .card-one-piece {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        .card-death-note {
+            background: linear-gradient(135deg, #8e44ad, #9b59b6);
+        }
+
+        .card-hunter {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+        }
+
+        .card-dragon-ball {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+        }
+
+        .card-jujutsu {
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+        }
+
+        /* Watermark */
+        .watermark {
+            position: absolute;
+            bottom: 20px;
+            right: 30px;
+            color: #666;
+            font-size: 12px;
+            font-weight: 500;
+            z-index: 10;
+        }
+
+        /* Icons */
+        .icon {
+            font-family: 'Arial', sans-serif;
+        }
+
+        .icon-search::before { content: '🔍'; }
+        .icon-bell::before { content: '🔔'; }
+        .icon-play::before { content: '▶️'; }
+        .icon-info::before { content: 'ℹ️'; }
+        .icon-tv::before { content: '📺'; }
+        .icon-bookmark::before { content: '🔖'; }
+        .icon-gallery::before { content: '🖼️'; }
+        .icon-grid::before { content: '⊞'; }
+        .icon-settings::before { content: '⚙️'; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="hero-image"></div>
+            <div class="hero-background"></div>
+            
+            <!-- Top Navigation -->
+            <div class="top-nav">
+                <div class="nav-links">
+                    <a href="#" class="nav-link active">Home</a>
+                    <a href="#" class="nav-link">Movies</a>
+                    <a href="#" class="nav-link">Series</a>
+                    <a href="#" class="nav-link">Kids</a>
+                </div>
+                
+                <div class="top-controls">
+                    <div class="control-icon">
+                        <i class="icon icon-search"></i>
+                    </div>
+                    <div class="control-icon">
+                        <i class="icon icon-bell"></i>
+                    </div>
+                    <div class="user-avatar">U</div>
+                </div>
+            </div>
+            
+            <!-- Hero Content -->
+            <div class="hero-content">
+                <h1 class="hero-title">Demon Slayer: Kimetsu no Yaiba</h1>
+                <div class="hero-buttons">
+                    <button class="btn-play">
+                        <i class="icon icon-play"></i>
+                        Play
+                    </button>
+                    <button class="btn-info">
+                        <i class="icon icon-info"></i>
+                        More Info
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Content Section -->
+        <div class="content-section">
+            <!-- App Icons Row -->
+            <div class="app-icons-row">
+                <div class="left-icons">
+                    <div class="icon-item">
+                        <i class="icon icon-tv"></i>
+                    </div>
+                    <div class="icon-item">
+                        <i class="icon icon-bookmark"></i>
+                    </div>
+                    <div class="icon-item">
+                        <i class="icon icon-gallery"></i>
+                    </div>
+                </div>
+                
+                <div class="right-apps">
+                    <div class="app-logo app-netflix">N</div>
+                    <div class="app-logo app-prime">prime video</div>
+                    <div class="app-logo app-youtube">▶️</div>
+                    <div class="app-logo app-hulu">hulu</div>
+                    <div class="app-logo app-disney">Disney+</div>
+                    <div class="app-logo app-fv">fv</div>
+                    <div class="app-logo app-grid">
+                        <i class="icon icon-grid"></i>
+                    </div>
+                    <div class="app-logo app-settings">
+                        <i class="icon icon-settings"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Content Carousel -->
+            <div class="content-carousel">
+                <div class="content-card card-pokemon">
+                    <div class="card-image"></div>
+                    <div class="card-overlay">
+                        <div class="card-title">Pokémon</div>
+                    </div>
+                </div>
+                
+                <div class="content-card card-attack-titan">
+                    <div class="card-image"></div>
+                    <div class="card-overlay">
+                        <div class="card-title">Attack on Titan</div>
+                    </div>
+                </div>
+                
+                <div class="content-card card-one-piece">
+                    <div class="card-image"></div>
+                    <div class="card-overlay">
+                        <div class="card-title">One Piece</div>
+                    </div>
+                </div>
+                
+                <div class="content-card card-death-note">
+                    <div class="card-image"></div>
+                    <div class="card-overlay">
+                        <div class="card-title">Death Note</div>
+                    </div>
+                </div>
+                
+                <div class="content-card card-hunter">
+                    <div class="card-image"></div>
+                    <div class="card-overlay">
+                        <div class="card-title">Hunter x Hunter</div>
+                    </div>
+                </div>
+                
+                <div class="content-card card-dragon-ball">
+                    <div class="card-image"></div>
+                    <div class="card-overlay">
+                        <div class="card-title">Dragon Ball</div>
+                    </div>
+                </div>
+                
+                <div class="content-card card-jujutsu">
+                    <div class="card-image"></div>
+                    <div class="card-overlay">
+                        <div class="card-title">Jujutsu Kaisen</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Watermark -->
+        <div class="watermark">m DESIGNER</div>
+    </div>
+</body>
+</html>
