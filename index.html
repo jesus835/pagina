@@ -353,121 +353,7 @@
       font-weight: bold;
     }
 
-    /* Overlay de conexión */
-    .connection-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.9);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 10000;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
-    }
 
-    .connection-overlay.show {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .connection-content {
-      text-align: center;
-      color: white;
-      max-width: 500px;
-      padding: 40px;
-    }
-
-    .connection-title {
-      font-size: 32px;
-      font-weight: bold;
-      margin-bottom: 20px;
-      color: #ff6b6b;
-    }
-
-    .connection-message {
-      font-size: 18px;
-      margin-bottom: 30px;
-      line-height: 1.5;
-    }
-
-    .connection-buttons {
-      display: flex;
-      gap: 20px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .connection-btn {
-      padding: 12px 24px;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .btn-primary {
-      background: #4285f4;
-      color: white;
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.2);
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: #3367d6;
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.3);
-    }
-
-    /* Campo de desbloqueo */
-    .unlock-field {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      gap: 15px;
-      margin-top: 20px;
-    }
-
-    .unlock-input {
-      padding: 10px 15px;
-      border: 2px solid #4285f4;
-      border-radius: 8px;
-      font-size: 16px;
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
-      outline: none;
-    }
-
-    .unlock-input::placeholder {
-      color: rgba(255, 255, 255, 0.6);
-    }
-
-    .unlock-btn {
-      padding: 10px 20px;
-      background: #4285f4;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    .unlock-btn:hover {
-      background: #3367d6;
-    }
 
     /* Scrollbar personalizada */
     .content-cards::-webkit-scrollbar {
@@ -490,21 +376,7 @@
   </style>
 </head>
 <body>
-  <!-- Overlay de conexión -->
-  <div id="connectionOverlay" class="connection-overlay">
-    <div class="connection-content">
-      <div class="connection-title">Error de Conexión</div>
-      <div class="connection-message">No se puede conectar al servidor. Verifica tu conexión a internet.</div>
-      <div class="connection-buttons">
-        <button class="connection-btn btn-primary" onclick="checkConnection()">Reintentar</button>
-        <button class="connection-btn btn-secondary" onclick="showUnlockField()">Desbloquear</button>
-      </div>
-      <div id="unlockField" class="unlock-field">
-        <input type="text" id="unlockInput" class="unlock-input" placeholder="Ingresa código de desbloqueo">
-        <button class="unlock-btn" onclick="checkUnlockCode()">Desbloquear</button>
-      </div>
-    </div>
-  </div>
+
 
   <div id="static-wrapper">
     <!-- Indicadores del carrusel -->
@@ -612,56 +484,14 @@
   </div>
 
   <script>
-    // Variables globales para verificación de IP
-    const ALLOWED_IP = '200.75.184.69';
-    let currentIP = null;
-    let ipCheckDisabled = false;
+
 
     // Variables del carrusel
     let currentSlide = 0;
     const slides = document.querySelectorAll('.carousel-slide');
     const indicators = document.querySelectorAll('.carousel-indicator');
 
-    // Función para mostrar overlay de conexión
-    function showConnectionOverlay(title, message) {
-      console.log('🔌 Mostrando overlay de conexión:', title, message);
-      const overlay = document.getElementById('connectionOverlay');
-      const titleElement = overlay.querySelector('.connection-title');
-      const messageElement = overlay.querySelector('.connection-message');
-      
-      titleElement.textContent = title;
-      messageElement.textContent = message;
-      overlay.classList.add('show');
-    }
 
-    // Función para verificar conexión
-    function checkConnection() {
-      console.log('🔌 Verificando conexión...');
-      // Aquí se puede implementar la lógica de verificación de conexión
-    }
-
-    // Función para mostrar campo de desbloqueo
-    function showUnlockField() {
-      const unlockField = document.getElementById('unlockField');
-      unlockField.style.display = 'flex';
-      document.getElementById('unlockInput').focus();
-    }
-
-    // Función para verificar código de desbloqueo
-    function checkUnlockCode() {
-      const input = document.getElementById('unlockInput');
-      const code = input.value.trim();
-      
-      if (code === '1234') { // Código de ejemplo
-        ipCheckDisabled = true;
-        document.getElementById('connectionOverlay').classList.remove('show');
-        input.value = '';
-        console.log('🔓 Código de desbloqueo correcto');
-      } else {
-        alert('Código incorrecto');
-        input.value = '';
-      }
-    }
 
     // Función para mostrar slide específico
     function showSlide(index) {
@@ -838,98 +668,7 @@
     // Navegación por teclado estilo Android TV
     let currentFocus = null;
 
-    // Función para redirigir a la página de acceso denegado
-    function redirectToAccessDenied() {
-      console.log('🔒 Redirigiendo a página de acceso denegado');
-      window.location.href = 'about-blank.html';
-    }
 
-    // Función para verificar la IP del usuario
-    function checkUserIP() {
-      // Si la verificación de IP está deshabilitada, permitir acceso
-      if (ipCheckDisabled) {
-        console.log('🔓 Verificación de IP deshabilitada - Acceso permitido para desarrollo');
-        return true;
-      }
-      
-      return fetch('https://api.ipify.org?format=json', {
-        method: 'GET',
-        cache: 'no-cache'
-      })
-      .then(response => response.json())
-      .then(data => {
-        currentIP = data.ip;
-        console.log('IP detectada:', currentIP);
-        console.log('IP permitida:', ALLOWED_IP);
-        
-        if (currentIP === ALLOWED_IP) {
-          console.log('✅ IP autorizada - Acceso permitido');
-          return true;
-        } else {
-          console.log('❌ IP no autorizada - Acceso denegado');
-          console.log('Tu IP actual:', currentIP);
-          console.log('IP permitida:', ALLOWED_IP);
-          
-          // Mostrar overlay y redirigir después de 5 segundos
-          showConnectionOverlay('Acceso Denegado', 'Tu IP no está autorizada para acceder a este contenido.');
-          return false;
-        }
-      })
-      .catch(error => {
-        console.log('Error al verificar IP:', error);
-        // Si no se puede verificar la IP, mostrar overlay y redirigir
-        showConnectionOverlay('Error de Conexión', 'No se puede verificar tu IP. Verifica tu conexión.');
-        return false;
-      });
-    }
-
-    // Función para detectar problemas de proxy con timeout
-    function checkProxyWithTimeout() {
-      const timeout = 10000; // 10 segundos
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), timeout);
-      
-      fetch('https://streamtpglobal.com', {
-        method: 'HEAD',
-        mode: 'no-cors',
-        cache: 'no-cache',
-        signal: controller.signal
-      })
-      .then(() => {
-        clearTimeout(timeoutId);
-        // Proxy funciona correctamente
-      })
-      .catch((error) => {
-        clearTimeout(timeoutId);
-        if (error.name === 'AbortError') {
-          showConnectionOverlay('Proxy Lento/Timeout', 'El proxy está respondiendo muy lento o ha expirado. Verifica tu configuración.');
-        } else if (error.name === 'TypeError') {
-          showConnectionOverlay('Error de Proxy', 'No se puede conectar a través del proxy. Verifica la configuración.');
-        }
-      });
-    }
-
-    // Detectar errores de fetch
-    window.addEventListener('unhandledrejection', (event) => {
-      console.log('Error de red no manejado:', event.reason);
-      if (event.reason && event.reason.name === 'TypeError' && event.reason.message.includes('fetch')) {
-        showConnectionOverlay('Error de red', 'No se puede conectar al servidor.');
-      }
-    });
-
-    // Verificar proxy específicamente cada 2 minutos
-    setInterval(() => {
-      if (!document.getElementById('connectionOverlay').classList.contains('show')) {
-        checkProxyWithTimeout();
-      }
-    }, 120000); // 2 minutos
-
-    // Verificar IP cada 5 minutos para mayor seguridad
-    setInterval(async () => {
-      if (!document.getElementById('connectionOverlay').classList.contains('show')) {
-        await checkUserIP();
-      }
-    }, 300000); // 5 minutos
   </script>
 </body>
 </html>
