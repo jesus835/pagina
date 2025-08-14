@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google TV Complete - Demo Transformado</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background: #0a0a2e;
+            color: white;
+            overflow: hidden;
+        }
+
+        /* Estilos para el wrapper expandido */
+        #wraper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            border-radius: 0;
+            max-width: none;
+            max-height: none;
+            min-width: 100vw;
+            min-height: 100vh;
+            z-index: 9999;
+            overflow-y: auto;
+            overflow-x: hidden;
+            box-sizing: border-box;
+            background: #0a0a2e;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            box-shadow: none;
+            border: none;
+            opacity: 1;
+            position: relative;
+        }
+
+        /* Estilos para el carrusel Google TV */
+        #google-tv-carrusel {
+            width: 100%;
+            height: 100vh;
+            background: transparent;
+            border-radius: 0;
+            margin: 0;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #tarjetas-google-tv {
+            display: flex;
+            transition: transform 0.8s ease;
+            height: 100vh;
+            gap: 0;
+            width: 100%;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .google-tv-card {
+            background: transparent;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 0;
+            color: white;
+            font-family: 'Roboto', Arial, sans-serif;
+            position: relative;
+            overflow: hidden;
+            box-shadow: none;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 100%;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            flex-basis: 100%;
+            min-width: 100%;
+            height: 100vh;
+            align-items: center;
+        }
+
+        .contenido-texto {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: transparent;
+            border-radius: 15px;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0;
+            margin-right: 40%;
+            margin-bottom: 10%;
+            opacity: 1;
+        }
+
+        .contenido-texto h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            margin: 0 0 15px 0;
+            line-height: 1.2;
+        }
+
+        .contenido-texto p {
+            font-size: 18px;
+            color: #ffffff;
+            line-height: 1.4;
+            margin: 0 0 30px 0;
+            opacity: 0.9;
+        }
+
+        .contenido-texto a,
+        .contenido-texto button {
+            background: #f0f0f0;
+            color: #000000;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+            display: inline-block;
+            min-width: 120px;
+            text-align: center;
+            outline: none;
+            margin: 5px;
+        }
+
+        .contenido-texto a:hover,
+        .contenido-texto button:hover {
+            background: #e0e0e0;
+            transform: scale(1.05);
+        }
+
+        .contenido-texto a:focus,
+        .contenido-texto button:focus {
+            background: #4285f4;
+            color: #ffffff;
+            border-color: #ffffff;
+            transform: scale(1.05);
+        }
+
+        /* Botón siguiente del carrusel */
+        .boton-siguiente-carrusel {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            width: 54px;
+            height: 54px;
+        }
+
+        .boton-siguiente-carrusel:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%) scale(1.05);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .boton-siguiente-carrusel:focus {
+            background: rgba(255, 255, 255, 0.4);
+            transform: translateY(-50%) scale(1.05);
+            border-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 6px 25px rgba(255, 255, 255, 0.2);
+        }
+
+
+
+
+
+        /* Metadata de eventos */
+        .metadata {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            color: #ffffff;
+        }
+
+        .metadata .bullet {
+            color: #4285f4;
+            font-weight: bold;
+        }
+
+        /* Branding Google TV */
+        .branding {
+            font-size: 14px;
+            color: #ffffff;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+
+
+
+    <!-- Contenido transformado directamente -->
+    <div id="wraper">
+        <div id="google-tv-carrusel">
+            <div id="tarjetas-google-tv">
+                <!-- Tarjeta 1 -->
+                <div class="google-tv-card" data-imagen-fondo="https://imgur.com/download/i8aS5xQ/">
+                    <div class="contenido-texto">
+                        <div class="branding">Google TV</div>
+                        <h2>Copa Centroamericana - Final</h2>
+                        <div class="metadata">
+                            <span>20:00</span>
+                            <span class="bullet">•</span>
+                            <span>Fútbol</span>
+                        </div>
+                        <p>Evento deportivo: Copa Centroamericana - Final</p>
+                        <div>
+                            <a href="#" tabindex="0">Ver en vivo</a>
+                            <a href="#" tabindex="0">Ver resumen</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 2 -->
+                <div class="google-tv-card" data-imagen-fondo="https://imgur.com/download/i8aS5xQ/">
+                    <div class="contenido-texto">
+                        <div class="branding">Google TV</div>
+                        <h2>Leagues Cup - Semifinal</h2>
+                        <div class="metadata">
+                            <span>22:30</span>
+                            <span class="bullet">•</span>
+                            <span>Fútbol</span>
+                        </div>
+                        <p>Evento deportivo: Leagues Cup - Semifinal</p>
+                        <div>
+                            <a href="#" tabindex="0">Ver en vivo</a>
+                            <a href="#" tabindex="0">Ver resumen</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 3 -->
+                <div class="google-tv-card" data-imagen-fondo="https://imgur.com/download/i8aS5xQ/">
+                    <div class="contenido-texto">
+                        <div class="branding">Google TV</div>
+                        <h2>Champions League - Cuartos</h2>
+                        <div class="metadata">
+                            <span>01:00</span>
+                            <span class="bullet">•</span>
+                            <span>Fútbol</span>
+                        </div>
+                        <p>Evento deportivo: Champions League - Cuartos</p>
+                        <div>
+                            <a href="#" tabindex="0">Ver en vivo</a>
+                            <a href="#" tabindex="0">Ver resumen</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 4 -->
+                <div class="google-tv-card" data-imagen-fondo="https://imgur.com/download/i8aS5xQ/">
+                    <div class="contenido-texto">
+                        <div class="branding">Google TV</div>
+                        <h2>Premier League - Matchday</h2>
+                        <div class="metadata">
+                            <span>03:30</span>
+                            <span class="bullet">•</span>
+                            <span>Fútbol</span>
+                        </div>
+                        <p>Evento deportivo: Premier League - Matchday</p>
+                        <div>
+                            <a href="#" tabindex="0">Ver en vivo</a>
+                            <a href="#" tabindex="0">Ver resumen</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 5 -->
+                <div class="google-tv-card" data-imagen-fondo="https://imgur.com/download/i8aS5xQ/">
+                    <div class="contenido-texto">
+                        <div class="branding">Google TV</div>
+                        <h2>Liga MX - Jornada</h2>
+                        <div class="metadata">
+                            <span>06:00</span>
+                            <span class="bullet">•</span>
+                            <span>Fútbol</span>
+                        </div>
+                        <p>Evento deportivo: Liga MX - Jornada</p>
+                        <div>
+                            <a href="#" tabindex="0">Ver en vivo</a>
+                            <a href="#" tabindex="0">Ver resumen</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 6 -->
+                <div class="google-tv-card" data-imagen-fondo="https://imgur.com/download/i8aS5xQ/">
+                    <div class="contenido-texto">
+                        <div class="branding">Google TV</div>
+                        <h2>Copa Libertadores - Octavos</h2>
+                        <div class="metadata">
+                            <span>08:30</span>
+                            <span class="bullet">•</span>
+                            <span>Fútbol</span>
+                        </div>
+                        <p>Evento deportivo: Copa Libertadores - Octavos</p>
+                        <div>
+                            <a href="#" tabindex="0">Ver en vivo</a>
+                            <a href="#" tabindex="0">Ver resumen</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón siguiente -->
+            <button class="boton-siguiente-carrusel" tabindex="0" aria-label="Siguiente evento">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 5L15 12L8 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Script principal -->
+    <script src="js menu e importantes/google-tv-complete.js"></script>
+    
+    <!-- Script adicional para la demo -->
+    <script>
+
+        // Configurar navegación por teclado para el botón siguiente
+        document.addEventListener('DOMContentLoaded', function() {
+            const botonSiguiente = document.querySelector('.boton-siguiente-carrusel');
+            if (botonSiguiente) {
+                botonSiguiente.addEventListener('click', function() {
+                    if (window.siguientePagina) {
+                        window.siguientePagina();
+                    }
+                });
+
+                botonSiguiente.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        if (window.siguientePagina) {
+                            window.siguientePagina();
+                        }
+                    }
+                });
+            }
+
+            // Configurar navegación por teclado para los botones de las tarjetas
+            const botonesTarjetas = document.querySelectorAll('.google-tv-card a, .google-tv-card button');
+            botonesTarjetas.forEach((boton, index) => {
+                boton.addEventListener('keydown', function(e) {
+                    switch(e.key) {
+                        case 'ArrowLeft':
+                            e.preventDefault();
+                            const prevIndex = index > 0 ? index - 1 : botonesTarjetas.length - 1;
+                            botonesTarjetas[prevIndex].focus();
+                            break;
+                        case 'ArrowRight':
+                            e.preventDefault();
+                            const nextIndex = index < botonesTarjetas.length - 1 ? index + 1 : 0;
+                            botonesTarjetas[nextIndex].focus();
+                            break;
+                        case 'ArrowUp':
+                            e.preventDefault();
+                            const botonSiguiente = document.querySelector('.boton-siguiente-carrusel');
+                            if (botonSiguiente) {
+                                botonSiguiente.focus();
+                            }
+                            break;
+                    }
+                });
+            });
+        });
+
+        // Logs para debugging
+        console.log('🎬 Google TV Complete Demo Transformado cargado');
+        console.log('⌨️ Usa las flechas del teclado para navegar por el carrusel');
+        console.log('🔄 El carrusel se actualiza automáticamente cada 60 segundos de inactividad');
+    </script>
+</body>
+</html>
