@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steam - Game Launcher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1b2838 0%, #2a475e 100%);
+            color: #ffffff;
+            overflow: hidden;
+            width: 961px;
+            height: 400px;
+            position: relative;
+        }
+
+        /* Fondo con gradiente y círculos */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(138, 43, 226, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(0, 191, 255, 0.3) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sidebar izquierdo */
+        .sidebar {
+            width: 200px;
+            background: rgba(23, 26, 33, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+        }
+
+        .steam-logo {
+            display: flex;
+            align-items: center;
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .steam-logo img {
+            width: 32px;
+            height: 32px;
+            margin-right: 10px;
+        }
+
+        .steam-logo span {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 0 20px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            color: #b8b6b4;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+
+        .nav-item i {
+            width: 20px;
+            margin-right: 12px;
+            font-size: 16px;
+        }
+
+        .help-card {
+            background: linear-gradient(135deg, #4a90e2 0%, #7b68ee 100%);
+            margin: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            color: white;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .help-card i {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 12px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .user-status {
+            font-size: 12px;
+            color: #66c0f4;
+        }
+
+        /* Contenido principal */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Barra superior */
+        .top-bar {
+            height: 60px;
+            background: rgba(23, 26, 33, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .greeting {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .top-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .online-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #66c0f4;
+        }
+
+        .friends-online {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .friend-avatar {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            border: 2px solid #1b2838;
+        }
+
+        .friend-avatar:nth-child(2) {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+        }
+
+        .friend-avatar:nth-child(3) {
+            background: linear-gradient(135deg, #45b7d1, #96c93d);
+        }
+
+        .friend-avatar:nth-child(4) {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+
+        .control-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #b8b6b4;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .control-icon:hover {
+            color: #ffffff;
+        }
+
+        .notification-dot {
+            width: 8px;
+            height: 8px;
+            background: #66c0f4;
+            border-radius: 50%;
+            position: absolute;
+            top: -2px;
+            right: -2px;
+        }
+
+        /* Área de contenido */
+        .content-area {
+            flex: 1;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 15px;
+            overflow: hidden;
+        }
+
+        /* Tarjetas de juegos */
+        .game-card {
+            background: rgba(23, 26, 33, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .game-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .game-card.hero {
+            grid-row: span 2;
+            background: linear-gradient(135deg, rgba(23, 26, 33, 0.95) 0%, rgba(42, 71, 94, 0.95) 100%);
+        }
+
+        .game-image {
+            width: 100%;
+            height: 120px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-card.hero .game-image {
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .game-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        }
+
+        .game-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #ff6b6b;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .game-platforms {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .platform-icon {
+            width: 16px;
+            height: 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        .game-content {
+            padding: 15px;
+        }
+
+        .game-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .game-card.hero .game-title {
+            font-size: 20px;
+        }
+
+        .game-tags {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .game-tag {
+            background: rgba(255, 255, 255, 0.1);
+            color: #b8b6b4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+        }
+
+        .game-rating {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .rating-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #4ecdc4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+        }
+
+        .rating-text {
+            font-size: 12px;
+            color: #b8b6b4;
+        }
+
+        .game-price {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .price-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .price-current {
+            font-size: 16px;
+            font-weight: bold;
+            color: #66c0f4;
+        }
+
+        .price-original {
+            font-size: 12px;
+            color: #b8b6b4;
+            text-decoration: line-through;
+        }
+
+        .play-button {
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .play-button:hover {
+            background: linear-gradient(135deg, #357abd, #2a5f9e);
+        }
+
+        .friends-playing {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #b8b6b4;
+        }
+
+        .friend-mini {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            border: 1px solid #1b2838;
+        }
+
+        .game-screenshots {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .screenshot {
+            width: 40px;
+            height: 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 3px;
+            position: relative;
+        }
+
+        .screenshot.more {
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #b8b6b4;
+        }
+
+        /* Iconos */
+        .icon {
+            font-family: 'Arial', sans-serif;
+        }
+
+        .icon-home::before { content: '🏠'; }
+        .icon-categories::before { content: '📊'; }
+        .icon-new::before { content: '⚡'; }
+        .icon-points::before { content: '⭐'; }
+        .icon-news::before { content: '📰'; }
+        .icon-lab::before { content: '🧪'; }
+        .icon-search::before { content: '🔍'; }
+        .icon-heart::before { content: '❤️'; }
+        .icon-bag::before { content: '🛍️'; }
+        .icon-settings::before { content: '⚙️'; }
+        .icon-arrow::before { content: '↗️'; }
+        .icon-play::before { content: '▶️'; }
+        .icon-refresh::before { content: '🔄'; }
+        .icon-windows::before { content: '🪟'; }
+        .icon-apple::before { content: '🍎'; }
+        .icon-controller::before { content: '🎮'; }
+        .icon-sword::before { content: '⚔️'; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar izquierdo -->
+        <div class="sidebar">
+            <div class="steam-logo">
+                <div class="icon" style="font-size: 24px;">🎮</div>
+                <span>STEAM</span>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="#" class="nav-item">
+                    <i class="icon icon-home"></i>
+                    Home
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="icon icon-categories"></i>
+                    Categories
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="icon icon-new"></i>
+                    New
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="icon icon-points"></i>
+                    Points shop
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="icon icon-news"></i>
+                    News
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="icon icon-lab"></i>
+                    Laboratory
+                </a>
+            </nav>
+            
+            <div class="help-card">
+                Do you need help?
+                <i class="icon icon-arrow"></i>
+            </div>
+            
+            <div class="user-profile">
+                <div class="user-avatar">J</div>
+                <div class="user-info">
+                    <div class="user-name">Julia</div>
+                    <div class="user-status">Online</div>
+                </div>
+                <i class="icon icon-settings"></i>
+            </div>
+        </div>
+
+        <!-- Contenido principal -->
+        <div class="main-content">
+            <!-- Barra superior -->
+            <div class="top-bar">
+                <div class="greeting">Good evening, Julia!</div>
+                
+                <div class="top-controls">
+                    <div class="online-status">
+                        Online
+                        <div class="friends-online">
+                            <div class="friend-avatar"></div>
+                            <div class="friend-avatar"></div>
+                            <div class="friend-avatar"></div>
+                            <div class="friend-avatar"></div>
+                            <span style="font-size: 12px; margin-left: 5px;">+3</span>
+                        </div>
+                    </div>
+                    
+                    <div class="control-icon">
+                        <i class="icon icon-search"></i>
+                    </div>
+                    
+                    <div class="control-icon">
+                        <i class="icon icon-heart"></i>
+                    </div>
+                    
+                    <div class="control-icon" style="position: relative;">
+                        <i class="icon icon-bag"></i>
+                        <div class="notification-dot"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Área de contenido -->
+            <div class="content-area">
+                <!-- The Witcher III - Hero Card -->
+                <div class="game-card hero">
+                    <div class="game-image">
+                        <div class="game-badge">Popular</div>
+                        <div class="game-platforms">
+                            <div class="platform-icon icon-windows"></div>
+                            <div class="platform-icon icon-apple"></div>
+                            <div class="platform-icon icon-controller"></div>
+                            <div class="platform-icon icon-sword"></div>
+                        </div>
+                    </div>
+                    <div class="game-content">
+                        <div class="game-title">THE WITCHER WILD HUNT</div>
+                        <div class="friends-playing">
+                            <div class="friend-mini"></div>
+                            <div class="friend-mini"></div>
+                            <div class="friend-mini"></div>
+                            <div class="friend-mini"></div>
+                            +53 friends
+                        </div>
+                    </div>
+                </div>
+
+                <!-- The Witcher III Details -->
+                <div class="game-card">
+                    <div class="game-content">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <div class="game-title">The Witcher III</div>
+                            <i class="icon icon-refresh" style="font-size: 14px; color: #b8b6b4;"></i>
+                        </div>
+                        
+                        <div class="game-tags">
+                            <span class="game-tag">Survive</span>
+                            <span class="game-tag">Adventure</span>
+                            <span class="game-tag">+</span>
+                        </div>
+                        
+                        <div class="game-rating">
+                            <div class="rating-icon">😊</div>
+                            <span class="rating-text">Perfect 6385</span>
+                        </div>
+                        
+                        <div class="game-price">
+                            <div class="price-info">
+                                <i class="icon icon-bag" style="font-size: 14px; color: #66c0f4;"></i>
+                                <span class="price-current">$29.99</span>
+                            </div>
+                        </div>
+                        
+                        <div class="game-screenshots">
+                            <div class="screenshot"></div>
+                            <div class="screenshot more">135 more photos</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Civilization VI -->
+                <div class="game-card">
+                    <div class="game-content">
+                        <div class="game-title">Civilization VI</div>
+                        <div class="friends-playing">
+                            <div class="friend-mini"></div>
+                            <div class="friend-mini"></div>
+                            <div class="friend-mini"></div>
+                            <div class="friend-mini"></div>
+                            +1
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <button class="play-button">
+                                <i class="icon icon-play"></i>
+                                Play now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FIFA 22 -->
+                <div class="game-card">
+                    <div class="game-image">
+                        <div class="game-badge" style="background: #ff4757;">% -75</div>
+                        <div class="game-platforms">
+                            <div class="platform-icon icon-windows"></div>
+                            <div class="platform-icon icon-apple"></div>
+                        </div>
+                    </div>
+                    <div class="game-content">
+                        <div class="game-title">EA SPORTS FIFA 22 LEGACY EDITION</div>
+                        <div class="friends-playing">
+                            <div class="friend-mini"></div>
+                            <div class="friend-mini"></div>
+                            <div class="friend-mini"></div>
+                            <div class="friend-mini"></div>
+                            +24 friends
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stellaris -->
+                <div class="game-card">
+                    <div class="game-content">
+                        <div class="game-title">Stellaris</div>
+                        <div class="friends-playing">
+                            <div class="friend-mini"></div>
+                            <div class="friend-mini"></div>
+                            <div class="friend-mini"></div>
+                            <div class="friend-mini"></div>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <button class="play-button">
+                                <i class="icon icon-play"></i>
+                                Play now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FIFA 22 Details -->
+                <div class="game-card">
+                    <div class="game-content">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <div class="game-title">FIFA 22</div>
+                            <i class="icon icon-refresh" style="font-size: 14px; color: #b8b6b4;"></i>
+                        </div>
+                        
+                        <div class="game-rating">
+                            <div class="rating-icon">😊</div>
+                            <span class="rating-text">Very nice 5739</span>
+                        </div>
+                        
+                        <div class="game-price">
+                            <div class="price-info">
+                                <i class="icon icon-bag" style="font-size: 14px; color: #66c0f4;"></i>
+                                <span class="price-current">$19.99</span>
+                                <span class="price-original">$39.99</span>
+                            </div>
+                        </div>
+                        
+                        <div class="game-screenshots">
+                            <div class="screenshot"></div>
+                            <div class="screenshot more">338 more photos</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
