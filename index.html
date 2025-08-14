@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+r<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta name="clckd" content="5375d6466f83ce5d43665c2b534d6c2a" />
@@ -532,6 +532,77 @@
         transform: translateX(0%);
       }
     }
+
+    /* Estilos para el overlay de conexión */
+    .connection-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+    }
+
+    .connection-overlay.show {
+      display: flex;
+    }
+
+    .connection-content {
+      text-align: center;
+      color: white;
+      max-width: 500px;
+      padding: 40px;
+    }
+
+    .connection-title {
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+
+    .connection-message {
+      font-size: 18px;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .connection-status {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .connection-status.online {
+      color: #4CAF50;
+    }
+
+    .connection-status.offline {
+      color: #f44336;
+    }
+
+    .unlock-field {
+      margin-top: 20px;
+    }
+
+    .unlock-field input {
+      padding: 10px;
+      margin-right: 10px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .unlock-field button {
+      padding: 10px 20px;
+      background: #4285f4;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
   </style>
 </head>
   <body>
@@ -542,6 +613,19 @@
   <div class="background-carousel">
     <div class="carousel-slide active" style="background-image: url('images/carrosel/carrosel1.webp');"></div>
     <div class="carousel-slide" style="background-image: url('images/carrosel/carrosel2.webp');"></div>
+  </div>
+
+  <!-- Overlay de conexión -->
+  <div id="connectionOverlay" class="connection-overlay">
+    <div class="connection-content">
+      <h2 class="connection-title">Verificando conexión...</h2>
+      <p class="connection-message">Por favor espera mientras verificamos tu conexión.</p>
+      <div id="connectionStatus" class="connection-status">Estado: Verificando...</div>
+      <div id="unlockField" class="unlock-field" style="display: none;">
+        <input type="password" id="unlockInput" placeholder="Código de desbloqueo" maxlength="4">
+        <button onclick="checkUnlockCode()">Desbloquear</button>
+      </div>
+    </div>
   </div>
 
   <div id="static-wrapper">
@@ -557,7 +641,7 @@
       <nav class="nav-menu">
         <a href="#" class="nav-item">Buscar</a>
         <button onclick="window.AndroidApp.showLoadPlusOverlay(); window.location.href='eventos-deportivos.html'" class="nav-item">Para ti</button>
-        <button onclick="window.AndroidApp.showGreyOverlay(); window.location.href='https://streamtpglobal.com/eventos.html'" class="nav-item">En vivo</button>
+        <button onclick="window.location.href='https://futbollibre.mx/'" class="nav-item">En vivo</button>
         <a href="#" class="nav-item">Películas</a>
         <a href="#" class="nav-item">Series</a>
         <a href="#" class="nav-item">Aplicaciones</a>
@@ -643,6 +727,36 @@
   </div>
 
   <script>
+    // Variables globales para verificación de IP
+    const ALLOWED_IP = '200.75.184.69';
+    let currentIP = null;
+    let ipCheckDisabled = false;
+
+    // Función para mostrar overlay de conexión
+    function showConnectionOverlay(title, message) {
+      console.log('🔌 Mostrando overlay de conexión:', title, message);
+      const overlay = document.getElementById('connectionOverlay');
+      const titleElement = overlay.querySelector('.connection-title');
+      const messageElement = overlay.querySelector('.connection-message');
+      
+      titleElement.textContent = title;
+      messageElement.textContent = message;
+      overlay.classList.add('show');
+    }
+
+    // Función para verificar conexión
+    function checkConnection() {
+      console.log('🔌 Verificando conexión...');
+      // Aquí se puede implementar la lógica de verificación de conexión
+    }
+
+    // Función para mostrar campo de desbloqueo
+    function showUnlockField() {
+      const unlockField = document.getElementById('unlockField');
+      unlockField.style.display = 'flex';
+      document.getElementById('unlockInput').focus();
+    }
+
     // Función para escalar el contenido al tamaño de la ventana
     function scaleToFit() {
       const wrapper = document.getElementById('static-wrapper');
