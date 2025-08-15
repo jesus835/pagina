@@ -1,0 +1,21 @@
+{
+  "overlay_config": {
+    "background_image_url": "https://example.com/path/to/your/background_image.jpg",
+    "background_color_fallback": "#1a237e",
+    "image_scale_type": "centerCrop",
+    "image_alpha": 0.8,
+    "text_color_primary": "#FFFFFF",
+    "text_color_secondary": "#E3F2FD",
+    "text_color_status": "#90CAF9",
+    "chip_background_color": "#20FFFFFF",
+    "chip_border_color": "#40FFFFFF",
+    "chip_text_color": "#FFFFFF",
+    "button_primary_background_color": "#FFFFFF",
+    "button_primary_border_color": "#E0E0E0",
+    "button_primary_text_color": "#1a237e",
+    "title_text": "Cargando",
+    "subtitle_text": "La Mejor Programación",
+    "status_text": "Cargando Cartelera del Día",
+    "button_text": "Ver ahora"
+  }
+}
