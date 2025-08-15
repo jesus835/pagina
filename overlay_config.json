@@ -1,6 +1,6 @@
 {
   "overlay_config": {
-    "background_image_url": "https://example.com/path/to/your/background_image.jpg",
+    "background_image_url": "https://i.imgur.com/3tkeh6s.png",
     "background_color_fallback": "#1a237e",
     "image_scale_type": "centerCrop",
     "image_alpha": 0.8,
@@ -19,3 +19,4 @@
     "button_text": "Ver ahora"
   }
 }
+
