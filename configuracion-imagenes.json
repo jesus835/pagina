@@ -775,6 +775,106 @@
       "url": "https://i.imgur.com/c5tK563.png",
       "alt": "TNT Sports Premium CL",
       "descripcion": "Logo de TNT Sports Premium Chile"
+    },
+    "tigo sports": {
+      "url": "https://i.imgur.com/TigoSports_logo.png",
+      "alt": "Tigo Sports",
+      "descripcion": "Logo de Tigo Sports"
+    },
+    "liga1max": {
+      "url": "https://i.imgur.com/Liga1Max_logo.png",
+      "alt": "Liga1 Max",
+      "descripcion": "Logo de Liga1 Max"
+    },
+    "dsports+": {
+      "url": "https://i.imgur.com/DSportsPlus_logo.png",
+      "alt": "DSports+",
+      "descripcion": "Logo de DSports+"
+    },
+    "universo 2": {
+      "url": "https://i.imgur.com/Universo2_logo.png",
+      "alt": "Universo 2",
+      "descripcion": "Logo de Universo 2"
+    },
+    "usa network": {
+      "url": "https://i.imgur.com/USANetwork_logo.png",
+      "alt": "USA Network",
+      "descripcion": "Logo de USA Network"
+    },
+    "canal 5 mx": {
+      "url": "https://i.imgur.com/Canal5MX_logo.png",
+      "alt": "Canal 5 MX",
+      "descripcion": "Logo de Canal 5 México"
+    },
+    "ver evento": {
+      "url": "https://i.imgur.com/VerEvento_logo.png",
+      "alt": "Ver Evento",
+      "descripcion": "Logo de Ver Evento"
+    },
+    "tennis": {
+      "url": "https://i.imgur.com/Tennis_logo.png",
+      "alt": "Tennis",
+      "descripcion": "Logo de Tennis"
+    },
+    "eventos 07": {
+      "url": "https://i.imgur.com/Eventos07_logo.png",
+      "alt": "Eventos 07",
+      "descripcion": "Logo de Eventos 07"
+    },
+    "eventos 08": {
+      "url": "https://i.imgur.com/Eventos08_logo.png",
+      "alt": "Eventos 08",
+      "descripcion": "Logo de Eventos 08"
+    },
+    "disney 08": {
+      "url": "https://i.imgur.com/Disney08_logo.png",
+      "alt": "Disney 08",
+      "descripcion": "Logo de Disney 08"
+    },
+    "zapping tv": {
+      "url": "https://i.imgur.com/ZappingTV_logo.png",
+      "alt": "Zapping TV",
+      "descripcion": "Logo de Zapping TV"
+    },
+    "ecdf": {
+      "url": "https://i.imgur.com/ECDF_logo.png",
+      "alt": "ECDF",
+      "descripcion": "Logo de ECDF"
+    },
+    "goltv": {
+      "url": "https://i.imgur.com/GolTV_logo.png",
+      "alt": "GolTV",
+      "descripcion": "Logo de GolTV"
+    },
+    "vtv plus": {
+      "url": "https://i.imgur.com/VTVPlus_logo.png",
+      "alt": "VTV Plus",
+      "descripcion": "Logo de VTV Plus"
+    },
+    "sportv br": {
+      "url": "https://i.imgur.com/SportvBR_logo.png",
+      "alt": "Sportv BR",
+      "descripcion": "Logo de Sportv Brasil"
+    },
+    "tyc": {
+      "url": "https://i.imgur.com/TYC_logo.png",
+      "alt": "TYC",
+      "descripcion": "Logo de TYC Sports"
+    },
+    "golperu": {
+      "url": "https://i.imgur.com/GolPeru_logo.png",
+      "alt": "GolPeru",
+      "descripcion": "Logo de GolPeru"
+    },
+    "caliente tv": {
+      "url": "https://i.imgur.com/CalienteTV_logo.png",
+      "alt": "Caliente TV",
+      "descripcion": "Logo de Caliente TV"
+    },
+    "azteca": {
+      "url": "https://i.imgur.com/Azteca_logo.png",
+      "alt": "Azteca",
+      "descripcion": "Logo de Azteca"
     }
   },
   "descripciones_generales": {
@@ -831,6 +931,6 @@
       "configuracion": {
       "tiempo_cache": 300000,
       "url_base": "./configuracion-imagenes.json",
-      "version": "2.0"
+      "version": "2.1"
     }
 }
