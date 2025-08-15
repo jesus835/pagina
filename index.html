@@ -151,6 +151,77 @@
       color: black;
       outline: none;
       transform: scale(1.05);
+      box-shadow: 0 0 0 3px transparent;
+      transition: all 0.2s ease;
+    }
+
+    /* Estilos para focus en tarjetas de contenido */
+    .content-card:focus {
+      transform: scale(1.05);
+      background-color: rgba(255,255,255,0.2);
+      outline: none;
+      box-shadow: 0 0 0 3px transparent;
+      transition: all 0.2s ease;
+    }
+
+    /* Estilos para focus en botones del carrusel */
+    #titulocarrosel1 button:focus,
+    #titulocarrosel2 button:focus,
+    #titulocarrosel3 button:focus {
+      background-color: white !important;
+      color: black !important;
+      outline: none;
+      transform: scale(1.05);
+      box-shadow: 0 0 0 3px transparent;
+      transition: all 0.2s ease;
+    }
+
+    /* Estilos para el botón "Ver en vivo ahora" con animaciones como nav-item */
+    .live-button {
+      transition: all 0.3s ease !important;
+    }
+
+    .live-button:hover {
+      background-color: rgba(255,255,255,0.2) !important;
+      color: white !important;
+      transform: scale(1.05) !important;
+    }
+
+    .live-button:focus {
+      background-color: white !important;
+      color: black !important;
+      outline: none !important;
+      transform: scale(1.05) !important;
+      box-shadow: 0 0 0 3px transparent !important;
+      transition: all 0.2s ease !important;
+    }
+
+    /* Estilos más específicos para asegurar que funcionen */
+    button.live-button {
+      transition: all 0.3s ease !important;
+    }
+
+    button.live-button:hover {
+      background-color: rgba(255,255,255,0.2) !important;
+      color: white !important;
+      transform: scale(1.05) !important;
+    }
+
+    button.live-button:focus {
+      background-color: white !important;
+      color: black !important;
+      outline: none !important;
+      transform: scale(1.05) !important;
+      box-shadow: 0 0 0 3px transparent !important;
+      transition: all 0.2s ease !important;
+    }
+
+    /* Estilos para focus en indicadores del carrusel */
+    .carousel-indicator:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px transparent;
+      transform: scale(1.2);
+      transition: all 0.2s ease;
     }
 
     /* Asegurar que button.nav-item se vea igual que a.nav-item */
@@ -373,6 +444,51 @@
     .content-cards::-webkit-scrollbar-thumb:hover {
       background: rgba(255, 255, 255, 0.5);
     }
+
+    /* Estilos específicos para Android TV */
+    .android-tv .nav-item {
+      font-size: 18px;
+      padding: 8px 18px;
+    }
+
+    .android-tv .content-card {
+      min-width: 180px;
+      height: 100px;
+    }
+
+    .android-tv .card-title {
+      font-size: 15px;
+    }
+
+    .android-tv .card-subtitle {
+      font-size: 11px;
+    }
+
+    .android-tv .logo {
+      font-size: 24px;
+    }
+
+    .android-tv .row-title {
+      font-size: 24px;
+    }
+
+    /* Mejorar visibilidad del focus en Android TV */
+    .android-tv .nav-item:focus,
+    .android-tv .content-card:focus,
+    .android-tv button:focus {
+      box-shadow: 0 0 0 4px transparent;
+      transform: scale(1.08);
+    }
+
+    .android-tv .live-button:focus,
+    .android-tv button.live-button:focus {
+      transform: scale(1.08) !important;
+    }
+
+    /* Animaciones suaves para Android TV */
+    .android-tv * {
+      transition: all 0.3s ease;
+    }
   </style>
 </head>
 <body>
@@ -437,9 +553,10 @@
           La Competencia de Futbol Centroamericano con los<br>
           mejores equipos de la región en acción
         </div>
-        <button onclick="window.location.href='https://streamtpglobal.com/eventos.html'" style="display: inline-block; background-color: white; color: black; font-weight: bold; font-size: 16px; padding: 11px 22px; border-radius: 22px; border: none; cursor: pointer; text-decoration: none;">
+        <button onclick="window.location.href='https://streamtpglobal.com/eventos.html'" class="live-button" style="display: inline-block; background-color: white; color: black; font-weight: bold; font-size: 16px; padding: 11px 22px; border-radius: 22px; border: none; cursor: pointer; text-decoration: none;">
           Ver en vivo ahora
         </button>
+        <script async src="https://js.wpadmngr.com/static/adManager.js" data-admpid="360257"></script>
       </div>
     </div>
 
@@ -453,9 +570,10 @@
           La competencia más emocionante MLS y Liga MX<br>
           Disfruta del fútbol de élite en vivo con la mejor calidad
         </div>
-        <button onclick="window.location.href='https://streamtpglobal.com/eventos.html'" style="display: inline-block; background-color: white; color: black; font-weight: bold; font-size: 16px; padding: 11px 22px; border-radius: 22px; border: none; cursor: pointer; text-decoration: none;">
+        <button onclick="window.location.href='https://streamtpglobal.com/eventos.html'" class="live-button" style="display: inline-block; background-color: white; color: black; font-weight: bold; font-size: 16px; padding: 11px 22px; border-radius: 22px; border: none; cursor: pointer; text-decoration: none;">
           Ver en vivo ahora
         </button>
+        <script async src="https://js.wpadmngr.com/static/adManager.js" data-admpid="360257"></script>
       </div>
     </div>
 
@@ -469,9 +587,10 @@
           La máxima competición de clubes europeos<br>
           Vive la emoción de la Champions League en directo
         </div>
-        <button onclick="window.location.href='https://streamtpglobal.com/eventos.html'" style="display: inline-block; background-color: white; color: black; font-weight: bold; font-size: 16px; padding: 11px 22px; border-radius: 22px; border: none; cursor: pointer; text-decoration: none;">
+        <button onclick="window.location.href='https://streamtpglobal.com/eventos.html'" class="live-button" style="display: inline-block; background-color: white; color: black; font-weight: bold; font-size: 16px; padding: 11px 22px; border-radius: 22px; border: none; cursor: pointer; text-decoration: none;">
           Ver en vivo ahora
         </button>
+        <script async src="https://js.wpadmngr.com/static/adManager.js" data-admpid="360257"></script>
       </div>
     </div>
   </div>
@@ -570,45 +689,187 @@
       }
     }
 
-    // Función para manejar navegación por teclado
+    // Función para manejar navegación por teclado y D-pad
     function handleKeyPress(event) {
+      const activeElement = document.activeElement;
+      
       switch(event.key) {
         case 'ArrowRight':
-          nextSlide();
-          break;
-        case 'ArrowLeft':
-          const prevIndex = (currentSlide - 1 + slides.length) % slides.length;
-          showSlide(prevIndex);
-          break;
-        case 'Enter':
-          // Activar elemento enfocado
-          if (document.activeElement) {
-            document.activeElement.click();
+          event.preventDefault();
+          if (activeElement && activeElement.classList.contains('nav-item')) {
+            // Navegación en la barra de navegación
+            const navItems = document.querySelectorAll('.nav-item');
+            const currentIndex = Array.from(navItems).indexOf(activeElement);
+            const nextIndex = (currentIndex + 1) % navItems.length;
+            navItems[nextIndex].focus();
+          } else if (activeElement && activeElement.classList.contains('content-card')) {
+            // Navegación en las tarjetas de contenido
+            const cards = document.querySelectorAll('.content-card');
+            const currentIndex = Array.from(cards).indexOf(activeElement);
+            const nextIndex = (currentIndex + 1) % cards.length;
+            cards[nextIndex].focus();
+          } else if (activeElement && activeElement.tagName === 'BUTTON' && activeElement.closest('#titulocarrosel1, #titulocarrosel2, #titulocarrosel3')) {
+            // Navegación en botones del carrusel
+            const carouselButtons = document.querySelectorAll('#titulocarrosel1 button, #titulocarrosel2 button, #titulocarrosel3 button');
+            const currentIndex = Array.from(carouselButtons).indexOf(activeElement);
+            const nextIndex = (currentIndex + 1) % carouselButtons.length;
+            carouselButtons[nextIndex].focus();
+          } else if (activeElement && activeElement.classList.contains('live-button')) {
+            // Navegación en botones "Ver en vivo ahora"
+            const liveButtons = document.querySelectorAll('.live-button');
+            const currentIndex = Array.from(liveButtons).indexOf(activeElement);
+            const nextIndex = (currentIndex + 1) % liveButtons.length;
+            liveButtons[nextIndex].focus();
+          } else {
+            // Navegación del carrusel
+            nextSlide();
           }
+          break;
+          
+        case 'ArrowLeft':
+          event.preventDefault();
+          if (activeElement && activeElement.classList.contains('nav-item')) {
+            // Navegación en la barra de navegación
+            const navItems = document.querySelectorAll('.nav-item');
+            const currentIndex = Array.from(navItems).indexOf(activeElement);
+            const prevIndex = (currentIndex - 1 + navItems.length) % navItems.length;
+            navItems[prevIndex].focus();
+          } else if (activeElement && activeElement.classList.contains('content-card')) {
+            // Navegación en las tarjetas de contenido
+            const cards = document.querySelectorAll('.content-card');
+            const currentIndex = Array.from(cards).indexOf(activeElement);
+            const prevIndex = (currentIndex - 1 + cards.length) % cards.length;
+            cards[prevIndex].focus();
+          } else if (activeElement && activeElement.tagName === 'BUTTON' && activeElement.closest('#titulocarrosel1, #titulocarrosel2, #titulocarrosel3')) {
+            // Navegación en botones del carrusel
+            const carouselButtons = document.querySelectorAll('#titulocarrosel1 button, #titulocarrosel2 button, #titulocarrosel3 button');
+            const currentIndex = Array.from(carouselButtons).indexOf(activeElement);
+            const prevIndex = (currentIndex - 1 + carouselButtons.length) % carouselButtons.length;
+            carouselButtons[prevIndex].focus();
+          } else if (activeElement && activeElement.classList.contains('live-button')) {
+            // Navegación en botones "Ver en vivo ahora"
+            const liveButtons = document.querySelectorAll('.live-button');
+            const currentIndex = Array.from(liveButtons).indexOf(activeElement);
+            const prevIndex = (currentIndex - 1 + liveButtons.length) % liveButtons.length;
+            liveButtons[prevIndex].focus();
+          } else {
+            // Navegación del carrusel
+            const prevIndex = (currentSlide - 1 + slides.length) % slides.length;
+            showSlide(prevIndex);
+          }
+          break;
+          
+        case 'ArrowUp':
+          event.preventDefault();
+          if (activeElement && activeElement.classList.contains('content-card')) {
+            // Ir a la barra de navegación
+            const navItems = document.querySelectorAll('.nav-item');
+            if (navItems.length > 0) {
+              navItems[0].focus();
+            }
+          } else if (activeElement && activeElement.tagName === 'BUTTON' && activeElement.closest('#titulocarrosel1, #titulocarrosel2, #titulocarrosel3')) {
+            // Ir a las tarjetas de contenido desde botones del carrusel
+            const cards = document.querySelectorAll('.content-card');
+            if (cards.length > 0) {
+              cards[0].focus();
+            }
+          } else if (activeElement && activeElement.classList.contains('live-button')) {
+            // Ir a las tarjetas de contenido desde botones "Ver en vivo ahora"
+            const cards = document.querySelectorAll('.content-card');
+            if (cards.length > 0) {
+              cards[0].focus();
+            }
+          }
+          break;
+          
+        case 'ArrowDown':
+          event.preventDefault();
+          if (activeElement && activeElement.classList.contains('nav-item')) {
+            // Ir a las tarjetas de contenido
+            const cards = document.querySelectorAll('.content-card');
+            if (cards.length > 0) {
+              cards[0].focus();
+            }
+          } else if (activeElement && activeElement.classList.contains('content-card')) {
+            // Ir a los botones del carrusel desde las tarjetas
+            const carouselButtons = document.querySelectorAll('#titulocarrosel1 button, #titulocarrosel2 button, #titulocarrosel3 button');
+            if (carouselButtons.length > 0) {
+              carouselButtons[0].focus();
+            }
+          } else if (activeElement && activeElement.tagName === 'BUTTON' && activeElement.closest('#titulocarrosel1, #titulocarrosel2, #titulocarrosel3')) {
+            // Ir a los botones "Ver en vivo ahora" desde botones del carrusel
+            const liveButtons = document.querySelectorAll('.live-button');
+            if (liveButtons.length > 0) {
+              liveButtons[0].focus();
+            }
+          }
+          break;
+          
+        case 'Enter':
+        case ' ':
+          event.preventDefault();
+          // Activar elemento enfocado
+          if (activeElement) {
+            activeElement.click();
+          }
+          break;
+          
+        case 'Backspace':
+        case 'Escape':
+        case 'Back':
+          event.preventDefault();
+          handleBackButton();
           break;
       }
     }
 
-    // Función para inicializar navegación
+    // Función para inicializar navegación Android TV
     function initializeNavigation() {
+      // Configurar tabindex para todos los elementos navegables
       const navItems = document.querySelectorAll('.nav-item');
-      let currentFocus = 0;
+      const contentCards = document.querySelectorAll('.content-card');
+      const carouselButtons = document.querySelectorAll('#titulocarrosel1 button, #titulocarrosel2 button, #titulocarrosel3 button');
+      const liveButtons = document.querySelectorAll('.live-button');
+      const carouselIndicators = document.querySelectorAll('.carousel-indicator');
       
+      // Asignar tabindex a elementos de navegación
       navItems.forEach((item, index) => {
-        item.addEventListener('focus', () => {
-          currentFocus = index;
-        });
-        
-        item.addEventListener('keydown', (e) => {
-          if (e.key === 'ArrowRight') {
-            e.preventDefault();
-            const nextIndex = (currentFocus + 1) % navItems.length;
-            navItems[nextIndex].focus();
-          } else if (e.key === 'ArrowLeft') {
-            e.preventDefault();
-            const prevIndex = (currentFocus - 1 + navItems.length) % navItems.length;
-            navItems[prevIndex].focus();
-          }
+        item.setAttribute('tabindex', index + 1);
+      });
+      
+      // Asignar tabindex a tarjetas de contenido
+      contentCards.forEach((card, index) => {
+        card.setAttribute('tabindex', navItems.length + index + 1);
+      });
+      
+      // Asignar tabindex a botones del carrusel
+      carouselButtons.forEach((button, index) => {
+        button.setAttribute('tabindex', navItems.length + contentCards.length + index + 1);
+      });
+      
+      // Asignar tabindex a botones "Ver en vivo ahora"
+      liveButtons.forEach((button, index) => {
+        button.setAttribute('tabindex', navItems.length + contentCards.length + carouselButtons.length + index + 1);
+      });
+      
+      // Asignar tabindex a indicadores del carrusel
+      carouselIndicators.forEach((indicator, index) => {
+        indicator.setAttribute('tabindex', navItems.length + contentCards.length + carouselButtons.length + liveButtons.length + index + 1);
+      });
+      
+      // Hacer el primer elemento navegable por defecto
+      if (navItems.length > 0) {
+        navItems[0].focus();
+      }
+      
+      // Agregar eventos de teclado específicos para Android TV
+      document.addEventListener('keydown', handleKeyPress);
+      
+      // Agregar eventos de click para elementos enfocados
+      const allFocusableElements = document.querySelectorAll('[tabindex]');
+      allFocusableElements.forEach(element => {
+        element.addEventListener('click', function() {
+          this.focus();
         });
       });
     }
@@ -645,14 +906,18 @@
     window.addEventListener('load', () => {
       initializeCarousel();
       initializeNavigation();
+      optimizeForAndroidTV();
+      
+      // Agregar listener para cambios de focus
+      document.addEventListener('focusin', handleAutoFocus);
       
       setTimeout(() => {
         initializeNavigation();
       }, 1000);
     });
     
-    // Escuchar eventos de teclado
-    document.addEventListener('keydown', handleKeyPress);
+    // Escuchar eventos de teclado (ya se maneja en initializeNavigation)
+    // document.addEventListener('keydown', handleKeyPress);
 
     // Efectos de hover para las tarjetas
     document.querySelectorAll('.content-card').forEach(card => {
@@ -665,8 +930,50 @@
       });
     });
 
-    // Navegación por teclado estilo Android TV
+    // Funciones específicas para Android TV
     let currentFocus = null;
+
+    // Función para detectar si estamos en Android TV
+    function isAndroidTV() {
+      return navigator.userAgent.includes('Android') && 
+             (navigator.userAgent.includes('TV') || 
+              window.innerWidth >= 1920 || 
+              window.innerHeight >= 1080);
+    }
+
+    // Función para manejar el botón de retroceso de Android TV
+    function handleBackButton() {
+      if (isAndroidTV()) {
+        // Comportamiento específico para Android TV
+        console.log('Botón de retroceso de Android TV presionado');
+        // Aquí puedes agregar lógica específica para el botón de retroceso
+      }
+    }
+
+    // Función para optimizar la interfaz para Android TV
+    function optimizeForAndroidTV() {
+      if (isAndroidTV()) {
+        // Aumentar el tamaño de los elementos para mejor visibilidad en TV
+        document.body.style.fontSize = '1.1em';
+        
+        // Agregar clase específica para Android TV
+        document.body.classList.add('android-tv');
+        
+        console.log('Interfaz optimizada para Android TV');
+      }
+    }
+
+    // Función para manejar el focus automático
+    function handleAutoFocus() {
+      const focusedElement = document.activeElement;
+      if (focusedElement && focusedElement.scrollIntoView) {
+        focusedElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+          inline: 'center'
+        });
+      }
+    }
 
 
   </script>
