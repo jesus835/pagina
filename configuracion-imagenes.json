@@ -816,15 +816,10 @@
       "alt": "Tennis",
       "descripcion": "Logo de Tennis"
     },
-    "eventos 07": {
-      "url": "https://i.imgur.com/Eventos07_logo.png",
-      "alt": "Eventos 07",
-      "descripcion": "Logo de Eventos 07"
-    },
-    "eventos 08": {
-      "url": "https://i.imgur.com/Eventos08_logo.png",
-      "alt": "Eventos 08",
-      "descripcion": "Logo de Eventos 08"
+    "evento": {
+      "url": "https://i.imgur.com/Evento_logo.png",
+      "alt": "Evento",
+      "descripcion": "Logo de Evento"
     },
     "disney 08": {
       "url": "https://i.imgur.com/Disney08_logo.png",
@@ -931,6 +926,6 @@
       "configuracion": {
       "tiempo_cache": 300000,
       "url_base": "./configuracion-imagenes.json",
-      "version": "2.1"
+      "version": "2.2"
     }
 }
