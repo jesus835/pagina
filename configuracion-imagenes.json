@@ -590,6 +590,191 @@
       "url": "https://i.imgur.com/3tkeh6s.png",
       "alt": "Canal Deportivo",
       "descripcion": "Logo de Canal Deportivo"
+    },
+    "champions league": {
+      "url": "https://i.imgur.com/UCL_logo.png",
+      "alt": "Champions League",
+      "descripcion": "Logo de UEFA Champions League"
+    },
+    "premier league": {
+      "url": "https://i.imgur.com/PL_logo.png",
+      "alt": "Premier League",
+      "descripcion": "Logo de Premier League"
+    },
+    "laliga": {
+      "url": "https://i.imgur.com/LaLiga_logo.png",
+      "alt": "LaLiga",
+      "descripcion": "Logo de LaLiga"
+    },
+    "bundesliga": {
+      "url": "https://i.imgur.com/Bundesliga_logo.png",
+      "alt": "Bundesliga",
+      "descripcion": "Logo de Bundesliga"
+    },
+    "serie a": {
+      "url": "https://i.imgur.com/SerieA_logo.png",
+      "alt": "Serie A",
+      "descripcion": "Logo de Serie A"
+    },
+    "ligue 1": {
+      "url": "https://i.imgur.com/Ligue1_logo.png",
+      "alt": "Ligue 1",
+      "descripcion": "Logo de Ligue 1"
+    },
+    "europa league": {
+      "url": "https://i.imgur.com/UEL_logo.png",
+      "alt": "Europa League",
+      "descripcion": "Logo de UEFA Europa League"
+    },
+    "copa libertadores": {
+      "url": "https://i.imgur.com/Libertadores_logo.png",
+      "alt": "Copa Libertadores",
+      "descripcion": "Logo de Copa Libertadores"
+    },
+    "copa sudamericana": {
+      "url": "https://i.imgur.com/Sudamericana_logo.png",
+      "alt": "Copa Sudamericana",
+      "descripcion": "Logo de Copa Sudamericana"
+    },
+    "liga mx": {
+      "url": "https://i.imgur.com/PL_logo.png",
+      "alt": "Liga MX",
+      "descripcion": "Logo de Liga MX"
+    },
+    "superliga argentina": {
+      "url": "https://i.imgur.com/Superliga_logo.png",
+      "alt": "Superliga Argentina",
+      "descripcion": "Logo de Superliga Argentina"
+    },
+    "brasileirao": {
+      "url": "https://i.imgur.com/Brasileirao_logo.png",
+      "alt": "Brasileirão",
+      "descripcion": "Logo de Brasileirão"
+    },
+    "copa america": {
+      "url": "https://i.imgur.com/CopaAmerica_logo.png",
+      "alt": "Copa América",
+      "descripcion": "Logo de Copa América"
+    },
+    "eurocopa": {
+      "url": "https://i.imgur.com/Eurocopa_logo.png",
+      "alt": "Eurocopa",
+      "descripcion": "Logo de Eurocopa"
+    },
+    "mundial": {
+      "url": "https://i.imgur.com/WorldCup_logo.png",
+      "alt": "Mundial",
+      "descripcion": "Logo de Copa Mundial"
+    },
+    "atp": {
+      "url": "url_logo",
+      "alt": "ATP",
+      "descripcion": "Logo de ATP Tour"
+    },
+    "wimbledon": {
+      "url": "url_logo",
+      "alt": "Wimbledon",
+      "descripcion": "Logo de Wimbledon"
+    },
+    "roland garros": {
+      "url": "url_logo",
+      "alt": "Roland Garros",
+      "descripcion": "Logo de Roland Garros"
+    },
+    "us open": {
+      "url": "url_logo",
+      "alt": "US Open",
+      "descripcion": "Logo de US Open"
+    },
+    "australian open": {
+      "url": "url_logo",
+      "alt": "Australian Open",
+      "descripcion": "Logo de Australian Open"
+    },
+    "nba": {
+      "url": "url_logo",
+      "alt": "NBA",
+      "descripcion": "Logo de NBA"
+    },
+    "nfl": {
+      "url": "url_logo",
+      "alt": "NFL",
+      "descripcion": "Logo de NFL"
+    },
+    "nhl": {
+      "url": "url_logo",
+      "alt": "NHL",
+      "descripcion": "Logo de NHL"
+    },
+    "tudn": {
+      "url": "https://i.imgur.com/TUDN_logo.png",
+      "alt": "TUDN",
+      "descripcion": "Logo de TUDN"
+    },
+    "copa italiana": {
+      "url": "https://i.imgur.com/CopaItaliana_logo.png",
+      "alt": "Copa Italiana",
+      "descripcion": "Logo de Copa Italiana"
+    },
+    "segunda division": {
+      "url": "https://i.imgur.com/SegundaDivision_logo.png",
+      "alt": "Segunda División",
+      "descripcion": "Logo de Segunda División"
+    },
+    "primera división": {
+      "url": "https://i.imgur.com/PrimeraDivision_logo.png",
+      "alt": "Primera División",
+      "descripcion": "Logo de Primera División"
+    },
+    "serie b": {
+      "url": "https://i.imgur.com/SerieB_logo.png",
+      "alt": "Serie B",
+      "descripcion": "Logo de Serie B"
+    },
+    "primera a": {
+      "url": "https://i.imgur.com/PrimeraA_logo.png",
+      "alt": "Primera A",
+      "descripcion": "Logo de Primera A"
+    },
+    "primera b de colombia": {
+      "url": "https://i.imgur.com/PrimeraBColombia_logo.png",
+      "alt": "Primera B de Colombia",
+      "descripcion": "Logo de Primera B de Colombia"
+    },
+    "brasileiro sub - 20": {
+      "url": "https://i.imgur.com/BrasileiroSub20_logo.png",
+      "alt": "Brasileirão Sub-20",
+      "descripcion": "Logo de Brasileirão Sub-20"
+    },
+    "primera b nacional": {
+      "url": "https://i.imgur.com/PrimeraBNacional_logo.png",
+      "alt": "Primera B Nacional",
+      "descripcion": "Logo de Primera B Nacional"
+    },
+    "usl league one": {
+      "url": "https://i.imgur.com/USLLeagueOne_logo.png",
+      "alt": "USL League One",
+      "descripcion": "Logo de USL League One"
+    },
+    "brasileiro feminino": {
+      "url": "https://i.imgur.com/BrasileiroFeminino_logo.png",
+      "alt": "Brasileirão Feminino",
+      "descripcion": "Logo de Brasileirão Feminino"
+    },
+    "liga mx femenil": {
+      "url": "https://i.imgur.com/LigaMXFemenil_logo.png",
+      "alt": "Liga MX Femenil",
+      "descripcion": "Logo de Liga MX Femenil"
+    },
+    "win sports +": {
+      "url": "https://i.imgur.com/3tkeh6s.png",
+      "alt": "Win Sports +",
+      "descripcion": "Logo de Win Sports +"
+    },
+    "tnt sports premiun cl": {
+      "url": "https://i.imgur.com/c5tK563.png",
+      "alt": "TNT Sports Premium CL",
+      "descripcion": "Logo de TNT Sports Premium Chile"
     }
   },
   "descripciones_generales": {
@@ -643,9 +828,9 @@
       "Descubre la magia del deporte a través de eventos épicos. Donde la estrategia se combina con el talento individual para crear espectáculos inolvidables."
     ]
   },
-  "configuracion": {
-    "tiempo_cache": 300000,
-    "url_base": "./configuracion-imagenes.json",
-    "version": "1.8"
-  }
+      "configuracion": {
+      "tiempo_cache": 300000,
+      "url_base": "./configuracion-imagenes.json",
+      "version": "2.0"
+    }
 }
