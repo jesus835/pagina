@@ -234,6 +234,15 @@
         "https://i.imgur.com/3tkeh6s.png"
       ],
       "descripcion": "Imágenes para eventos de Amistosos - Selección aleatoria"
+    },
+    "canal deportivo": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes para eventos de Canal Deportivo - Selección aleatoria"
     }
   },
   "equipos_especificos": {
@@ -588,20 +597,12 @@
       "alt": "TNT Sports Premium CL",
       "descripcion": "Logo de TNT Sports Premium Chile"
     },
-    "tnt sports premium cl": {
-      "url": "https://i.imgur.com/c5tK563.png",
-      "alt": "TNT Sports Premium CL",
-      "descripcion": "Logo de TNT Sports Premium Chile"
-    },
-    "espn4": {
-      "url": "https://i.imgur.com/Exl0NLA.png",
-      "alt": "ESPN 4",
-      "descripcion": "Logo de ESPN 4"
-    },
-    "espn premium": {
-      "url": "https://i.imgur.com/Exl0NLA.png",
-      "alt": "ESPN Premium",
-      "descripcion": "Logo de ESPN Premium"
+
+
+    "canal deportivo": {
+      "url": "https://i.imgur.com/3tkeh6s.png",
+      "alt": "Canal Deportivo",
+      "descripcion": "Logo de Canal Deportivo"
     }
   },
   "descripciones_generales": {
@@ -658,6 +659,6 @@
   "configuracion": {
     "tiempo_cache": 300000,
     "url_base": "./configuracion-imagenes.json",
-    "version": "1.7"
+    "version": "1.8"
   }
 }
