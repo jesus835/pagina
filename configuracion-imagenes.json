@@ -339,6 +339,11 @@
       "alt": "Disney+",
       "descripcion": "Logo de Disney+"
     },
+    "disney +": {
+      "url": "https://i.imgur.com/OMxtYwl.png",
+      "alt": "Disney +",
+      "descripcion": "Logo de Disney +"
+    },
     "espn": {
       "url": "https://i.imgur.com/Exl0NLA.png",
       "alt": "ESPN",
@@ -443,6 +448,26 @@
       "url": "https://i.imgur.com/3tkeh6s.png",
       "alt": "TYC Sports",
       "descripcion": "Logo de TYC Sports"
+    },
+    "goltv": {
+      "url": "https://i.imgur.com/3tkeh6s.png",
+      "alt": "GolTV",
+      "descripcion": "Logo de GolTV"
+    },
+    "vtv plus": {
+      "url": "https://i.imgur.com/3tkeh6s.png",
+      "alt": "VTV Plus",
+      "descripcion": "Logo de VTV Plus"
+    },
+    "win sports +": {
+      "url": "https://i.imgur.com/3tkeh6s.png",
+      "alt": "Win Sports +",
+      "descripcion": "Logo de Win Sports +"
+    },
+    "ecdf": {
+      "url": "https://i.imgur.com/3tkeh6s.png",
+      "alt": "ECDF",
+      "descripcion": "Logo de ECDF"
     }
   },
   "descripciones_generales": {
