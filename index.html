@@ -1,987 +1,1167 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta name="clckd" content="5375d6466f83ce5d43665c2b534d6c2a" />
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; connect-src 'self' https://streamtpglobal.com https://*.streamtpglobal.com; frame-src 'self' https://streamtpglobal.com https://*.streamtpglobal.com; img-src 'self' data: https: http:; media-src 'self' data: blob: https: http:;">
-  <meta http-equiv="X-Frame-Options" content="ALLOWALL">
-  <meta http-equiv="Referrer-Policy" content="no-referrer-when-downgrade">
-  <title>Load+ TV</title>
-  <style>
-    * {
-      font-family: 'Roboto', sans-serif;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html, body {
-      width: 100vw;
-      height: 600px;
-      overflow: hidden;
-      font-family: 'Roboto', sans-serif;
-      color: white;
-    }
-
-    /* Carrusel de fondo */
-    .background-carousel {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      background-color: #000000;
-    }
-
-    .carousel-slide {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      opacity: 0;
-      transition: opacity 1.5s ease-in-out;
-      z-index: 1;
-    }
-
-    .carousel-slide.active {
-      opacity: 1;
-      z-index: 2;
-    }
-
-    /* Primera imagen visible por defecto */
-    .carousel-slide:first-child {
-      opacity: 1;
-    }
-
-    /* Indicadores del carrusel */
-    .carousel-indicators {
-      position: absolute;
-      bottom: 14px;
-      right: 22px;
-      display: flex;
-      gap: 7px;
-      z-index: 1000;
-    }
-
-    .carousel-indicator {
-      width: 17px;
-      height: 17px;
-      border-radius: 50%;
-      background-color: #e0e0e0;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    .carousel-indicator.active {
-      background-color: #e0e0e0;
-    }
-
-    #static-wrapper {
-      width: 100vw;
-      height: 600px;
-      position: absolute;
-      top: 0;
-      left: 0;
-      background: transparent;
-    }
-
-    /* Barra de navegación superior */
-    .navbar {
-      position: absolute;
-      top: 21px;
-      left: 0;
-      width: 100%;
-      height: 43px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 29px;
-      background: transparent;
-      z-index: 100;
-    }
-
-    .logo {
-      font-size: 20px;
-      font-weight: bold;
-      color: white;
-      margin-top: 0;
-      margin-left: 14px;
-    }
-
-    .nav-menu {
-      display: flex;
-      gap: 14px;
-      align-items: center;
-      justify-content: center;
-      width: 291px;
-      margin-top: 0;
-      margin-left: 14px;
-    }
-
-    .nav-item {
-      font-size: 16px;
-      cursor: pointer;
-      padding: 6px 14px;
-      border-radius: 14px;
-      transition: all 0.3s ease;
-      text-align: center;
-      white-space: nowrap;
-      background-color: rgba(255,255,255,0.1);
-      color: white;
-      text-decoration: none;
-      display: inline-block;
-      line-height: 1.2;
-      vertical-align: middle;
-      box-sizing: border-box;
-    }
-
-    .nav-item:hover {
-      background-color: rgba(255,255,255,0.2);
-    }
-
-    .nav-item:focus,
-    .nav-focused {
-      background-color: white;
-      color: black;
-      outline: none;
-      transform: scale(1.05);
-      box-shadow: 0 0 0 3px transparent;
-      transition: all 0.2s ease;
-    }
-
-    /* Estilos para focus en tarjetas de contenido */
-    .content-card:focus {
-      transform: scale(1.05);
-      background-color: rgba(255,255,255,0.2);
-      outline: none;
-      box-shadow: 0 0 0 3px transparent;
-      transition: all 0.2s ease;
-    }
-
-    /* Estilos para focus en botones del carrusel */
-    #titulocarrosel1 button:focus,
-    #titulocarrosel2 button:focus,
-    #titulocarrosel3 button:focus {
-      background-color: white !important;
-      color: black !important;
-      outline: none;
-      transform: scale(1.05);
-      box-shadow: 0 0 0 3px transparent;
-      transition: all 0.2s ease;
-    }
-
-    /* Estilos para el botón "Ver en vivo ahora" con animaciones como nav-item */
-    .live-button {
-      transition: all 0.3s ease !important;
-    }
-
-    .live-button:hover {
-      background-color: rgba(255,255,255,0.2) !important;
-      color: white !important;
-      transform: scale(1.05) !important;
-    }
-
-    .live-button:focus {
-      background-color: white !important;
-      color: black !important;
-      outline: none !important;
-      transform: scale(1.05) !important;
-      box-shadow: 0 0 0 3px transparent !important;
-      transition: all 0.2s ease !important;
-    }
-
-    /* Estilos más específicos para asegurar que funcionen */
-    button.live-button {
-      transition: all 0.3s ease !important;
-    }
-
-    button.live-button:hover {
-      background-color: rgba(255,255,255,0.2) !important;
-      color: white !important;
-      transform: scale(1.05) !important;
-    }
-
-    button.live-button:focus {
-      background-color: white !important;
-      color: black !important;
-      outline: none !important;
-      transform: scale(1.05) !important;
-      box-shadow: 0 0 0 3px transparent !important;
-      transition: all 0.2s ease !important;
-    }
-
-    /* Estilos para focus en indicadores del carrusel */
-    .carousel-indicator:focus {
-      outline: none;
-      box-shadow: 0 0 0 3px transparent;
-      transform: scale(1.2);
-      transition: all 0.2s ease;
-    }
-
-    /* Asegurar que button.nav-item se vea igual que a.nav-item */
-    button.nav-item {
-      background-color: rgba(255,255,255,0.1);
-      border: none;
-      color: inherit;
-      font-family: inherit;
-      text-decoration: none;
-      display: inline-block;
-      transition: all 0.3s ease;
-    }
-
-    /* Estilos para los botones de los títulos del carrusel */
-    #titulocarrosel1 button,
-    #titulocarrosel2 button {
-      transition: all 0.3s ease;
-      padding: 7px 15px !important;
-      margin: 5px !important;
-      display: inline-block !important;
-    }
-
-    #titulocarrosel1 button:focus,
-    #titulocarrosel2 button:focus {
-      background-color: white !important;
-      color: black !important;
-      outline: none;
-      transform: scale(1.05);
-    }
-
-    #titulocarrosel1 button:hover,
-    #titulocarrosel2 button:hover {
-      background-color: rgba(255,255,255,0.2);
-      color: white;
-      transform: scale(1.05);
-    }
-
-    .profile-icon {
-      width: 23px;
-      height: 23px;
-      border-radius: 50%;
-      background-color: #4285f4;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-    }
-
-    /* Sección principal (Hero) */
-    .hero-section {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: transparent;
-      z-index: 1;
-    }
-
-    .hero-bg {
-      width: 100%;
-      height: 100%;
-      background: transparent;
-    }
-
-    .hero-content {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      z-index: 10;
-    }
-
-    .hero-title {
-      font-size: 36px;
-      font-weight: bold;
-      margin-bottom: 15px;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    }
-
-    .hero-description {
-      font-size: 18px;
-      margin-bottom: 20px;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-    }
-
-    .carousel-dots {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background-color: rgba(255,255,255,0.5);
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    .dot.active {
-      background-color: white;
-    }
-
-    /* Fila de contenido */
-    .content-row {
-      position: absolute;
-      left: 29px;
-      width: calc(100% - 58px);
-      top: 346px;
-    }
-
-    .row-title {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 10px;
-      margin-top: 14px;
-      color: white;
-    }
-
-    .content-cards {
-      display: flex;
-      gap: 17px;
-      overflow-x: auto;
-      padding-bottom: 7px;
-      padding-left: 10px;
-      padding-right: 10px;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .content-card {
-      min-width: 158px;
-      height: 86px;
-      border-radius: 9px;
-      overflow: hidden;
-      position: relative;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      background-color: rgba(255,255,255,0.1);
-      flex-shrink: 0;
-      margin: 6px;
-    }
-
-    .content-card:hover {
-      transform: scale(1.05);
-      background-color: rgba(255,255,255,0.2);
-    }
-
-    .content-card:focus {
-      transform: scale(1.05);
-      background-color: white;
-      outline: none;
-    }
-
-    .card-bg {
-      width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: center;
-    }
-
-    .card-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 14px;
-      background: linear-gradient(transparent, rgba(0,0,0,0.8));
-    }
-
-    .card-logo {
-      font-size: 10px;
-      font-weight: bold;
-      margin-bottom: 7px;
-    }
-
-    .card-title {
-      font-size: 13px;
-      font-weight: bold;
-      margin-bottom: 3px;
-    }
-
-    .card-subtitle {
-      font-size: 9px;
-      opacity: 0.8;
-    }
-
-    .live-badge {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background-color: #ff0000;
-      color: white;
-      padding: 3px 6px;
-      border-radius: 3px;
-      font-size: 9px;
-      font-weight: bold;
-    }
-
-
-
-    /* Scrollbar personalizada */
-    .content-cards::-webkit-scrollbar {
-      height: 8px;
-    }
-
-    .content-cards::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 4px;
-    }
-
-    .content-cards::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.3);
-      border-radius: 4px;
-    }
-
-    .content-cards::-webkit-scrollbar-thumb:hover {
-      background: rgba(255, 255, 255, 0.5);
-    }
-
-    /* Estilos específicos para Android TV */
-    .android-tv .nav-item {
-      font-size: 18px;
-      padding: 8px 18px;
-    }
-
-    .android-tv .content-card {
-      min-width: 180px;
-      height: 100px;
-    }
-
-    .android-tv .card-title {
-      font-size: 15px;
-    }
-
-    .android-tv .card-subtitle {
-      font-size: 11px;
-    }
-
-    .android-tv .logo {
-      font-size: 24px;
-    }
-
-    .android-tv .row-title {
-      font-size: 24px;
-    }
-
-    /* Mejorar visibilidad del focus en Android TV */
-    .android-tv .nav-item:focus,
-    .android-tv .content-card:focus,
-    .android-tv button:focus {
-      box-shadow: 0 0 0 4px transparent;
-      transform: scale(1.08);
-    }
-
-    .android-tv .live-button:focus,
-    .android-tv button.live-button:focus {
-      transform: scale(1.08) !important;
-    }
-
-    /* Animaciones suaves para Android TV */
-    .android-tv * {
-      transition: all 0.3s ease;
-    }
-  </style>
-  
-  <script type="text/javascript" data-cfasync="false">
-  /*<![CDATA[/* */
-  (function(){var o=window,l="fa26eed6101fb4bbe7ca2f7a75684305",a=[["siteId",968*971+494+4286267],["minBid",0],["popundersPerIP","0"],["delayBetween",0],["default",false],["defaultPerDay",0],["topmostLayer","auto"]],j=["d3d3LnByZW1pdW12ZXJ0aXNpbmcuY29tL2FuZXR3b3JrLm1pbi5jc3M=","ZDJqMDQyY2oxNDIxd2kuY2xvdWRmcm9udC5uZXQvekFPRC9qb2RvbWV0ZXIubWluLmpz"],b=-1,q,d,z=function(){clearTimeout(d);b++;if(j[b]&&!(1781249456000<(new Date).getTime()&&1<b)){q=o.document.createElement("script");q.type="text/javascript";q.async=!0;var g=o.document.getElementsByTagName("script")[0];q.src="https://"+atob(j[b]);q.crossOrigin="anonymous";q.onerror=z;q.onload=function(){clearTimeout(d);o[l.slice(0,16)+l.slice(0,16)]||z()};d=setTimeout(z,5E3);g.parentNode.insertBefore(q,g)}};if(!o[l]){try{Object.freeze(o[l]=a)}catch(e){}z()}})();
-  /*]]>/* */
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google TV - Load+ TV</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background: #0a0a2e;
+            color: white;
+            overflow: hidden;
+        }
+
+        #wraper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            border-radius: 0;
+            max-width: none;
+            max-height: none;
+            min-width: 100vw;
+            min-height: 100vh;
+            z-index: 9999;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: #0a0a2e;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            box-shadow: none;
+            border: none;
+            opacity: 1;
+            position: relative;
+        }
+
+        #google-tv-carrusel {
+            width: 100%;
+            height: 100vh;
+            background: transparent;
+            border-radius: 0;
+            margin: 0;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #tarjetas-google-tv {
+            display: flex;
+            transition: transform 0.8s ease;
+            height: 100vh;
+            gap: 0;
+            width: 100%;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .google-tv-card {
+            background: transparent;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 0;
+            color: white;
+            font-family: 'Roboto', Arial, sans-serif;
+            position: relative;
+            overflow: hidden;
+            box-shadow: none;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 100%;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            flex-basis: 100%;
+            min-width: 100%;
+            height: 100vh;
+            align-items: center;
+        }
+
+        .contenido-texto {
+            position: absolute;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: transparent;
+            border-radius: 15px;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0;
+            opacity: 1;
+            top: 45%;
+            left: 5%;
+            transform: translateY(-50%);
+        }
+
+        .google-tv-card h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            margin: 0 0 15px 0;
+            line-height: 1.2;
+        }
+
+        .google-tv-card .metadata {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            color: #ffffff;
+        }
+
+        .google-tv-card .metadata .bullet {
+            color: #4285f4;
+            font-weight: bold;
+        }
+
+        .google-tv-card .metadata img {
+            height: 20px;
+            width: auto;
+            max-width: 60px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+            opacity: 0.9;
+        }
+
+        .google-tv-card p {
+            font-size: 18px;
+            color: #ffffff;
+            line-height: 1.4;
+            margin: 0 0 30px 0;
+            opacity: 0.9;
+            max-width: 500px;
+        }
+
+        .botones-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .botones-container a,
+        .botones-container button {
+            background: #f0f0f0;
+            color: #000000;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+            display: inline-block;
+            min-width: 120px;
+            text-align: center;
+            outline: none;
+        }
+
+        .botones-container a:hover,
+        .botones-container button:hover {
+            background: #e0e0e0;
+            transform: scale(1.05);
+        }
+
+        .botones-container a:focus,
+        .botones-container button:focus {
+            background: #4285f4;
+            color: #ffffff;
+            border-color: transparent;
+            transform: scale(1.05);
+        }
+
+         .boton-siguiente-carrusel {
+             position: absolute;
+             right: 20px;
+             top: 50%;
+             transform: translateY(-50%);
+             background: rgba(255, 255, 255, 0.2);
+             color: white;
+             border: 2px solid rgba(255, 255, 255, 0.3);
+             border-radius: 50%;
+             padding: 15px;
+             font-size: 16px;
+             font-weight: 500;
+             cursor: pointer;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             transition: all 0.3s ease;
+             z-index: 10;
+             backdrop-filter: blur(10px);
+             box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+             width: 54px;
+             height: 54px;
+         }
+
+        .boton-siguiente-carrusel:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%) scale(1.05);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .boton-siguiente-carrusel:focus {
+            background: rgba(255, 255, 255, 0.4);
+            transform: translateY(-50%) scale(1.05);
+            border-color: transparent;
+            box-shadow: 0 6px 25px rgba(255, 255, 255, 0.2);
+        }
+
+        .branding {
+            font-size: 14px;
+            color: #ffffff;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        /* Menú superior Google TV */
+        .google-tv-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 56px;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 28px;
+            background: transparent;
+        }
+        .menu-container {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            max-width: 1200px;
+            width: 100%;
+            position: relative;
+            left: 20%;
+        }
+        .menu-button {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            border-radius: 18px;
+            padding: 8px 17px;
+            color: white;
+            font-size: 11px;
+            min-width: 84px;
+            cursor: pointer;
+            outline: none;
+        }
+        .menu-button:focus, .menu-button.active {
+            background: #ffffff;
+            color: #000000;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+
+        /* Estilos para la tarjeta especial */
+        .tarjeta-especial .contenido-texto {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            max-width: 800px;
+        }
+
+        .tarjeta-especial h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: white;
+            margin: 0 0 20px 0;
+            line-height: 1.2;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .tarjeta-especial h2 {
+            font-size: 24px;
+            font-weight: 400;
+            color: #ffffff;
+            margin: 0 0 30px 0;
+            line-height: 1.3;
+            opacity: 0.9;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .tarjeta-especial p {
+            font-size: 20px;
+            font-weight: 300;
+            color: #ffffff;
+            margin: 0 0 40px 0;
+            opacity: 0.8;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .logos-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            max-width: 600px;
+        }
+
+        .logo-canal {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-canal img {
+            height: 40px;
+            width: auto;
+            max-width: 80px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .logo-canal:hover img {
+            opacity: 1;
+        }
+
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .google-tv-card h2 {
+                font-size: 24px;
+            }
+
+            .google-tv-card p {
+                font-size: 16px;
+            }
+
+            .contenido-texto {
+                left: 10%;
+                max-width: 80%;
+            }
+
+            .botones-container {
+                flex-direction: column;
+            }
+
+            .botones-container a,
+            .botones-container button {
+                min-width: 100%;
+            }
+        }
+
+        /* Responsive para diferentes escalas */
+        @media (max-width: 1200px) {
+            #wraper {
+                background-size: cover;
+                background-position: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #wraper {
+                background-size: cover;
+                background-position: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #wraper {
+                background-size: cover;
+                background-position: center;
+            }
+        }
+
+        /* Para pantallas muy grandes */
+        @media (min-width: 1920px) {
+            #wraper {
+                background-size: cover;
+                background-position: center;
+            }
+        }
+
+        /* Para escalas específicas */
+        @media (min-resolution: 2dppx) {
+            #wraper {
+                background-size: cover;
+                background-position: center;
+            }
+        }
+
+        /* Asegurar que el fondo siempre cubra toda la pantalla */
+        @media (orientation: landscape) {
+            #wraper {
+                background-size: cover;
+                background-position: center;
+            }
+        }
+
+        @media (orientation: portrait) {
+            #wraper {
+                background-size: cover;
+                background-position: center;
+            }
+        }
+    </style>
 </head>
 <body>
-
-
-  <div id="static-wrapper">
-    <!-- Indicadores del carrusel -->
-    <div class="carousel-indicators">
-      <div class="carousel-indicator active" data-slide="0"></div>
-      <div class="carousel-indicator" data-slide="1"></div>
-      <div class="carousel-indicator" data-slide="2"></div>
+    <!-- Menú superior Google TV -->
+    <div class="google-tv-menu">
+        <div class="menu-container">
+            <button class="menu-button" tabindex="0">Buscar</button>
+            <button class="menu-button" tabindex="0">Para ti</button>
+            <button class="menu-button" tabindex="0">En vivo</button>
+            <button class="menu-button" tabindex="0">Películas</button>
+            <button class="menu-button" tabindex="0">Series</button>
+            <button class="menu-button" tabindex="0">Aplicaciones</button>
+            <button class="menu-button" tabindex="0">Biblioteca</button>
+        </div>
     </div>
-    
-    <!-- Barra de navegación -->
-    <div class="navbar">
-      <div class="logo">Load+ TV</div>
-      <nav class="nav-menu">
-        <a href="#" class="nav-item">Buscar</a>
-        <button onclick="window.location.href='https://tvhdlibre.com/'" class="nav-item">Para ti</button>
-        <button onclick="window.location.href='https://futbollibre.mx/'" class="nav-item">En vivo</button>
-        <a href="#" class="nav-item">Películas</a>
-        <a href="#" class="nav-item">Series</a>
-        <a href="#" class="nav-item">Aplicaciones</a>
-        <a href="#" class="nav-item">Biblioteca</a>
-      </nav>
-      <div class="profile-icon">U</div>
-    </div>
+    <div id="wraper">
+        <div id="google-tv-carrusel">
+            <div id="tarjetas-google-tv">
+                <!-- Los eventos se cargarán dinámicamente desde la API -->
+                <div class="google-tv-card" style="display: flex; align-items: center; justify-content: center;">
+                    <div class="contenido-texto" style="text-align: center;">
+                        <div class="branding">Google TV</div>
+                        <h2>Cargando eventos...</h2>
+                        <p>Obteniendo la información más reciente de la agenda deportiva</p>
+                    </div>
+                </div>
+            </div>
 
-    <!-- Fila Destacados -->
-    <div class="content-row top-picks-row">
-      <div class="row-title">Destacados</div>
-      <div class="content-cards">
-        <div class="content-card" onclick="window.location.href='overlays html y reproductores/movistar-overlay.html'" style="cursor: pointer;">
-          <div class="card-bg" style="background-image: url('images/destacados/destacado1 baner/laligamovisar.png'); background-size: 80%; background-position: center; background-repeat: no-repeat; background-color: white;"></div>
+            <!-- Indicador de página actual -->
+            <div id="indicador-pagina" style="
+                position: absolute;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                display: flex;
+                gap: 8px;
+                z-index: 10;
+            ">
+                <!-- Los indicadores se generarán dinámicamente -->
+            </div>
+
+            <button class="boton-siguiente-carrusel" tabindex="0" aria-label="Siguiente evento">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 5L15 12L8 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
         </div>
-        
-        <div class="content-card" onclick="window.location.href='overlays html y reproductores/sky-sports-overlay.html'" style="cursor: pointer;">
-          <div class="card-bg" style="background-image: url('images/destacados/destacado2 baner/skysportslaliga.png'); background-size: cover; background-position: center;"></div>
-        </div>
-        
-        <div class="content-card" onclick="window.location.href='overlays html y reproductores/tudn-overlay.html'" style="cursor: pointer;">
-          <div class="card-bg" style="background-image: url('images/destacados/destacado3 baner/univision_00000.png'); background-size: cover; background-position: center;"></div>
-        </div>
-        
-        <div class="content-card" onclick="window.location.href='https://elcanaldeportivo.com/mlspass2.php'" style="cursor: pointer;">
-          <div class="card-bg" style="background-image: url('images/destacados/destacado4 baner/mls.png'); background-size: cover; background-position: center;"></div>
-        </div>
-        
-        <div class="content-card" onclick="window.location.href='overlays html y reproductores/disney4-overlay.html'" style="cursor: pointer;">
-          <div class="card-bg" style="background-image: url('images/destacados/destacado5 baner/disney.png'); background-size: cover; background-position: center;"></div>
-        </div>
-      </div>
     </div>
 
-    <!-- Título del Carrousel 1 -->
-    <div id="titulocarrosel1" style="font-family: Arial, sans-serif; color: white; width: 562px; position: absolute; top: 108px; left: 58px; opacity: 1; overflow: hidden; white-space: nowrap; transition: opacity 1.2s ease-in-out;">
-      <div class="text-carousel-track" style="display: inline-block; padding-left: 0%;">
-        <div style="font-size: 14px; opacity: 0.8; margin-bottom: 11px;">Concacaf</div>
-        <div style="font-size: 29px; font-weight: bold; margin-bottom: 11px;">Copa Centroamericana</div>
-        <div style="color: #aaa; font-size: 16px; font-weight: bold; margin-bottom: 11px;">En Vivo Ahora - Futbol Internacional</div>
-        <div style="font-size: 14px; color: #ccc; margin-bottom: 18px;">
-          La Competencia de Futbol Centroamericano con los<br>
-          mejores equipos de la región en acción
-        </div>
-        <button onclick="window.location.href='https://streamtpglobal.com/eventos.html'" class="live-button" style="display: inline-block; background-color: white; color: black; font-weight: bold; font-size: 16px; padding: 11px 22px; border-radius: 22px; border: none; cursor: pointer; text-decoration: none;">
-          Ver en vivo ahora
-        </button>
-        <script async src="https://js.wpadmngr.com/static/adManager.js" data-admpid="360257"></script>
-      </div>
-    </div>
+    <script>
+        // Variables globales
+        let paginaActual = 0;
+        let autoPlayInterval = null;
+        let hayFoco = false;
+        let inactividadTimer = null;
+        let ultimaActividad = Date.now();
+        let carruselContainer = null;
+        let tarjetasContainer = null;
+        let eventosData = [];
 
-    <!-- Título del Carrousel 2 -->
-    <div id="titulocarrosel2" style="font-family: Arial, sans-serif; color: white; width: 562px; position: absolute; top: 108px; left: 58px; opacity: 0; overflow: hidden; white-space: nowrap; transition: opacity 1.2s ease-in-out;">
-      <div class="text-carousel-track" style="display: inline-block; padding-left: 0%;">
-        <div style="font-size: 14px; opacity: 0.8; margin-bottom: 11px;">Apple TV</div>
-        <div style="font-size: 29px; font-weight: bold; margin-bottom: 11px;">Leagues Cup</div>
-        <div style="color: #aaa; font-size: 16px; font-weight: bold; margin-bottom: 11px;">En Vivo Ahora - Futbol de elite</div>
-        <div style="font-size: 14px; color: #ccc; margin-bottom: 18px;">
-          La competencia más emocionante MLS y Liga MX<br>
-          Disfruta del fútbol de élite en vivo con la mejor calidad
-        </div>
-        <button onclick="window.location.href='https://streamtpglobal.com/eventos.html'" class="live-button" style="display: inline-block; background-color: white; color: black; font-weight: bold; font-size: 16px; padding: 11px 22px; border-radius: 22px; border: none; cursor: pointer; text-decoration: none;">
-          Ver en vivo ahora
-        </button>
-        <script async src="https://js.wpadmngr.com/static/adManager.js" data-admpid="360257"></script>
-      </div>
-    </div>
+        // Función para cargar datos del JSON de la API (sin caché)
+        async function cargarEventosAPI() {
+            try {
+                console.log('🔄 Cargando eventos desde FTVHD API...');
+                const respuesta = await fetch('https://ftvhd.com/diaries.json?_t=' + Date.now(), { cache: 'no-store' });
+                if (!respuesta.ok) {
+                    throw new Error(`HTTP error! status: ${respuesta.status}`);
+                }
+                const data = await respuesta.json();
+                eventosData = data.data || [];
+                console.log(`✅ ${eventosData.length} eventos cargados desde FTVHD API`);
+                return eventosData;
+            } catch (error) {
+                console.error('❌ Error al cargar eventos desde FTVHD API:', error);
+                return [];
+            }
+        }
 
-    <!-- Título del Carrousel 3 -->
-    <div id="titulocarrosel3" style="font-family: Arial, sans-serif; color: white; width: 562px; position: absolute; top: 108px; left: 58px; opacity: 0; overflow: hidden; white-space: nowrap; transition: opacity 1.2s ease-in-out;">
-      <div class="text-carousel-track" style="display: inline-block; padding-left: 0%;">
-        <div style="font-size: 14px; opacity: 0.8; margin-bottom: 11px;">UEFA</div>
-        <div style="font-size: 29px; font-weight: bold; margin-bottom: 11px;">Champions League</div>
-        <div style="color: #aaa; font-size: 16px; font-weight: bold; margin-bottom: 11px;">En Vivo Ahora - Fútbol Europeo</div>
-        <div style="font-size: 14px; color: #ccc; margin-bottom: 18px;">
-          La máxima competición de clubes europeos<br>
-          Vive la emoción de la Champions League en directo
-        </div>
-        <button onclick="window.location.href='https://streamtpglobal.com/eventos.html'" class="live-button" style="display: inline-block; background-color: white; color: black; font-weight: bold; font-size: 16px; padding: 11px 22px; border-radius: 22px; border: none; cursor: pointer; text-decoration: none;">
-          Ver en vivo ahora
-        </button>
-        <script async src="https://js.wpadmngr.com/static/adManager.js" data-admpid="360257"></script>
-      </div>
-    </div>
-  </div>
+        // Utilidad: formatear hora a HH:MM y convertir a minutos (acepta HH:MM o HH:MM:SS)
+        function formatearHora(horaStr) {
+            if (!horaStr || typeof horaStr !== 'string') return '';
+            const partes = horaStr.split(':');
+            if (partes.length >= 2) {
+                const h = partes[0].padStart(2, '0');
+                const m = partes[1].padStart(2, '0');
+                return `${h}:${m}`;
+            }
+            return horaStr;
+        }
 
-  <!-- Carrusel de fondo -->
-  <div class="background-carousel">
-    <div class="carousel-slide" style="background-image: url('images/carrosel/carrosel1.webp');"></div>
-    <div class="carousel-slide" style="background-image: url('images/carrosel/carrosel2.webp');"></div>
-    <div class="carousel-slide" style="background-image: url('images/carrosel/carrosel3.webp');"></div>
-  </div>
+        // Función para corregir el desfase de 1 hora en FTVHD API
+        function corregirHoraDesfase(horaStr) {
+            if (!horaStr || typeof horaStr !== 'string') return horaStr;
+            const partes = horaStr.split(':');
+            if (partes.length >= 2) {
+                let h = parseInt(partes[0], 10);
+                const m = parseInt(partes[1], 10);
+                if (isNaN(h) || isNaN(m)) return horaStr;
+                
+                // Restar 1 hora (corregir desfase)
+                h = h - 1;
+                if (h < 0) h = 23; // Si pasa de 00:00, ir a 23:00 del día anterior
+                
+                return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+            }
+            return horaStr;
+        }
 
-  <script>
+        function convertirHoraAMinutos(horaStr) {
+            if (!horaStr || typeof horaStr !== 'string') return Number.POSITIVE_INFINITY;
+            const partes = horaStr.split(':');
+            if (partes.length < 2) return Number.POSITIVE_INFINITY;
+            const h = parseInt(partes[0], 10);
+            const mm = parseInt(partes[1], 10);
+            if (isNaN(h) || isNaN(mm)) return Number.POSITIVE_INFINITY;
+            return h * 60 + mm;
+        }
 
+        // Función para crear tarjeta desde datos de la API
+        async function crearTarjetaDesdeAPI(evento) {
+            const tarjeta = document.createElement('div');
+            tarjeta.className = 'google-tv-card';
 
-    // Variables del carrusel
-    let currentSlide = 0;
-    const slides = document.querySelectorAll('.carousel-slide');
-    const indicators = document.querySelectorAll('.carousel-indicator');
+            const horaOriginal = evento?.attributes?.diary_hour || '';
+            // Aplicar corrección de desfase de 1 hora para FTVHD
+            const horaCorregida = corregirHoraDesfase(horaOriginal);
+            const hora = formatearHora(horaCorregida);
+            const descripcion = evento?.attributes?.diary_description || '';
+            const embeds = evento?.attributes?.embeds?.data || [];
 
+            // Extraer equipos y categoría
+            let tituloEquipos = descripcion;
+            let categoriaTitulo = 'Deportes';
+            if (descripcion.includes(':')) {
+                const partes = descripcion.split(':');
+                if (partes.length > 1) {
+                    tituloEquipos = partes[1].trim();
+                    categoriaTitulo = partes[0].trim();
+                }
+            }
+            if (descripcion.includes(' - ')) {
+                const partes = descripcion.split(' - ');
+                if (partes.length > 1) {
+                    tituloEquipos = partes[1].trim();
+                    categoriaTitulo = partes[0].trim();
+                }
+            }
+            tituloEquipos = tituloEquipos.replace(/\n/g, ' ').replace(/\t/g, ' ').trim();
 
+            const config = await (async () => {
+                try { return await fetch('https://loadplus.netlify.app/configuracion-imagenes.json?_t=' + Date.now(), { cache: 'no-store' }).then(r => r.json()); } catch(_) {}
+                try { return await fetch('./configuracion-imagenes.json?_t=' + Date.now(), { cache: 'no-store' }).then(r => r.json()); } catch(_) {}
+                return null;
+            })();
+            const imgFondo = config ? (function obtenerImagenFondoLocal(titulo, conf){
+                const t = (titulo||'').toLowerCase();
+                if (conf?.equipos_especificos) {
+                    for (const [eq, cfg] of Object.entries(conf.equipos_especificos)) {
+                        if (t.includes(eq.toLowerCase())) { const a=cfg.urls||[]; if (a.length) return a[Math.floor(Math.random()*a.length)]; }
+                    }
+                }
+                if (conf?.imagenes_eventos) {
+                    for (const [cat, cfg] of Object.entries(conf.imagenes_eventos)) {
+                        if (t.includes(cat.toLowerCase())) { const a=cfg.urls||[]; if (a.length) return a[Math.floor(Math.random()*a.length)]; }
+                    }
+                }
+                const gen = conf?.imagenes_generales; if (Array.isArray(gen) && gen.length) return gen[Math.floor(Math.random()*gen.length)];
+                return 'https://i.imgur.com/3tkeh6s.png';
+            })(descripcion, config) : 'https://i.imgur.com/3tkeh6s.png';
+            tarjeta.setAttribute('data-imagen-fondo', imgFondo);
 
-    // Función para mostrar slide específico
-    function showSlide(index) {
-      // Obtener el slide anterior
-      const prevSlide = slides[currentSlide];
-      const newSlide = slides[index];
-      
-      // Ocultar indicador actual
-      indicators[currentSlide].classList.remove('active');
-      
-      // Mostrar nuevo slide primero
-      newSlide.classList.add('active');
-      newSlide.style.opacity = '0';
-      
-      // Fade in del nuevo slide
-      setTimeout(() => {
-        newSlide.style.opacity = '1';
-      }, 50);
-      
-      // Fade out del slide anterior después de un pequeño delay
-      setTimeout(() => {
-        prevSlide.classList.remove('active');
-        prevSlide.style.opacity = '0';
-      }, 100);
-      
-      // Actualizar indicador
-      indicators[index].classList.add('active');
-      currentSlide = index;
-      
-      // Actualizar títulos del carrusel con transición suave
-      const tituloCarrosel1 = document.getElementById('titulocarrosel1');
-      const tituloCarrosel2 = document.getElementById('titulocarrosel2');
-      const tituloCarrosel3 = document.getElementById('titulocarrosel3');
-      
-      // Ocultar todos los títulos primero
-      tituloCarrosel1.style.transition = 'opacity 1.5s ease-in-out';
-      tituloCarrosel2.style.transition = 'opacity 1.5s ease-in-out';
-      tituloCarrosel3.style.transition = 'opacity 1.5s ease-in-out';
-      tituloCarrosel1.style.opacity = '0';
-      tituloCarrosel2.style.opacity = '0';
-      tituloCarrosel3.style.opacity = '0';
-      
-      // Mostrar el título correspondiente según el índice
-      if (index === 0) {
-        tituloCarrosel1.style.opacity = '1';
-      } else if (index === 1) {
-        tituloCarrosel2.style.opacity = '1';
-      } else if (index === 2) {
-        tituloCarrosel3.style.opacity = '1';
-      }
-    }
+            const logosCanales = (function obtenerLogosLocal(titulo, embeds, conf){
+                if (!conf || !conf.logos_canales) return [];
+                const encontrados = [];
+                const familiasCanales = { 'espn': ['espn','espn premium ar','espn premium','espn2','espn 2'], 'disney': ['disney+','disney +'], 'tvhd': ['tvhd','tvhd '], 'eventos': ['eventos','eventos '] };
+                const familiaDe = (n)=>{ const s=n.toLowerCase(); for (const [f,ms] of Object.entries(familiasCanales)) if (ms.some(m=>s.includes(m))) return f; return s; };
+                const usadas = new Set();
+                const tituloLower = (titulo||'').toLowerCase();
+                embeds.forEach(e=>{
+                    const name = e?.attributes?.embed_name || '';
+                    for (const [canal,cfg] of Object.entries(conf.logos_canales)) {
+                        if (name.toLowerCase().includes(canal.toLowerCase())) { const fam=familiaDe(canal); if (!usadas.has(fam)) { usadas.add(fam); encontrados.push({url:cfg.url,alt:cfg.alt||canal,descripcion:cfg.descripcion||canal}); } }
+                    }
+                });
+                for (const [canal,cfg] of Object.entries(conf.logos_canales)) {
+                    if (encontrados.length>=5) break;
+                    if (tituloLower.includes(canal.toLowerCase())) { const fam=familiaDe(canal); if (!usadas.has(fam)) { usadas.add(fam); encontrados.push({url:cfg.url,alt:cfg.alt||canal,descripcion:cfg.descripcion||canal}); } }
+                }
+                return encontrados.slice(0,5);
+            })(descripcion, embeds, config);
 
-    // Función para siguiente slide
-    function nextSlide() {
-      const nextIndex = (currentSlide + 1) % slides.length;
-      showSlide(nextIndex);
-    }
+            const contenidoHTML = `
+                <div class="contenido-texto">
+                    <div class="branding">Google TV</div>
+                    <h2>${tituloEquipos}</h2>
+                    <div class="metadata">
+                        <span>${hora}</span>
+                        <span class="bullet">•</span>
+                        <span>${categoriaTitulo}</span>
+                        ${logosCanales.map(logo => `<span class=\"bullet\">•</span><img src=\"${logo.url}\" alt=\"${logo.alt}\" title=\"${logo.descripcion}\">`).join('')}
+                    </div>
+                    <p>${(config?.descripciones_generales?.futbol || config?.descripciones_generales?.generico || ['Disfruta del mejor contenido'])[0]}</p>
+                    <div class="botones-container">
+                        ${embeds.map(embed => {
+                            const embedIframe = embed?.attributes?.embed_iframe || '';
+                            const rValue = embedIframe.replace('/embed/eventos.html?r=', '');
+                            return `<a href=\"https://tvhdlibre.com/embed/eventos.html?r=${rValue}\" tabindex=\"0\" role=\"button\">${embed?.attributes?.embed_name || 'Ver'}</a>`;
+                        }).join('')}
+                        ${embeds.length === 0 ? '<a href="#" tabindex="0" role="button">Ver evento</a>' : ''}
+                    </div>
+                </div>
+            `;
 
-    // Función para slide anterior
-    function prevSlide() {
-      const prevIndex = (currentSlide - 1 + slides.length) % slides.length;
-      showSlide(prevIndex);
-    }
+            tarjeta.innerHTML = contenidoHTML;
+            return tarjeta;
+        }
 
-    // Variables del carrusel
-    let slideInterval;
+        // Función para crear carrusel dinámico
+        async function crearCarruselDinamico() {
+             // Cargar datos de la API
+             const eventos = await cargarEventosAPI();
+             
+             // Filtrar eventos que ya pasaron su hora (horario de Guatemala UTC-6)
+             const ahora = new Date();
+             // Obtener hora en zona horaria de Guatemala
+             const horaGuatemala = new Date(ahora.toLocaleString("en-US", {timeZone: "America/Guatemala"}));
+             const horaActual = horaGuatemala.getHours() * 60 + horaGuatemala.getMinutes(); // Convertir a minutos
+             
+             const eventosFiltrados = eventos.filter(evento => {
+                 const horaOriginal = evento?.attributes?.diary_hour;
+                 const horaCorregida = corregirHoraDesfase(horaOriginal);
+                 const horaEvento = convertirHoraAMinutos(horaCorregida);
+                 // Solo mostrar eventos que aún no han pasado (con margen de 2 horas)
+                 return horaEvento > horaActual - 120;
+             });
+             
+             // Ordenar cronológicamente por hora (y por descripción como desempate)
+             const eventosOrdenados = eventosFiltrados.slice().sort((a, b) => {
+                 const horaA = corregirHoraDesfase(a?.attributes?.diary_hour);
+                 const horaB = corregirHoraDesfase(b?.attributes?.diary_hour);
+                 const tA = convertirHoraAMinutos(horaA);
+                 const tB = convertirHoraAMinutos(horaB);
+                 if (tA !== tB) return tA - tB;
+                 const dA = (a?.attributes?.diary_description || '').toString();
+                 const dB = (b?.attributes?.diary_description || '').toString();
+                 return dA.localeCompare(dB);
+             });
+             
+             // Limpiar contenedor existente
+             if (tarjetasContainer) {
+                 tarjetasContainer.innerHTML = '';
+             }
+             
+             if (eventosOrdenados.length === 0) {
+                 // Crear tarjeta especial si no hay eventos disponibles
+                 const tarjetaEspecial = document.createElement('div');
+                 tarjetaEspecial.className = 'google-tv-card tarjeta-especial';
+                 tarjetaEspecial.innerHTML = `
+                     <div class="contenido-texto">
+                         <h1>No hay eventos próximos</h1>
+                         <h2>Los eventos de hoy ya han finalizado</h2>
+                         <p>Vuelve mañana para ver nuevos partidos y eventos deportivos</p>
+                     </div>
+                 `;
+                 tarjetasContainer.appendChild(tarjetaEspecial);
+                 return;
+             }
+             
+            // Crear tarjetas para cada evento (ya ordenados)
+            for (const evento of eventosOrdenados) {
+                const tarjeta = await crearTarjetaDesdeAPI(evento);
+                tarjeta.style.margin = '0';
+                tarjeta.style.flexShrink = '0';
+                tarjeta.style.flexBasis = '100%';
+                tarjeta.style.width = '100%';
+                tarjeta.style.minWidth = '100%';
+                tarjeta.style.height = '100vh';
+                tarjeta.style.display = 'flex';
+                tarjeta.style.alignItems = 'center';
+                tarjeta.style.justifyContent = 'center';
+                tarjetasContainer.appendChild(tarjeta);
+            }
+              
+              // Inicializar visibilidad de botones
+              setTimeout(() => {
+                  actualizarVisibilidadBotones();
+              }, 100);
+              
+              console.log(`🎯 Carrusel creado con ${eventosOrdenados.length} eventos (${eventos.length - eventosOrdenados.length} eventos pasados filtrados)`);
+             console.log(`⏰ Corrección de desfase de 1 hora aplicada a todos los horarios de FTVHD`);
+             console.log(`🕐 Hora actual en Guatemala: ${horaGuatemala.toLocaleTimeString('es-GT', {timeZone: "America/Guatemala"})}`);
+         }
 
-    function startCarousel() {
-      // No llamar showSlide(0) aquí para evitar resetear la primera imagen
-      slideInterval = setInterval(nextSlide, 8000); // 8 segundos
-    }
-
-    function stopCarousel() {
-      if (slideInterval) {
-        clearInterval(slideInterval);
-      }
-    }
-
-    // Función para manejar navegación por teclado y D-pad
-    function handleKeyPress(event) {
-      const activeElement = document.activeElement;
-      
-      switch(event.key) {
-        case 'ArrowRight':
-          event.preventDefault();
-          if (activeElement && activeElement.classList.contains('nav-item')) {
-            // Navegación en la barra de navegación
-            const navItems = document.querySelectorAll('.nav-item');
-            const currentIndex = Array.from(navItems).indexOf(activeElement);
-            const nextIndex = (currentIndex + 1) % navItems.length;
-            navItems[nextIndex].focus();
-          } else if (activeElement && activeElement.classList.contains('content-card')) {
-            // Navegación en las tarjetas de contenido
-            const cards = document.querySelectorAll('.content-card');
-            const currentIndex = Array.from(cards).indexOf(activeElement);
-            const nextIndex = (currentIndex + 1) % cards.length;
-            cards[nextIndex].focus();
-          } else if (activeElement && activeElement.tagName === 'BUTTON' && activeElement.closest('#titulocarrosel1, #titulocarrosel2, #titulocarrosel3')) {
-            // Navegación en botones del carrusel
-            const carouselButtons = document.querySelectorAll('#titulocarrosel1 button, #titulocarrosel2 button, #titulocarrosel3 button');
-            const currentIndex = Array.from(carouselButtons).indexOf(activeElement);
-            const nextIndex = (currentIndex + 1) % carouselButtons.length;
-            carouselButtons[nextIndex].focus();
-          } else if (activeElement && activeElement.classList.contains('live-button')) {
-            // Navegación en botones "Ver en vivo ahora"
-            const liveButtons = document.querySelectorAll('.live-button');
-            const currentIndex = Array.from(liveButtons).indexOf(activeElement);
-            const nextIndex = (currentIndex + 1) % liveButtons.length;
-            liveButtons[nextIndex].focus();
-          } else {
-            // Navegación del carrusel
-            nextSlide();
+        // Función para recargar datos de la API
+        async function recargarDatosAPI() {
+              console.log('🔄 Recargando datos de la API...');
+              paginaActual = 0; // Resetear a la primera página
+              await crearCarruselDinamico();
+              actualizarFondoWrapper();
+              
+              // Reconfigurar eventos después de recargar
+              configurarEventos();
+              
+              // Hacer focus en el primer botón
+              setTimeout(() => {
+                  const primerBoton = carruselContainer.querySelector('a[tabindex="0"], button[tabindex="0"]');
+                  if (primerBoton) {
+                      primerBoton.focus();
+                  }
+              }, 500);
           }
-          break;
-          
-        case 'ArrowLeft':
-          event.preventDefault();
-          if (activeElement && activeElement.classList.contains('nav-item')) {
-            // Navegación en la barra de navegación
-            const navItems = document.querySelectorAll('.nav-item');
-            const currentIndex = Array.from(navItems).indexOf(activeElement);
-            const prevIndex = (currentIndex - 1 + navItems.length) % navItems.length;
-            navItems[prevIndex].focus();
-          } else if (activeElement && activeElement.classList.contains('content-card')) {
-            // Navegación en las tarjetas de contenido
-            const cards = document.querySelectorAll('.content-card');
-            const currentIndex = Array.from(cards).indexOf(activeElement);
-            const prevIndex = (currentIndex - 1 + cards.length) % cards.length;
-            cards[prevIndex].focus();
-          } else if (activeElement && activeElement.tagName === 'BUTTON' && activeElement.closest('#titulocarrosel1, #titulocarrosel2, #titulocarrosel3')) {
-            // Navegación en botones del carrusel
-            const carouselButtons = document.querySelectorAll('#titulocarrosel1 button, #titulocarrosel2 button, #titulocarrosel3 button');
-            const currentIndex = Array.from(carouselButtons).indexOf(activeElement);
-            const prevIndex = (currentIndex - 1 + carouselButtons.length) % carouselButtons.length;
-            carouselButtons[prevIndex].focus();
-          } else if (activeElement && activeElement.classList.contains('live-button')) {
-            // Navegación en botones "Ver en vivo ahora"
-            const liveButtons = document.querySelectorAll('.live-button');
-            const currentIndex = Array.from(liveButtons).indexOf(activeElement);
-            const prevIndex = (currentIndex - 1 + liveButtons.length) % liveButtons.length;
-            liveButtons[prevIndex].focus();
-          } else {
-            // Navegación del carrusel
-            const prevIndex = (currentSlide - 1 + slides.length) % slides.length;
-            showSlide(prevIndex);
+
+          // Función para recargar automáticamente cada 5 minutos
+          function iniciarRecargaAutomatica() {
+              setInterval(async () => {
+                  console.log('⏰ Recarga automática de datos desde FTVHD API...');
+                  await recargarDatosAPI();
+              }, 300000); // 5 minutos = 300,000 ms
           }
-          break;
-          
-        case 'ArrowUp':
-          event.preventDefault();
-          if (activeElement && activeElement.classList.contains('content-card')) {
-            // Ir a la barra de navegación
-            const navItems = document.querySelectorAll('.nav-item');
-            if (navItems.length > 0) {
-              navItems[0].focus();
+
+          // Inicialización
+          document.addEventListener('DOMContentLoaded', async function() {
+              carruselContainer = document.getElementById('google-tv-carrusel');
+              tarjetasContainer = document.getElementById('tarjetas-google-tv');
+              configurarMenuSuperior();
+              
+              // Crear carrusel dinámico con datos de la API
+              await crearCarruselDinamico();
+              
+              configurarEventos();
+              configurarNavegacionTeclado();
+              iniciarAutoPlay();
+              actualizarFondoWrapper();
+              
+              // Iniciar recarga automática
+              iniciarRecargaAutomatica();
+              
+              // Hacer que el primer botón sea focusable por defecto
+              setTimeout(() => {
+                  const primerBoton = carruselContainer.querySelector('a[tabindex="0"], button[tabindex="0"]');
+                  if (primerBoton) {
+                      primerBoton.focus();
+                  }
+              }, 1000);
+          });
+
+        // Función para actualizar el fondo del wrapper
+        function actualizarFondoWrapper() {
+            const wrapper = document.querySelector('#wraper');
+            if (!wrapper) return;
+            
+            const tarjetas = tarjetasContainer.querySelectorAll('.google-tv-card');
+            if (tarjetas.length === 0 || paginaActual >= tarjetas.length) return;
+            
+            const tarjetaActual = tarjetas[paginaActual];
+            const imagenFondo = tarjetaActual.getAttribute('data-imagen-fondo');
+            
+            if (imagenFondo) {
+                wrapper.style.background = `url('${imagenFondo}')`;
+                wrapper.style.backgroundSize = 'cover';
+                wrapper.style.backgroundPosition = 'center';
+                wrapper.style.backgroundRepeat = 'no-repeat';
+                wrapper.style.backgroundAttachment = 'fixed';
+                console.log('🎨 Fondo del wrapper actualizado con imagen:', imagenFondo);
             }
-          } else if (activeElement && activeElement.tagName === 'BUTTON' && activeElement.closest('#titulocarrosel1, #titulocarrosel2, #titulocarrosel3')) {
-            // Ir a las tarjetas de contenido desde botones del carrusel
-            const cards = document.querySelectorAll('.content-card');
-            if (cards.length > 0) {
-              cards[0].focus();
+        }
+
+        // Función para ir a una página específica
+        function irAPagina(pagina) {
+             if (!tarjetasContainer) return;
+             
+             const tarjetas = tarjetasContainer.querySelectorAll('.google-tv-card');
+             const totalTarjetas = tarjetas.length;
+             
+             if (totalTarjetas === 0) return;
+             
+             const nuevaPagina = Math.max(0, Math.min(pagina, totalTarjetas - 1));
+             
+             // Cambiar de página
+             paginaActual = nuevaPagina;
+             
+             // Calcular el offset correctamente (cada tarjeta ocupa 100% del ancho)
+             const offset = paginaActual * 100;
+             
+             // Aplicar la transformación con transición suave
+             tarjetasContainer.style.transition = 'transform 0.8s ease';
+             tarjetasContainer.style.transform = `translateX(-${offset}%)`;
+             
+             // Actualizar el fondo del wrapper después de la transición
+             setTimeout(() => {
+                 actualizarFondoWrapper();
+             }, 800);
+             
+             console.log(`Página ${paginaActual + 1} de ${totalTarjetas}, offset: -${offset}%`);
+             
+             // Actualizar visibilidad de botones
+             actualizarVisibilidadBotones();
+         }
+
+        // Función para ir a la siguiente página
+        function siguientePagina() {
+             if (!tarjetasContainer) return;
+             
+             const tarjetas = tarjetasContainer.querySelectorAll('.google-tv-card');
+             const totalTarjetas = tarjetas.length;
+             
+             if (paginaActual < totalTarjetas - 1) {
+                 irAPagina(paginaActual + 1);
+             }
+         }
+
+         // Función para ir a la página anterior
+         function paginaAnterior() {
+             if (!tarjetasContainer) return;
+             
+             const tarjetas = tarjetasContainer.querySelectorAll('.google-tv-card');
+             const totalTarjetas = tarjetas.length;
+             
+             if (paginaActual > 0) {
+                 irAPagina(paginaActual - 1);
+             }
+         }
+
+         // Función para actualizar visibilidad de botones
+         function actualizarVisibilidadBotones() {
+             const botonSiguiente = document.querySelector('.boton-siguiente-carrusel');
+             const tarjetas = tarjetasContainer.querySelectorAll('.google-tv-card');
+             const totalTarjetas = tarjetas.length;
+             
+             if (botonSiguiente) {
+                 if (paginaActual === totalTarjetas - 1) {
+                     botonSiguiente.style.opacity = '0.3';
+                     botonSiguiente.style.pointerEvents = 'none';
+                 } else {
+                     botonSiguiente.style.opacity = '1';
+                     botonSiguiente.style.pointerEvents = 'auto';
+                 }
+             }
+             
+             // Actualizar indicadores de página
+             actualizarIndicadoresPagina();
+         }
+
+         // Función para actualizar indicadores de página
+         function actualizarIndicadoresPagina() {
+             const indicadorContainer = document.getElementById('indicador-pagina');
+             const tarjetas = tarjetasContainer.querySelectorAll('.google-tv-card');
+             const totalTarjetas = tarjetas.length;
+             
+             if (!indicadorContainer || totalTarjetas === 0) return;
+             
+             // Limpiar indicadores existentes
+             indicadorContainer.innerHTML = '';
+             
+             // Crear indicadores para cada página
+             for (let i = 0; i < totalTarjetas; i++) {
+                 const indicador = document.createElement('div');
+                 indicador.style.cssText = `
+                     width: 12px;
+                     height: 12px;
+                     border-radius: 50%;
+                     background: ${i === paginaActual ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.3)'};
+                     cursor: pointer;
+                     transition: all 0.3s ease;
+                 `;
+                 
+                 indicador.addEventListener('click', () => {
+                     irAPagina(i);
+                 });
+                 
+                 indicador.addEventListener('mouseenter', () => {
+                     if (i !== paginaActual) {
+                         indicador.style.background = 'rgba(255, 255, 255, 0.6)';
+                     }
+                 });
+                 
+                 indicador.addEventListener('mouseleave', () => {
+                     if (i !== paginaActual) {
+                         indicador.style.background = 'rgba(255, 255, 255, 0.3)';
+                     }
+                 });
+                 
+                 indicadorContainer.appendChild(indicador);
+             }
+         }
+
+        // Función para configurar eventos
+        function configurarEventos() {
+
+                          // Botón siguiente
+             const botonSiguiente = document.querySelector('.boton-siguiente-carrusel');
+             if (botonSiguiente) {
+                 botonSiguiente.addEventListener('click', function() {
+                     siguientePagina();
+                     registrarActividad();
+                 });
+
+                 // Permitir Enter/Espacio para navegar
+                 botonSiguiente.addEventListener('keydown', function(e) {
+                     if (e.key === 'Enter' || e.key === ' ') {
+                         e.preventDefault();
+                         siguientePagina();
+                         registrarActividad();
+                     }
+                 });
+             }
+
+            // Eventos de foco
+            carruselContainer.addEventListener('focusin', function(e) {
+                if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON' || e.target.closest('a, button')) {
+                    hayFoco = true;
+                    detenerAutoPlay();
+                }
+            });
+
+            carruselContainer.addEventListener('focusout', function(e) {
+                setTimeout(() => {
+                    const elementoActivo = document.activeElement;
+                    if (!elementoActivo || !carruselContainer.contains(elementoActivo)) {
+                        hayFoco = false;
+                        iniciarAutoPlay();
+                    }
+                }, 100);
+            });
+
+            // Eventos de mouse
+            carruselContainer.addEventListener('mouseenter', function() {
+                hayFoco = true;
+                detenerAutoPlay();
+                registrarActividad();
+            });
+
+            carruselContainer.addEventListener('mouseleave', function() {
+                hayFoco = false;
+                iniciarAutoPlay();
+                registrarActividad();
+            });
+
+            // Eventos de interacción
+            carruselContainer.addEventListener('click', registrarActividad);
+            carruselContainer.addEventListener('mousemove', registrarActividad);
+            carruselContainer.addEventListener('keydown', registrarActividad);
+        }
+
+        // Función para configurar navegación por teclado
+        function configurarNavegacionTeclado() {
+             document.addEventListener('keydown', function(e) {
+                 const esBotonCarrusel = document.activeElement && document.activeElement.classList && document.activeElement.classList.contains('boton-siguiente-carrusel');
+                 
+                 // Tecla R para recargar datos de la API
+                 if (e.key === 'r' || e.key === 'R') {
+                     e.preventDefault();
+                     console.log('🔄 Recarga manual solicitada con tecla R');
+                     recargarDatosAPI();
+                     registrarActividad();
+                     return;
+                 }
+                 
+                 // Sistema de navegación específico por niveles
+                 const focused = document.activeElement;
+
+                 // 🔹 Navegación del carrusel (solo desde el botón siguiente)
+                 if (esBotonCarrusel) {
+                     if (e.key === 'ArrowLeft') {
+                         e.preventDefault();
+                         e.stopImmediatePropagation();
+                         paginaAnterior();
+                         registrarActividad();
+                         return;
+                     }
+                     
+                     if (e.key === 'ArrowRight') {
+                         e.preventDefault();
+                         e.stopImmediatePropagation();
+                         siguientePagina();
+                         registrarActividad();
+                         return;
+                     }
+                     
+                     if (e.key === 'ArrowUp') {
+                         e.preventDefault();
+                         const primerBotonMenu = document.querySelector('.menu-button');
+                         if (primerBotonMenu) primerBotonMenu.focus();
+                     }
+                     
+                     if (e.key === 'ArrowDown') {
+                         e.preventDefault();
+                         setTimeout(() => {
+                             const tarjetas = carruselContainer.querySelectorAll('.google-tv-card');
+                             if (tarjetas[paginaActual]) {
+                                 const primerBoton = tarjetas[paginaActual].querySelector('a[tabindex="0"], button[tabindex="0"]');
+                                 if (primerBoton) primerBoton.focus();
+                             }
+                         }, 0);
+                     }
+                     return; // Solo manejar navegación del carrusel
+                 }
+
+                 // 🔹 Navegación en el menú superior
+                 const esBotonMenu = focused && focused.classList && focused.classList.contains('menu-button');
+                 if (esBotonMenu) {
+                     const menuButtons = Array.from(document.querySelectorAll('.menu-button'));
+                     const indexMenu = menuButtons.indexOf(focused);
+                     
+                     if (e.key === "ArrowLeft" && indexMenu > 0) {
+                         e.preventDefault();
+                         e.stopImmediatePropagation();
+                         menuButtons.forEach(b => b.classList.remove('active'));
+                         menuButtons[indexMenu - 1].classList.add('active');
+                         menuButtons[indexMenu - 1].focus();
+                         return;
+                     }
+                     
+                     if (e.key === "ArrowRight" && indexMenu < menuButtons.length - 1) {
+                         e.preventDefault();
+                         e.stopImmediatePropagation();
+                         menuButtons.forEach(b => b.classList.remove('active'));
+                         menuButtons[indexMenu + 1].classList.add('active');
+                         menuButtons[indexMenu + 1].focus();
+                         return;
+                     }
+                     
+                     if (e.key === "ArrowDown") {
+                         e.preventDefault();
+                         e.stopImmediatePropagation();
+                         const botonSiguiente = document.querySelector('.boton-siguiente-carrusel');
+                         if (botonSiguiente) botonSiguiente.focus();
+                         return;
+                     }
+                     
+                     return; // Solo manejar flechas arriba/abajo en el menú
+                 }
+
+                 // 🔹 Navegación en botones de canal
+                 const esBotonCanal = focused && focused.tagName === 'A' && focused.closest('.botones-container');
+                 if (esBotonCanal) {
+                     const tarjetaActual = focused.closest('.google-tv-card');
+                     const botonesCanalActual = Array.from(tarjetaActual.querySelectorAll('.botones-container a[role="button"]'));
+                     const indexCanal = botonesCanalActual.indexOf(focused);
+
+                     if (e.key === "ArrowLeft" && indexCanal > 0) {
+                         e.preventDefault();
+                         e.stopImmediatePropagation();
+                         botonesCanalActual[indexCanal - 1].focus();
+                         return;
+                     }
+                     
+                     if (e.key === "ArrowRight" && indexCanal < botonesCanalActual.length - 1) {
+                         e.preventDefault();
+                         e.stopImmediatePropagation();
+                         botonesCanalActual[indexCanal + 1].focus();
+                         return;
+                     }
+                     
+                     if (e.key === "ArrowUp") {
+                         e.preventDefault();
+                         e.stopImmediatePropagation();
+                         const botonSiguiente = document.querySelector('.boton-siguiente-carrusel');
+                         if (botonSiguiente) botonSiguiente.focus();
+                         return;
+                     }
+                     
+                     return; // Solo manejar flechas izquierda/derecha en botones de canal
+                 }
+                 
+                 // Navegación desde el menú superior (manejada en el sistema principal)
+                 
+                 if (e.key === 'Tab') {
+                     registrarActividad();
+                 }
+             });
+         }
+
+        // Función para iniciar auto-play
+        function iniciarAutoPlay() {
+            if (hayFoco) return;
+            
+            detenerAutoPlay();
+            iniciarTimerInactividad();
+        }
+
+        // Función para detener auto-play
+        function detenerAutoPlay() {
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
             }
-          } else if (activeElement && activeElement.classList.contains('live-button')) {
-            // Ir a las tarjetas de contenido desde botones "Ver en vivo ahora"
-            const cards = document.querySelectorAll('.content-card');
-            if (cards.length > 0) {
-              cards[0].focus();
+        }
+
+        // Función para registrar actividad
+        function registrarActividad() {
+            ultimaActividad = Date.now();
+            reiniciarTimerInactividad();
+        }
+
+        // Función para iniciar timer de inactividad
+        function iniciarTimerInactividad() {
+            reiniciarTimerInactividad();
+        }
+
+        // Función para reiniciar timer de inactividad
+        function reiniciarTimerInactividad() {
+            if (inactividadTimer) {
+                clearTimeout(inactividadTimer);
             }
-          }
-          break;
-          
-        case 'ArrowDown':
-          event.preventDefault();
-          if (activeElement && activeElement.classList.contains('nav-item')) {
-            // Ir a las tarjetas de contenido
-            const cards = document.querySelectorAll('.content-card');
-            if (cards.length > 0) {
-              cards[0].focus();
-            }
-          } else if (activeElement && activeElement.classList.contains('content-card')) {
-            // Ir a los botones del carrusel desde las tarjetas
-            const carouselButtons = document.querySelectorAll('#titulocarrosel1 button, #titulocarrosel2 button, #titulocarrosel3 button');
-            if (carouselButtons.length > 0) {
-              carouselButtons[0].focus();
-            }
-          } else if (activeElement && activeElement.tagName === 'BUTTON' && activeElement.closest('#titulocarrosel1, #titulocarrosel2, #titulocarrosel3')) {
-            // Ir a los botones "Ver en vivo ahora" desde botones del carrusel
-            const liveButtons = document.querySelectorAll('.live-button');
-            if (liveButtons.length > 0) {
-              liveButtons[0].focus();
-            }
-          }
-          break;
-          
-        case 'Enter':
-        case ' ':
-          event.preventDefault();
-          // Activar elemento enfocado
-          if (activeElement) {
-            activeElement.click();
-          }
-          break;
-          
-        case 'Backspace':
-        case 'Escape':
-        case 'Back':
-          event.preventDefault();
-          handleBackButton();
-          break;
-      }
-    }
+            
+            inactividadTimer = setTimeout(() => {
+                console.log('Inactividad detectada, pasando al siguiente evento automáticamente');
+                siguientePagina();
+                const tarjetas = tarjetasContainer.querySelectorAll('.google-tv-card');
+                const totalTarjetas = tarjetas.length;
+                if (paginaActual < totalTarjetas - 1) {
+                    reiniciarTimerInactividad();
+                }
+            }, 60000); // 60 segundos
+        }
 
-    // Función para inicializar navegación Android TV
-    function initializeNavigation() {
-      // Configurar tabindex para todos los elementos navegables
-      const navItems = document.querySelectorAll('.nav-item');
-      const contentCards = document.querySelectorAll('.content-card');
-      const carouselButtons = document.querySelectorAll('#titulocarrosel1 button, #titulocarrosel2 button, #titulocarrosel3 button');
-      const liveButtons = document.querySelectorAll('.live-button');
-      const carouselIndicators = document.querySelectorAll('.carousel-indicator');
-      
-      // Asignar tabindex a elementos de navegación
-      navItems.forEach((item, index) => {
-        item.setAttribute('tabindex', index + 1);
-      });
-      
-      // Asignar tabindex a tarjetas de contenido
-      contentCards.forEach((card, index) => {
-        card.setAttribute('tabindex', navItems.length + index + 1);
-      });
-      
-      // Asignar tabindex a botones del carrusel
-      carouselButtons.forEach((button, index) => {
-        button.setAttribute('tabindex', navItems.length + contentCards.length + index + 1);
-      });
-      
-      // Asignar tabindex a botones "Ver en vivo ahora"
-      liveButtons.forEach((button, index) => {
-        button.setAttribute('tabindex', navItems.length + contentCards.length + carouselButtons.length + index + 1);
-      });
-      
-      // Asignar tabindex a indicadores del carrusel
-      carouselIndicators.forEach((indicator, index) => {
-        indicator.setAttribute('tabindex', navItems.length + contentCards.length + carouselButtons.length + liveButtons.length + index + 1);
-      });
-      
-      // Hacer el primer elemento navegable por defecto
-      if (navItems.length > 0) {
-        navItems[0].focus();
-      }
-      
-      // Agregar eventos de teclado específicos para Android TV
-      document.addEventListener('keydown', handleKeyPress);
-      
-      // Agregar eventos de click para elementos enfocados
-      const allFocusableElements = document.querySelectorAll('[tabindex]');
-      allFocusableElements.forEach(element => {
-        element.addEventListener('click', function() {
-          this.focus();
-        });
-      });
-    }
+        // Configurar menú superior
+        function configurarMenuSuperior() {
+            const menuButtons = document.querySelectorAll('.menu-button');
+            menuButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    menuButtons.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+                btn.addEventListener('focus', () => detenerAutoPlay());
+                btn.addEventListener('blur', () => {
+                    iniciarAutoPlay();
+                    // Limpiar clase active cuando se sale del menú
+                    setTimeout(() => {
+                        const elementoActivo = document.activeElement;
+                        if (!elementoActivo || !elementoActivo.classList.contains('menu-button')) {
+                            menuButtons.forEach(b => b.classList.remove('active'));
+                        }
+                    }, 100);
+                });
+            });
+        }
 
-
-
-    // Eventos para los indicadores
-    indicators.forEach((indicator, index) => {
-      indicator.addEventListener('click', () => {
-        showSlide(index);
-      });
-    });
-
-    // Inicializar carrusel
-    function initializeCarousel() {
-      // Asegurar que la primera imagen esté visible desde el inicio
-      slides[0].classList.add('active');
-      slides[0].style.opacity = '1';
-      indicators[0].classList.add('active');
-      currentSlide = 0;
-      
-      const tituloCarrosel1 = document.getElementById('titulocarrosel1');
-      const tituloCarrosel2 = document.getElementById('titulocarrosel2');
-      const tituloCarrosel3 = document.getElementById('titulocarrosel3');
-      tituloCarrosel1.style.opacity = '1';
-      tituloCarrosel2.style.opacity = '0';
-      tituloCarrosel3.style.opacity = '0';
-      
-      // Iniciar el carrusel automático
-      startCarousel();
-    }
-
-    // Inicializar carrusel y navegación cuando se carga la página
-    window.addEventListener('load', () => {
-      initializeCarousel();
-      initializeNavigation();
-      optimizeForAndroidTV();
-      
-      // Agregar listener para cambios de focus
-      document.addEventListener('focusin', handleAutoFocus);
-      
-      setTimeout(() => {
-        initializeNavigation();
-      }, 1000);
-    });
-    
-    // Escuchar eventos de teclado (ya se maneja en initializeNavigation)
-    // document.addEventListener('keydown', handleKeyPress);
-
-    // Efectos de hover para las tarjetas
-    document.querySelectorAll('.content-card').forEach(card => {
-      card.addEventListener('mouseenter', function() {
-        this.style.transform = 'scale(1.05)';
-      });
-      
-      card.addEventListener('mouseleave', function() {
-        this.style.transform = 'scale(1)';
-      });
-    });
-
-    // Funciones específicas para Android TV
-    let currentFocus = null;
-
-    // Función para detectar si estamos en Android TV
-    function isAndroidTV() {
-      return navigator.userAgent.includes('Android') && 
-             (navigator.userAgent.includes('TV') || 
-              window.innerWidth >= 1920 || 
-              window.innerHeight >= 1080);
-    }
-
-    // Función para manejar el botón de retroceso de Android TV
-    function handleBackButton() {
-      if (isAndroidTV()) {
-        // Comportamiento específico para Android TV
-        console.log('Botón de retroceso de Android TV presionado');
-        // Aquí puedes agregar lógica específica para el botón de retroceso
-      }
-    }
-
-    // Función para optimizar la interfaz para Android TV
-    function optimizeForAndroidTV() {
-      if (isAndroidTV()) {
-        // Aumentar el tamaño de los elementos para mejor visibilidad en TV
-        document.body.style.fontSize = '1.1em';
-        
-        // Agregar clase específica para Android TV
-        document.body.classList.add('android-tv');
-        
-        console.log('Interfaz optimizada para Android TV');
-      }
-    }
-
-    // Función para manejar el focus automático
-    function handleAutoFocus() {
-      const focusedElement = document.activeElement;
-      if (focusedElement && focusedElement.scrollIntoView) {
-        focusedElement.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-          inline: 'center'
-        });
-      }
-    }
-
-
-  </script>
+        // El sistema de navegación tipo Google TV se maneja en configurarNavegacionTeclado()
+    </script>
 </body>
 </html>
