@@ -422,6 +422,65 @@
                 background-position: center;
             }
         }
+
+        /* Específico para Android y dispositivos móviles */
+        @media screen and (max-width: 1080px) and (max-height: 1920px) {
+            #wraper {
+                background-size: cover;
+                background-position: center;
+                background-attachment: scroll;
+            }
+            
+            .contenido-texto {
+                left: 5%;
+                max-width: 90%;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+            
+            .google-tv-card h2 {
+                font-size: 28px;
+            }
+            
+            .google-tv-card p {
+                font-size: 16px;
+            }
+        }
+
+        /* Para Android específicamente */
+        @media screen and (max-width: 1920px) and (max-height: 1080px) {
+            #wraper {
+                background-size: cover;
+                background-position: center;
+                background-attachment: scroll;
+            }
+        }
+
+        /* Para dispositivos táctiles */
+        @media (pointer: coarse) {
+            #wraper {
+                background-attachment: scroll;
+            }
+            
+            .boton-siguiente-carrusel {
+                width: 60px;
+                height: 60px;
+                font-size: 18px;
+            }
+            
+            .menu-button {
+                padding: 12px 20px;
+                font-size: 13px;
+                min-width: 90px;
+            }
+        }
+
+        /* Para Android Chrome */
+        @media screen and (-webkit-min-device-pixel-ratio: 1) {
+            #wraper {
+                background-attachment: scroll;
+            }
+        }
     </style>
 </head>
 <body>
@@ -780,12 +839,25 @@
             const imagenFondo = tarjetaActual.getAttribute('data-imagen-fondo');
             
             if (imagenFondo) {
+                // Detectar si es Android o dispositivo móvil
+                const isAndroid = /Android/i.test(navigator.userAgent);
+                const isMobile = /Mobile|Android|iPhone|iPad/i.test(navigator.userAgent);
+                const isTouchDevice = 'ontouchstart' in window;
+                
                 wrapper.style.background = `url('${imagenFondo}')`;
                 wrapper.style.backgroundSize = 'cover';
                 wrapper.style.backgroundPosition = 'center';
                 wrapper.style.backgroundRepeat = 'no-repeat';
-                wrapper.style.backgroundAttachment = 'fixed';
+                
+                // Usar 'scroll' en Android/móviles para mejor rendimiento
+                if (isAndroid || isMobile || isTouchDevice) {
+                    wrapper.style.backgroundAttachment = 'scroll';
+                } else {
+                    wrapper.style.backgroundAttachment = 'fixed';
+                }
+                
                 console.log('🎨 Fondo del wrapper actualizado con imagen:', imagenFondo);
+                console.log('📱 Dispositivo:', isAndroid ? 'Android' : isMobile ? 'Móvil' : 'Desktop');
             }
         }
 
