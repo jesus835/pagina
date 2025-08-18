@@ -35,7 +35,7 @@
             overflow-y: auto;
             overflow-x: hidden;
             background: #0a0a2e;
-            background-size: cover;
+            background-size: 100% 100%;
             background-position: center;
             background-repeat: no-repeat;
             background-attachment: fixed;
@@ -373,21 +373,21 @@
         /* Responsive para diferentes escalas */
         @media (max-width: 1200px) {
             #wraper {
-                background-size: cover;
+                background-size: 100% 100%;
                 background-position: center;
             }
         }
 
         @media (max-width: 768px) {
             #wraper {
-                background-size: cover;
+                background-size: 100% 100%;
                 background-position: center;
             }
         }
 
         @media (max-width: 480px) {
             #wraper {
-                background-size: cover;
+                background-size: 100% 100%;
                 background-position: center;
             }
         }
@@ -395,7 +395,7 @@
         /* Para pantallas muy grandes */
         @media (min-width: 1920px) {
             #wraper {
-                background-size: cover;
+                background-size: 100% 100%;
                 background-position: center;
             }
         }
@@ -403,7 +403,7 @@
         /* Para escalas específicas */
         @media (min-resolution: 2dppx) {
             #wraper {
-                background-size: cover;
+                background-size: 100% 100%;
                 background-position: center;
             }
         }
@@ -411,14 +411,14 @@
         /* Asegurar que el fondo siempre cubra toda la pantalla */
         @media (orientation: landscape) {
             #wraper {
-                background-size: cover;
+                background-size: 100% 100%;
                 background-position: center;
             }
         }
 
         @media (orientation: portrait) {
             #wraper {
-                background-size: cover;
+                background-size: 100% 100%;
                 background-position: center;
             }
         }
@@ -426,7 +426,7 @@
         /* Específico para Android y dispositivos móviles */
         @media screen and (max-width: 1080px) and (max-height: 1920px) {
             #wraper {
-                background-size: cover;
+                background-size: 100% 100%;
                 background-position: center;
                 background-attachment: scroll;
             }
@@ -450,7 +450,7 @@
         /* Para Android específicamente */
         @media screen and (max-width: 1920px) and (max-height: 1080px) {
             #wraper {
-                background-size: cover;
+                background-size: 100% 100%;
                 background-position: center;
                 background-attachment: scroll;
             }
@@ -845,7 +845,7 @@
                 const isTouchDevice = 'ontouchstart' in window;
                 
                 wrapper.style.background = `url('${imagenFondo}')`;
-                wrapper.style.backgroundSize = 'cover';
+                wrapper.style.backgroundSize = '100% 100%';
                 wrapper.style.backgroundPosition = 'center';
                 wrapper.style.backgroundRepeat = 'no-repeat';
                 
@@ -858,6 +858,13 @@
                 
                 console.log('🎨 Fondo del wrapper actualizado con imagen:', imagenFondo);
                 console.log('📱 Dispositivo:', isAndroid ? 'Android' : isMobile ? 'Móvil' : 'Desktop');
+                
+                // Verificar tamaño de la imagen
+                const img = new Image();
+                img.onload = function() {
+                    console.log('📏 Tamaño de imagen de fondo:', this.width + 'x' + this.height);
+                };
+                img.src = imagenFondo;
             }
         }
 
