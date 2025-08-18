@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google TV - Load+ TV</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background: #0a0a2e;
+            color: white;
+            overflow: hidden;
+        }
+
+        #wraper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            border-radius: 0;
+            max-width: none;
+            max-height: none;
+            min-width: 100vw;
+            min-height: 100vh;
+            z-index: 9999;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: #0a0a2e;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            box-shadow: none;
+            border: none;
+            opacity: 1;
+            position: relative;
+        }
+
+        #google-tv-carrusel {
+            width: 100%;
+            height: 100vh;
+            background: transparent;
+            border-radius: 0;
+            margin: 0;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #tarjetas-google-tv {
+            display: flex;
+            transition: transform 0.8s ease;
+            height: 100vh;
+            gap: 0;
+            width: 100%;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .google-tv-card {
+            background: transparent;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 0;
+            color: white;
+            font-family: 'Roboto', Arial, sans-serif;
+            position: relative;
+            overflow: hidden;
+            box-shadow: none;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 100%;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            flex-basis: 100%;
+            min-width: 100%;
+            height: 100vh;
+            align-items: center;
+        }
+
+        .contenido-texto {
+            position: absolute;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: transparent;
+            border-radius: 15px;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0;
+            opacity: 1;
+            top: 45%;
+            left: 5%;
+            transform: translateY(-50%);
+        }
+
+        .google-tv-card h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            margin: 0 0 15px 0;
+            line-height: 1.2;
+        }
+
+        .google-tv-card .metadata {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            color: #ffffff;
+        }
+
+        .google-tv-card .metadata .bullet {
+            color: #4285f4;
+            font-weight: bold;
+        }
+
+        .google-tv-card .metadata img {
+            height: 20px;
+            width: auto;
+            max-width: 60px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+            opacity: 0.9;
+        }
+
+        .google-tv-card p {
+            font-size: 18px;
+            color: #ffffff;
+            line-height: 1.4;
+            margin: 0 0 30px 0;
+            opacity: 0.9;
+            max-width: 500px;
+        }
+
+        .botones-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .botones-container a,
+        .botones-container button {
+            background: #f0f0f0;
+            color: #000000;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+            display: inline-block;
+            min-width: 120px;
+            text-align: center;
+            outline: none;
+        }
+
+        .botones-container a:hover,
+        .botones-container button:hover {
+            background: #e0e0e0;
+            transform: scale(1.05);
+        }
+
+        .botones-container a:focus,
+        .botones-container button:focus {
+            background: #4285f4;
+            color: #ffffff;
+            border-color: transparent;
+            transform: scale(1.05);
+        }
+
+         .boton-siguiente-carrusel {
+             position: absolute;
+             right: 20px;
+             top: 50%;
+             transform: translateY(-50%);
+             background: rgba(255, 255, 255, 0.2);
+             color: white;
+             border: 2px solid rgba(255, 255, 255, 0.3);
+             border-radius: 50%;
+             padding: 15px;
+             font-size: 16px;
+             font-weight: 500;
+             cursor: pointer;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             transition: all 0.3s ease;
+             z-index: 10;
+             backdrop-filter: blur(10px);
+             box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+             width: 54px;
+             height: 54px;
+         }
+
+        .boton-siguiente-carrusel:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%) scale(1.05);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .boton-siguiente-carrusel:focus {
+            background: rgba(255, 255, 255, 0.4);
+            transform: translateY(-50%) scale(1.05);
+            border-color: transparent;
+            box-shadow: 0 6px 25px rgba(255, 255, 255, 0.2);
+        }
+
+        .branding {
+            font-size: 14px;
+            color: #ffffff;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        /* Menú superior Google TV */
+        .google-tv-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 56px;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 28px;
+            background: transparent;
+        }
+        .menu-container {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            max-width: 1200px;
+            width: 100%;
+            position: relative;
+            left: 20%;
+        }
+        .menu-button {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            border-radius: 18px;
+            padding: 8px 17px;
+            color: white;
+            font-size: 11px;
+            min-width: 84px;
+            cursor: pointer;
+            outline: none;
+        }
+        .menu-button:focus, .menu-button.active {
+            background: #ffffff;
+            color: #000000;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+
+        /* Estilos para la tarjeta especial */
+        .tarjeta-especial .contenido-texto {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            max-width: 800px;
+        }
+
+        .tarjeta-especial h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: white;
+            margin: 0 0 20px 0;
+            line-height: 1.2;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .tarjeta-especial h2 {
+            font-size: 24px;
+            font-weight: 400;
+            color: #ffffff;
+            margin: 0 0 30px 0;
+            line-height: 1.3;
+            opacity: 0.9;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .tarjeta-especial p {
+            font-size: 20px;
+            font-weight: 300;
+            color: #ffffff;
+            margin: 0 0 40px 0;
+            opacity: 0.8;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .logos-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            max-width: 600px;
+        }
+
+        .logo-canal {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-canal img {
+            height: 40px;
+            width: auto;
+            max-width: 80px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .logo-canal:hover img {
+            opacity: 1;
+        }
+
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .google-tv-card h2 {
+                font-size: 24px;
+            }
+
+            .google-tv-card p {
+                font-size: 16px;
+            }
+
+            .contenido-texto {
+                left: 10%;
+                max-width: 80%;
+            }
+
+            .botones-container {
+                flex-direction: column;
+            }
+
+            .botones-container a,
+            .botones-container button {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Menú superior Google TV -->
+    <div class="google-tv-menu">
+        <div class="menu-container">
+            <button class="menu-button" tabindex="0">Buscar</button>
+            <button class="menu-button" tabindex="0">Para ti</button>
+            <button class="menu-button" tabindex="0">En vivo</button>
+            <button class="menu-button" tabindex="0">Películas</button>
+            <button class="menu-button" tabindex="0">Series</button>
+            <button class="menu-button" tabindex="0">Aplicaciones</button>
+            <button class="menu-button" tabindex="0">Biblioteca</button>
+        </div>
+    </div>
+    <div id="wraper">
+        <div id="google-tv-carrusel">
+            <div id="tarjetas-google-tv">
+                <!-- Los eventos se cargarán dinámicamente desde la API -->
+                <div class="google-tv-card" style="display: flex; align-items: center; justify-content: center;">
+                    <div class="contenido-texto" style="text-align: center;">
+                        <div class="branding">Google TV</div>
+                        <h2>Cargando eventos...</h2>
+                        <p>Obteniendo la información más reciente de la agenda deportiva</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Indicador de página actual -->
+            <div id="indicador-pagina" style="
+                position: absolute;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                display: flex;
+                gap: 8px;
+                z-index: 10;
+            ">
+                <!-- Los indicadores se generarán dinámicamente -->
+            </div>
+
+            <button class="boton-siguiente-carrusel" tabindex="0" aria-label="Siguiente evento">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 5L15 12L8 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let paginaActual = 0;
+        let autoPlayInterval = null;
+        let hayFoco = false;
+        let inactividadTimer = null;
+        let ultimaActividad = Date.now();
+        let carruselContainer = null;
+        let tarjetasContainer = null;
+        let eventosData = [];
+
+        // Función para cargar datos del JSON de la API (sin caché)
+        async function cargarEventosAPI() {
+            try {
+                console.log('🔄 Cargando eventos desde FTVHD API...');
+                const respuesta = await fetch('https://ftvhd.com/diaries.json?_t=' + Date.now(), { cache: 'no-store' });
+                if (!respuesta.ok) {
+                    throw new Error(`HTTP error! status: ${respuesta.status}`);
+                }
+                const data = await respuesta.json();
+                eventosData = data.data || [];
+                console.log(`✅ ${eventosData.length} eventos cargados desde FTVHD API`);
+                return eventosData;
+            } catch (error) {
+                console.error('❌ Error al cargar eventos desde FTVHD API:', error);
+                return [];
+            }
+        }
+
+        // Utilidad: formatear hora a HH:MM y convertir a minutos (acepta HH:MM o HH:MM:SS)
+        function formatearHora(horaStr) {
+            if (!horaStr || typeof horaStr !== 'string') return '';
+            const partes = horaStr.split(':');
+            if (partes.length >= 2) {
+                const h = partes[0].padStart(2, '0');
+                const m = partes[1].padStart(2, '0');
+                return `${h}:${m}`;
+            }
+            return horaStr;
+        }
+
+        // Función para corregir el desfase de 1 hora en FTVHD API
+        function corregirHoraDesfase(horaStr) {
+            if (!horaStr || typeof horaStr !== 'string') return horaStr;
+            const partes = horaStr.split(':');
+            if (partes.length >= 2) {
+                let h = parseInt(partes[0], 10);
+                const m = parseInt(partes[1], 10);
+                if (isNaN(h) || isNaN(m)) return horaStr;
+                
+                // Restar 1 hora (corregir desfase)
+                h = h - 1;
+                if (h < 0) h = 23; // Si pasa de 00:00, ir a 23:00 del día anterior
+                
+                return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+            }
+            return horaStr;
+        }
+
+        function convertirHoraAMinutos(horaStr) {
+            if (!horaStr || typeof horaStr !== 'string') return Number.POSITIVE_INFINITY;
+            const partes = horaStr.split(':');
+            if (partes.length < 2) return Number.POSITIVE_INFINITY;
+            const h = parseInt(partes[0], 10);
+            const mm = parseInt(partes[1], 10);
+            if (isNaN(h) || isNaN(mm)) return Number.POSITIVE_INFINITY;
+            return h * 60 + mm;
+        }
+
+        // Función para crear tarjeta desde datos de la API
+        async function crearTarjetaDesdeAPI(evento) {
+            const tarjeta = document.createElement('div');
+            tarjeta.className = 'google-tv-card';
+
+            const horaOriginal = evento?.attributes?.diary_hour || '';
+            // Aplicar corrección de desfase de 1 hora para FTVHD
+            const horaCorregida = corregirHoraDesfase(horaOriginal);
+            const hora = formatearHora(horaCorregida);
+            const descripcion = evento?.attributes?.diary_description || '';
+            const embeds = evento?.attributes?.embeds?.data || [];
+
+            // Extraer equipos y categoría
+            let tituloEquipos = descripcion;
+            let categoriaTitulo = 'Deportes';
+            if (descripcion.includes(':')) {
+                const partes = descripcion.split(':');
+                if (partes.length > 1) {
+                    tituloEquipos = partes[1].trim();
+                    categoriaTitulo = partes[0].trim();
+                }
+            }
+            if (descripcion.includes(' - ')) {
+                const partes = descripcion.split(' - ');
+                if (partes.length > 1) {
+                    tituloEquipos = partes[1].trim();
+                    categoriaTitulo = partes[0].trim();
+                }
+            }
+            tituloEquipos = tituloEquipos.replace(/\n/g, ' ').replace(/\t/g, ' ').trim();
+
+            const config = await (async () => {
+                try { return await fetch('https://loadplus.netlify.app/configuracion-imagenes.json?_t=' + Date.now(), { cache: 'no-store' }).then(r => r.json()); } catch(_) {}
+                try { return await fetch('./configuracion-imagenes.json?_t=' + Date.now(), { cache: 'no-store' }).then(r => r.json()); } catch(_) {}
+                return null;
+            })();
+            const imgFondo = config ? (function obtenerImagenFondoLocal(titulo, conf){
+                const t = (titulo||'').toLowerCase();
+                if (conf?.equipos_especificos) {
+                    for (const [eq, cfg] of Object.entries(conf.equipos_especificos)) {
+                        if (t.includes(eq.toLowerCase())) { const a=cfg.urls||[]; if (a.length) return a[Math.floor(Math.random()*a.length)]; }
+                    }
+                }
+                if (conf?.imagenes_eventos) {
+                    for (const [cat, cfg] of Object.entries(conf.imagenes_eventos)) {
+                        if (t.includes(cat.toLowerCase())) { const a=cfg.urls||[]; if (a.length) return a[Math.floor(Math.random()*a.length)]; }
+                    }
+                }
+                const gen = conf?.imagenes_generales; if (Array.isArray(gen) && gen.length) return gen[Math.floor(Math.random()*gen.length)];
+                return 'https://i.imgur.com/3tkeh6s.png';
+            })(descripcion, config) : 'https://i.imgur.com/3tkeh6s.png';
+            tarjeta.setAttribute('data-imagen-fondo', imgFondo);
+
+            const logosCanales = (function obtenerLogosLocal(titulo, embeds, conf){
+                if (!conf || !conf.logos_canales) return [];
+                const encontrados = [];
+                const familiasCanales = { 'espn': ['espn','espn premium ar','espn premium','espn2','espn 2'], 'disney': ['disney+','disney +'], 'tvhd': ['tvhd','tvhd '], 'eventos': ['eventos','eventos '] };
+                const familiaDe = (n)=>{ const s=n.toLowerCase(); for (const [f,ms] of Object.entries(familiasCanales)) if (ms.some(m=>s.includes(m))) return f; return s; };
+                const usadas = new Set();
+                const tituloLower = (titulo||'').toLowerCase();
+                embeds.forEach(e=>{
+                    const name = e?.attributes?.embed_name || '';
+                    for (const [canal,cfg] of Object.entries(conf.logos_canales)) {
+                        if (name.toLowerCase().includes(canal.toLowerCase())) { const fam=familiaDe(canal); if (!usadas.has(fam)) { usadas.add(fam); encontrados.push({url:cfg.url,alt:cfg.alt||canal,descripcion:cfg.descripcion||canal}); } }
+                    }
+                });
+                for (const [canal,cfg] of Object.entries(conf.logos_canales)) {
+                    if (encontrados.length>=5) break;
+                    if (tituloLower.includes(canal.toLowerCase())) { const fam=familiaDe(canal); if (!usadas.has(fam)) { usadas.add(fam); encontrados.push({url:cfg.url,alt:cfg.alt||canal,descripcion:cfg.descripcion||canal}); } }
+                }
+                return encontrados.slice(0,5);
+            })(descripcion, embeds, config);
+
+            const contenidoHTML = `
+                <div class="contenido-texto">
+                    <div class="branding">Google TV</div>
+                    <h2>${tituloEquipos}</h2>
+                    <div class="metadata">
+                        <span>${hora}</span>
+                        <span class="bullet">•</span>
+                        <span>${categoriaTitulo}</span>
+                        ${logosCanales.map(logo => `<span class=\"bullet\">•</span><img src=\"${logo.url}\" alt=\"${logo.alt}\" title=\"${logo.descripcion}\">`).join('')}
+                    </div>
+                    <p>${(config?.descripciones_generales?.futbol || config?.descripciones_generales?.generico || ['Disfruta del mejor contenido'])[0]}</p>
+                    <div class="botones-container">
+                        ${embeds.map(embed => {
+                            const embedIframe = embed?.attributes?.embed_iframe || '';
+                            const rValue = embedIframe.replace('/embed/eventos.html?r=', '');
+                            return `<a href=\"https://tvhdlibre.com/embed/eventos.html?r=${rValue}\" tabindex=\"0\" role=\"button\">${embed?.attributes?.embed_name || 'Ver'}</a>`;
+                        }).join('')}
+                        ${embeds.length === 0 ? '<a href="#" tabindex="0" role="button">Ver evento</a>' : ''}
+                    </div>
+                </div>
+            `;
+
+            tarjeta.innerHTML = contenidoHTML;
+            return tarjeta;
+        }
+
+        // Función para crear carrusel dinámico
+        async function crearCarruselDinamico() {
+             // Cargar datos de la API
+             const eventos = await cargarEventosAPI();
+             
+             // Filtrar eventos que ya pasaron su hora (horario de Guatemala UTC-6)
+             const ahora = new Date();
+             // Obtener hora en zona horaria de Guatemala
+             const horaGuatemala = new Date(ahora.toLocaleString("en-US", {timeZone: "America/Guatemala"}));
+             const horaActual = horaGuatemala.getHours() * 60 + horaGuatemala.getMinutes(); // Convertir a minutos
+             
+             const eventosFiltrados = eventos.filter(evento => {
+                 const horaOriginal = evento?.attributes?.diary_hour;
+                 const horaCorregida = corregirHoraDesfase(horaOriginal);
+                 const horaEvento = convertirHoraAMinutos(horaCorregida);
+                 // Solo mostrar eventos que aún no han pasado (con margen de 2 horas)
+                 return horaEvento > horaActual - 120;
+             });
+             
+             // Ordenar cronológicamente por hora (y por descripción como desempate)
+             const eventosOrdenados = eventosFiltrados.slice().sort((a, b) => {
+                 const horaA = corregirHoraDesfase(a?.attributes?.diary_hour);
+                 const horaB = corregirHoraDesfase(b?.attributes?.diary_hour);
+                 const tA = convertirHoraAMinutos(horaA);
+                 const tB = convertirHoraAMinutos(horaB);
+                 if (tA !== tB) return tA - tB;
+                 const dA = (a?.attributes?.diary_description || '').toString();
+                 const dB = (b?.attributes?.diary_description || '').toString();
+                 return dA.localeCompare(dB);
+             });
+             
+             // Limpiar contenedor existente
+             if (tarjetasContainer) {
+                 tarjetasContainer.innerHTML = '';
+             }
+             
+             if (eventosOrdenados.length === 0) {
+                 // Crear tarjeta especial si no hay eventos disponibles
+                 const tarjetaEspecial = document.createElement('div');
+                 tarjetaEspecial.className = 'google-tv-card tarjeta-especial';
+                 tarjetaEspecial.innerHTML = `
+                     <div class="contenido-texto">
+                         <h1>No hay eventos próximos</h1>
+                         <h2>Los eventos de hoy ya han finalizado</h2>
+                         <p>Vuelve mañana para ver nuevos partidos y eventos deportivos</p>
+                     </div>
+                 `;
+                 tarjetasContainer.appendChild(tarjetaEspecial);
+                 return;
+             }
+             
+            // Crear tarjetas para cada evento (ya ordenados)
+            for (const evento of eventosOrdenados) {
+                const tarjeta = await crearTarjetaDesdeAPI(evento);
+                tarjeta.style.margin = '0';
+                tarjeta.style.flexShrink = '0';
+                tarjeta.style.flexBasis = '100%';
+                tarjeta.style.width = '100%';
+                tarjeta.style.minWidth = '100%';
+                tarjeta.style.height = '100vh';
+                tarjeta.style.display = 'flex';
+                tarjeta.style.alignItems = 'center';
+                tarjeta.style.justifyContent = 'center';
+                tarjetasContainer.appendChild(tarjeta);
+            }
+              
+              // Inicializar visibilidad de botones
+              setTimeout(() => {
+                  actualizarVisibilidadBotones();
+              }, 100);
+              
+              console.log(`🎯 Carrusel creado con ${eventosOrdenados.length} eventos (${eventos.length - eventosOrdenados.length} eventos pasados filtrados)`);
+             console.log(`⏰ Corrección de desfase de 1 hora aplicada a todos los horarios de FTVHD`);
+             console.log(`🕐 Hora actual en Guatemala: ${horaGuatemala.toLocaleTimeString('es-GT', {timeZone: "America/Guatemala"})}`);
+         }
+
+        // Función para recargar datos de la API
+        async function recargarDatosAPI() {
+              console.log('🔄 Recargando datos de la API...');
+              paginaActual = 0; // Resetear a la primera página
+              await crearCarruselDinamico();
+              actualizarFondoWrapper();
+              
+              // Reconfigurar eventos después de recargar
+              configurarEventos();
+              
+              // Hacer focus en el primer botón
+              setTimeout(() => {
+                  const primerBoton = carruselContainer.querySelector('a[tabindex="0"], button[tabindex="0"]');
+                  if (primerBoton) {
+                      primerBoton.focus();
+                  }
+              }, 500);
+          }
+
+          // Función para recargar automáticamente cada 5 minutos
+          function iniciarRecargaAutomatica() {
+              setInterval(async () => {
+                  console.log('⏰ Recarga automática de datos desde FTVHD API...');
+                  await recargarDatosAPI();
+              }, 300000); // 5 minutos = 300,000 ms
+          }
+
+          // Inicialización
+          document.addEventListener('DOMContentLoaded', async function() {
+              carruselContainer = document.getElementById('google-tv-carrusel');
+              tarjetasContainer = document.getElementById('tarjetas-google-tv');
+              configurarMenuSuperior();
+              
+              // Crear carrusel dinámico con datos de la API
+              await crearCarruselDinamico();
+              
+              configurarEventos();
+              configurarNavegacionTeclado();
+              iniciarAutoPlay();
+              actualizarFondoWrapper();
+              
+              // Iniciar recarga automática
+              iniciarRecargaAutomatica();
+              
+              // Hacer que el primer botón sea focusable por defecto
+              setTimeout(() => {
+                  const primerBoton = carruselContainer.querySelector('a[tabindex="0"], button[tabindex="0"]');
+                  if (primerBoton) {
+                      primerBoton.focus();
+                  }
+              }, 1000);
+          });
+
+        // Función para actualizar el fondo del wrapper
+        function actualizarFondoWrapper() {
+            const wrapper = document.querySelector('#wraper');
+            if (!wrapper) return;
+            
+            const tarjetas = tarjetasContainer.querySelectorAll('.google-tv-card');
+            if (tarjetas.length === 0 || paginaActual >= tarjetas.length) return;
+            
+            const tarjetaActual = tarjetas[paginaActual];
+            const imagenFondo = tarjetaActual.getAttribute('data-imagen-fondo');
+            
+            if (imagenFondo) {
+                wrapper.style.background = `url('${imagenFondo}')`;
+                wrapper.style.backgroundSize = 'cover';
+                wrapper.style.backgroundPosition = 'center';
+                wrapper.style.backgroundRepeat = 'no-repeat';
+                console.log('🎨 Fondo del wrapper actualizado con imagen:', imagenFondo);
+            }
+        }
+
+        // Función para ir a una página específica
+        function irAPagina(pagina) {
+             if (!tarjetasContainer) return;
+             
+             const tarjetas = tarjetasContainer.querySelectorAll('.google-tv-card');
+             const totalTarjetas = tarjetas.length;
+             
+             if (totalTarjetas === 0) return;
+             
+             const nuevaPagina = Math.max(0, Math.min(pagina, totalTarjetas - 1));
+             
+             // Cambiar de página
+             paginaActual = nuevaPagina;
+             
+             // Calcular el offset correctamente (cada tarjeta ocupa 100% del ancho)
+             const offset = paginaActual * 100;
+             
+             // Aplicar la transformación con transición suave
+             tarjetasContainer.style.transition = 'transform 0.8s ease';
+             tarjetasContainer.style.transform = `translateX(-${offset}%)`;
+             
+             // Actualizar el fondo del wrapper después de la transición
+             setTimeout(() => {
+                 actualizarFondoWrapper();
+             }, 800);
+             
+             console.log(`Página ${paginaActual + 1} de ${totalTarjetas}, offset: -${offset}%`);
+             
+             // Actualizar visibilidad de botones
+             actualizarVisibilidadBotones();
+         }
+
+        // Función para ir a la siguiente página
+        function siguientePagina() {
+             if (!tarjetasContainer) return;
+             
+             const tarjetas = tarjetasContainer.querySelectorAll('.google-tv-card');
+             const totalTarjetas = tarjetas.length;
+             
+             if (paginaActual < totalTarjetas - 1) {
+                 irAPagina(paginaActual + 1);
+             }
+         }
+
+         // Función para ir a la página anterior
+         function paginaAnterior() {
+             if (!tarjetasContainer) return;
+             
+             const tarjetas = tarjetasContainer.querySelectorAll('.google-tv-card');
+             const totalTarjetas = tarjetas.length;
+             
+             if (paginaActual > 0) {
+                 irAPagina(paginaActual - 1);
+             }
+         }
+
+         // Función para actualizar visibilidad de botones
+         function actualizarVisibilidadBotones() {
+             const botonSiguiente = document.querySelector('.boton-siguiente-carrusel');
+             const tarjetas = tarjetasContainer.querySelectorAll('.google-tv-card');
+             const totalTarjetas = tarjetas.length;
+             
+             if (botonSiguiente) {
+                 if (paginaActual === totalTarjetas - 1) {
+                     botonSiguiente.style.opacity = '0.3';
+                     botonSiguiente.style.pointerEvents = 'none';
+                 } else {
+                     botonSiguiente.style.opacity = '1';
+                     botonSiguiente.style.pointerEvents = 'auto';
+                 }
+             }
+             
+             // Actualizar indicadores de página
+             actualizarIndicadoresPagina();
+         }
+
+         // Función para actualizar indicadores de página
+         function actualizarIndicadoresPagina() {
+             const indicadorContainer = document.getElementById('indicador-pagina');
+             const tarjetas = tarjetasContainer.querySelectorAll('.google-tv-card');
+             const totalTarjetas = tarjetas.length;
+             
+             if (!indicadorContainer || totalTarjetas === 0) return;
+             
+             // Limpiar indicadores existentes
+             indicadorContainer.innerHTML = '';
+             
+             // Crear indicadores para cada página
+             for (let i = 0; i < totalTarjetas; i++) {
+                 const indicador = document.createElement('div');
+                 indicador.style.cssText = `
+                     width: 12px;
+                     height: 12px;
+                     border-radius: 50%;
+                     background: ${i === paginaActual ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.3)'};
+                     cursor: pointer;
+                     transition: all 0.3s ease;
+                 `;
+                 
+                 indicador.addEventListener('click', () => {
+                     irAPagina(i);
+                 });
+                 
+                 indicador.addEventListener('mouseenter', () => {
+                     if (i !== paginaActual) {
+                         indicador.style.background = 'rgba(255, 255, 255, 0.6)';
+                     }
+                 });
+                 
+                 indicador.addEventListener('mouseleave', () => {
+                     if (i !== paginaActual) {
+                         indicador.style.background = 'rgba(255, 255, 255, 0.3)';
+                     }
+                 });
+                 
+                 indicadorContainer.appendChild(indicador);
+             }
+         }
+
+        // Función para configurar eventos
+        function configurarEventos() {
+
+                          // Botón siguiente
+             const botonSiguiente = document.querySelector('.boton-siguiente-carrusel');
+             if (botonSiguiente) {
+                 botonSiguiente.addEventListener('click', function() {
+                     siguientePagina();
+                     registrarActividad();
+                 });
+
+                 // Permitir Enter/Espacio para navegar
+                 botonSiguiente.addEventListener('keydown', function(e) {
+                     if (e.key === 'Enter' || e.key === ' ') {
+                         e.preventDefault();
+                         siguientePagina();
+                         registrarActividad();
+                     }
+                 });
+             }
+
+            // Eventos de foco
+            carruselContainer.addEventListener('focusin', function(e) {
+                if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON' || e.target.closest('a, button')) {
+                    hayFoco = true;
+                    detenerAutoPlay();
+                }
+            });
+
+            carruselContainer.addEventListener('focusout', function(e) {
+                setTimeout(() => {
+                    const elementoActivo = document.activeElement;
+                    if (!elementoActivo || !carruselContainer.contains(elementoActivo)) {
+                        hayFoco = false;
+                        iniciarAutoPlay();
+                    }
+                }, 100);
+            });
+
+            // Eventos de mouse
+            carruselContainer.addEventListener('mouseenter', function() {
+                hayFoco = true;
+                detenerAutoPlay();
+                registrarActividad();
+            });
+
+            carruselContainer.addEventListener('mouseleave', function() {
+                hayFoco = false;
+                iniciarAutoPlay();
+                registrarActividad();
+            });
+
+            // Eventos de interacción
+            carruselContainer.addEventListener('click', registrarActividad);
+            carruselContainer.addEventListener('mousemove', registrarActividad);
+            carruselContainer.addEventListener('keydown', registrarActividad);
+        }
+
+        // Función para configurar navegación por teclado
+        function configurarNavegacionTeclado() {
+             document.addEventListener('keydown', function(e) {
+                 const esBotonCarrusel = document.activeElement && document.activeElement.classList && document.activeElement.classList.contains('boton-siguiente-carrusel');
+                 
+                 // Tecla R para recargar datos de la API
+                 if (e.key === 'r' || e.key === 'R') {
+                     e.preventDefault();
+                     console.log('🔄 Recarga manual solicitada con tecla R');
+                     recargarDatosAPI();
+                     registrarActividad();
+                     return;
+                 }
+                 
+                 // Sistema de navegación específico por niveles
+                 const focused = document.activeElement;
+
+                 // 🔹 Navegación del carrusel (solo desde el botón siguiente)
+                 if (esBotonCarrusel) {
+                     if (e.key === 'ArrowLeft') {
+                         e.preventDefault();
+                         e.stopImmediatePropagation();
+                         paginaAnterior();
+                         registrarActividad();
+                         return;
+                     }
+                     
+                     if (e.key === 'ArrowRight') {
+                         e.preventDefault();
+                         e.stopImmediatePropagation();
+                         siguientePagina();
+                         registrarActividad();
+                         return;
+                     }
+                     
+                     if (e.key === 'ArrowUp') {
+                         e.preventDefault();
+                         const primerBotonMenu = document.querySelector('.menu-button');
+                         if (primerBotonMenu) primerBotonMenu.focus();
+                     }
+                     
+                     if (e.key === 'ArrowDown') {
+                         e.preventDefault();
+                         setTimeout(() => {
+                             const tarjetas = carruselContainer.querySelectorAll('.google-tv-card');
+                             if (tarjetas[paginaActual]) {
+                                 const primerBoton = tarjetas[paginaActual].querySelector('a[tabindex="0"], button[tabindex="0"]');
+                                 if (primerBoton) primerBoton.focus();
+                             }
+                         }, 0);
+                     }
+                     return; // Solo manejar navegación del carrusel
+                 }
+
+                 // 🔹 Navegación en el menú superior
+                 const esBotonMenu = focused && focused.classList && focused.classList.contains('menu-button');
+                 if (esBotonMenu) {
+                     const menuButtons = Array.from(document.querySelectorAll('.menu-button'));
+                     const indexMenu = menuButtons.indexOf(focused);
+                     
+                     if (e.key === "ArrowLeft" && indexMenu > 0) {
+                         e.preventDefault();
+                         e.stopImmediatePropagation();
+                         menuButtons.forEach(b => b.classList.remove('active'));
+                         menuButtons[indexMenu - 1].classList.add('active');
+                         menuButtons[indexMenu - 1].focus();
+                         return;
+                     }
+                     
+                     if (e.key === "ArrowRight" && indexMenu < menuButtons.length - 1) {
+                         e.preventDefault();
+                         e.stopImmediatePropagation();
+                         menuButtons.forEach(b => b.classList.remove('active'));
+                         menuButtons[indexMenu + 1].classList.add('active');
+                         menuButtons[indexMenu + 1].focus();
+                         return;
+                     }
+                     
+                     if (e.key === "ArrowDown") {
+                         e.preventDefault();
+                         e.stopImmediatePropagation();
+                         const botonSiguiente = document.querySelector('.boton-siguiente-carrusel');
+                         if (botonSiguiente) botonSiguiente.focus();
+                         return;
+                     }
+                     
+                     return; // Solo manejar flechas arriba/abajo en el menú
+                 }
+
+                 // 🔹 Navegación en botones de canal
+                 const esBotonCanal = focused && focused.tagName === 'A' && focused.closest('.botones-container');
+                 if (esBotonCanal) {
+                     const tarjetaActual = focused.closest('.google-tv-card');
+                     const botonesCanalActual = Array.from(tarjetaActual.querySelectorAll('.botones-container a[role="button"]'));
+                     const indexCanal = botonesCanalActual.indexOf(focused);
+
+                     if (e.key === "ArrowLeft" && indexCanal > 0) {
+                         e.preventDefault();
+                         e.stopImmediatePropagation();
+                         botonesCanalActual[indexCanal - 1].focus();
+                         return;
+                     }
+                     
+                     if (e.key === "ArrowRight" && indexCanal < botonesCanalActual.length - 1) {
+                         e.preventDefault();
+                         e.stopImmediatePropagation();
+                         botonesCanalActual[indexCanal + 1].focus();
+                         return;
+                     }
+                     
+                     if (e.key === "ArrowUp") {
+                         e.preventDefault();
+                         e.stopImmediatePropagation();
+                         const botonSiguiente = document.querySelector('.boton-siguiente-carrusel');
+                         if (botonSiguiente) botonSiguiente.focus();
+                         return;
+                     }
+                     
+                     return; // Solo manejar flechas izquierda/derecha en botones de canal
+                 }
+                 
+                 // Navegación desde el menú superior (manejada en el sistema principal)
+                 
+                 if (e.key === 'Tab') {
+                     registrarActividad();
+                 }
+             });
+         }
+
+        // Función para iniciar auto-play
+        function iniciarAutoPlay() {
+            if (hayFoco) return;
+            
+            detenerAutoPlay();
+            iniciarTimerInactividad();
+        }
+
+        // Función para detener auto-play
+        function detenerAutoPlay() {
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+            }
+        }
+
+        // Función para registrar actividad
+        function registrarActividad() {
+            ultimaActividad = Date.now();
+            reiniciarTimerInactividad();
+        }
+
+        // Función para iniciar timer de inactividad
+        function iniciarTimerInactividad() {
+            reiniciarTimerInactividad();
+        }
+
+        // Función para reiniciar timer de inactividad
+        function reiniciarTimerInactividad() {
+            if (inactividadTimer) {
+                clearTimeout(inactividadTimer);
+            }
+            
+            inactividadTimer = setTimeout(() => {
+                console.log('Inactividad detectada, pasando al siguiente evento automáticamente');
+                siguientePagina();
+                const tarjetas = tarjetasContainer.querySelectorAll('.google-tv-card');
+                const totalTarjetas = tarjetas.length;
+                if (paginaActual < totalTarjetas - 1) {
+                    reiniciarTimerInactividad();
+                }
+            }, 60000); // 60 segundos
+        }
+
+        // Configurar menú superior
+        function configurarMenuSuperior() {
+            const menuButtons = document.querySelectorAll('.menu-button');
+            menuButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    menuButtons.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+                btn.addEventListener('focus', () => detenerAutoPlay());
+                btn.addEventListener('blur', () => {
+                    iniciarAutoPlay();
+                    // Limpiar clase active cuando se sale del menú
+                    setTimeout(() => {
+                        const elementoActivo = document.activeElement;
+                        if (!elementoActivo || !elementoActivo.classList.contains('menu-button')) {
+                            menuButtons.forEach(b => b.classList.remove('active'));
+                        }
+                    }, 100);
+                });
+            });
+        }
+
+        // El sistema de navegación tipo Google TV se maneja en configurarNavegacionTeclado()
+    </script>
+</body>
+</html>
