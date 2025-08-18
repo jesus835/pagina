@@ -107,6 +107,15 @@
         "https://i.imgur.com/3tkeh6s.png"
       ],
       "descripcion": "Imágenes para eventos de Segunda División - Selección aleatoria"
+    },
+    "primera b nacional": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes para eventos de Primera B Nacional - Selección aleatoria"
     }
   },
   "equipos_especificos": {
@@ -290,6 +299,38 @@
         "https://i.imgur.com/3tkeh6s.png"
       ],
       "descripcion": "Imágenes especiales para partidos del Puebla"
+    },
+    "almería": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes especiales para partidos de Almería"
+    },
+    "albacete": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Albacete"
+    },
+    "volta redonda": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Volta Redonda"
+    },
+    "crb": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes especiales para partidos del CRB"
     }
   },
   "logos_canales": {
