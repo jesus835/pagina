@@ -53,6 +53,60 @@
         "https://i.imgur.com/LU1p89F.png"
       ],
       "descripcion": "Imágenes para eventos de MLB (Baseball) - Selección aleatoria"
+    },
+    "copa de alemania": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes para eventos de Copa de Alemania - Selección aleatoria"
+    },
+    "copa italiana": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes para eventos de Copa Italiana - Selección aleatoria"
+    },
+    "superliga argentina": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes para eventos de Superliga Argentina - Selección aleatoria"
+    },
+    "brasileirão": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes para eventos de Brasileirão - Selección aleatoria"
+    },
+    "serie b": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes para eventos de Serie B - Selección aleatoria"
+    },
+    "segunda division": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes para eventos de Segunda División - Selección aleatoria"
     }
   },
   "equipos_especificos": {
@@ -124,6 +178,118 @@
         "https://i.imgur.com/Q2teWr6.png"
       ],
       "descripcion": "Imágenes especiales para partidos del Antigua GFC"
+    },
+    "borussia dortmund": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Borussia Dortmund"
+    },
+    "rot-weiss essen": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Rot-Weiss Essen"
+    },
+    "hellas verona": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Hellas Verona"
+    },
+    "audace cerignola": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Audace Cerignola"
+    },
+    "udinese": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Udinese"
+    },
+    "carrarese": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Carrarese"
+    },
+    "sarmiento": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Sarmiento"
+    },
+    "atlético tucumán": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Atlético Tucumán"
+    },
+    "mirassol": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Mirassol"
+    },
+    "cruzeiro": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Cruzeiro"
+    },
+    "necaxa": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Necaxa"
+    },
+    "cruz azul": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Cruz Azul"
+    },
+    "mazatlán": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Mazatlán"
+    },
+    "puebla": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Puebla"
     }
   },
   "logos_canales": {
@@ -206,6 +372,31 @@
       "url": "https://i.imgur.com/PzN1kqw.png",
       "alt": "MLB",
       "descripcion": "Logo de MLB"
+    },
+    "tvhd": {
+      "url": "https://i.imgur.com/3tkeh6s.png",
+      "alt": "TVHD",
+      "descripcion": "Logo de TVHD"
+    },
+    "espn premium ar": {
+      "url": "https://i.imgur.com/Exl0NLA.png",
+      "alt": "ESPN Premium AR",
+      "descripcion": "Logo de ESPN Premium Argentina"
+    },
+    "sportv br": {
+      "url": "https://i.imgur.com/3tkeh6s.png",
+      "alt": "Sportv BR",
+      "descripcion": "Logo de Sportv Brasil"
+    },
+    "eventos": {
+      "url": "https://i.imgur.com/3tkeh6s.png",
+      "alt": "EVENTOS",
+      "descripcion": "Logo de Eventos"
+    },
+    "laliga tv hypermotion": {
+      "url": "https://i.imgur.com/3tkeh6s.png",
+      "alt": "LaLiga TV Hypermotion",
+      "descripcion": "Logo de LaLiga TV Hypermotion"
     }
   },
   "descripciones_generales": {
