@@ -609,6 +609,9 @@
         let tarjetasContainer = null;
         let eventosData = [];
 
+        // Esperar (promesa) para backoff
+        function esperar(ms){ return new Promise(res => setTimeout(res, ms)); }
+
         // Función para cargar datos del JSON de la API (sin caché)
         async function cargarEventosAPI() {
             const apiUrl = 'https://deporte-libre.click/schedule/schedule-generated.php';
@@ -617,41 +620,51 @@
                 if(!r.ok) throw new Error('HTTP '+r.status);
                 return r.json();
             }
-            try {
-                console.log('🔄 Cargando eventos desde Deporte-Libre API...');
-                let data;
+            const maxIntentos = 5;
+            const baseDelay = 800; // ms
+            for (let intento = 1; intento <= maxIntentos; intento++) {
                 try {
-                    data = await fetchJson(apiUrl);
-                } catch (e) {
-                    // Fallback proxy si hay CORS
-                    const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(apiUrl);
-                    data = await fetchJson(proxyUrl);
-                }
-                // Transformar a formato interno simple
-                const eventos = [];
-                Object.keys(data || {}).forEach(dayLabel => {
-                    const categories = data[dayLabel] || {};
-                    Object.keys(categories).forEach(cat => {
-                        if (!/soccer|futbol|fútbol/i.test(String(cat))) return; // Solo fútbol
-                        const arr = categories[cat] || [];
-                        arr.forEach(ev => {
-                            const channels = Array.isArray(ev.channels) ? ev.channels : Object.values(ev.channels||{});
-                            eventos.push({
-                                hour: String(ev.time || '').padStart(5,'0'),
-                                description: ev.event || '',
-                                channels: channels.map(ch => ({ channel_name: String(ch.channel_name||'').trim(), channel_id: String(ch.channel_id||'').trim() })),
-                                category: cat
+                    console.log(`🔄 Intento ${intento}/${maxIntentos}: Deporte-Libre API...`);
+                    let data;
+                    try {
+                        data = await fetchJson(apiUrl);
+                    } catch (e) {
+                        // Fallback proxy si hay CORS o falla directa
+                        const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(apiUrl);
+                        data = await fetchJson(proxyUrl);
+                    }
+                    // Transformar a formato interno simple (solo fútbol)
+                    const eventos = [];
+                    Object.keys(data || {}).forEach(dayLabel => {
+                        const categories = data[dayLabel] || {};
+                        Object.keys(categories).forEach(cat => {
+                            if (!/soccer|futbol|fútbol/i.test(String(cat))) return; // Solo fútbol
+                            const arr = categories[cat] || [];
+                            arr.forEach(ev => {
+                                const channels = Array.isArray(ev.channels) ? ev.channels : Object.values(ev.channels||{});
+                                eventos.push({
+                                    hour: String(ev.time || '').padStart(5,'0'),
+                                    description: ev.event || '',
+                                    channels: channels.map(ch => ({ channel_name: String(ch.channel_name||'').trim(), channel_id: String(ch.channel_id||'').trim() })),
+                                    category: cat
+                                });
                             });
                         });
                     });
-                });
-                eventosData = eventos;
-                console.log(`✅ ${eventosData.length} eventos de fútbol cargados desde Deporte-Libre API`);
-                return eventosData;
-            } catch (error) {
-                console.error('❌ Error al cargar eventos desde Deporte-Libre API:', error);
-                return [];
+                    if (eventos.length > 0) {
+                        eventosData = eventos;
+                        console.log(`✅ ${eventosData.length} eventos de fútbol cargados (intento ${intento})`);
+                        return eventosData;
+                    }
+                    console.warn(`⚠️ Sin eventos tras intento ${intento}. Reintentando...`);
+                } catch (error) {
+                    console.warn(`❌ Error en intento ${intento}:`, error);
+                }
+                // Backoff incremental
+                await esperar(baseDelay * intento);
             }
+            console.error('❌ No se pudieron cargar eventos tras múltiples intentos');
+            return [];
         }
 
         // Utilidad: formatear hora a HH:MM y convertir a minutos (acepta HH:MM o HH:MM:SS)
