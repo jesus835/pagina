@@ -1524,37 +1524,32 @@
 
         update();
 
-        // Auto-play simple compatible con WebView
-        let promoAutoPlayTimeout = null;
-        let isAutoPlaying = false;
-
-        function nextPromoSlide() {
-            if (total > 1 && isAutoPlaying) {
-                console.log('⏰ Auto-play: cambiando tarjeta del promo-carousel');
-                idx = (idx + 1) % total;
-                update();
-                
-                // Programar siguiente cambio
-                promoAutoPlayTimeout = setTimeout(nextPromoSlide, 10000);
-            }
-        }
+        // Auto-play ultra simple para WebView
+        let promoAutoPlayInterval = null;
 
         function startPromoAutoPlay() {
-            if (isAutoPlaying) return;
+            if (promoAutoPlayInterval) return;
             console.log('🔄 Iniciando auto-play del promo-carousel');
-            isAutoPlaying = true;
-            promoAutoPlayTimeout = setTimeout(nextPromoSlide, 10000);
+            
+            // Usar setInterval simple (más compatible con WebView)
+            promoAutoPlayInterval = setInterval(() => {
+                if (total > 1) {
+                    console.log('⏰ Auto-play: cambiando tarjeta del promo-carousel');
+                    idx = (idx + 1) % total;
+                    update();
+                }
+            }, 10000);
         }
 
         function stopPromoAutoPlay() {
-            if (promoAutoPlayTimeout) {
-                clearTimeout(promoAutoPlayTimeout);
-                promoAutoPlayTimeout = null;
+            if (promoAutoPlayInterval) {
+                clearInterval(promoAutoPlayInterval);
+                promoAutoPlayInterval = null;
+                console.log('⏹️ Auto-play detenido');
             }
-            isAutoPlaying = false;
         }
 
-        // Detectar foco
+        // Detectar foco de forma más simple
         container.addEventListener('focusin', stopPromoAutoPlay);
         container.addEventListener('focusout', startPromoAutoPlay);
 
