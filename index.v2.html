@@ -633,19 +633,14 @@
                 if(!r.ok) throw new Error('HTTP '+r.status);
                 return r.json();
             }
-            const maxIntentos = 5;
-            const baseDelay = 800; // ms
+            const maxIntentos = 3;
+            const baseDelay = 500; // ms
             for (let intento = 1; intento <= maxIntentos; intento++) {
                 try {
-                    console.log(`🔄 Intento ${intento}/${maxIntentos}: Deporte-Libre API...`);
-                    let data;
-                    try {
-                        data = await fetchJson(apiUrl);
-                    } catch (e) {
-                        // Fallback proxy si hay CORS o falla directa
-                        const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(apiUrl);
-                        data = await fetchJson(proxyUrl);
-                    }
+                    console.log(`🔄 Intento ${intento}/${maxIntentos}: Deporte-Libre API con proxy...`);
+                    // Usar proxy directamente sin intentar API directa
+                    const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(apiUrl);
+                    const data = await fetchJson(proxyUrl);
                     // Transformar a formato interno simple (solo fútbol)
                     const eventos = [];
                     Object.keys(data || {}).forEach(dayLabel => {
