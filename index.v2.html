@@ -1436,38 +1436,41 @@
         const isWebView = /wv|WebView|Android.*Chrome/i.test(navigator.userAgent) || 
                          (navigator.userAgent.includes('Android') && navigator.userAgent.includes('Chrome'));
         
-        // Intentar API directa primero
+        // Intentar API directa primero (con reintentos + fallback proxy)
         const url = `https://api.unidadeditorial.es/sports/v1/events/preset/1_99a16e5b?timezoneOffset=${tz}&date=${dateStr}`;
-        try {
-            const r = await fetch(url, { cache: 'no-store' });
-            if (!r.ok) throw new Error('HTTP '+r.status);
-            const j = await r.json();
-            events = Array.isArray(j.data) ? j.data : [];
-            events = events.filter(ev => (ev?.sport?.id === '01') || /fútbol|soccer/i.test(ev?.sport?.name || ''));
-            console.log('✅ Datos cargados directamente de la API');
-        } catch(err){ 
-            console.warn('API directa falló:', err);
-            
-            // Si es WebView, intentar con proxy
-            if (isWebView) {
-                try {
-                    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-                    const r = await fetch(proxyUrl, { cache: 'no-store' });
-                    if (!r.ok) throw new Error('HTTP '+r.status);
-                    const j = await r.json();
-                    events = Array.isArray(j.data) ? j.data : [];
-                    events = events.filter(ev => (ev?.sport?.id === '01') || /fútbol|soccer/i.test(ev?.sport?.name || ''));
-                    console.log('✅ Datos cargados via proxy para WebView');
-                } catch(proxyErr){ 
-                    console.warn('Proxy también falló:', proxyErr); 
-                    return; 
-                }
-            } else {
-                return;
+        const maxIntentosUE = 5;
+        const baseDelayUE = 800;
+        let cargado = false;
+        for (let intento = 1; intento <= maxIntentosUE && !cargado; intento++) {
+            try {
+                console.log(`🔄 UE intento ${intento}/${maxIntentosUE}: directo`);
+                let r = await fetch(url, { cache: 'no-store' });
+                if (!r.ok) throw new Error('HTTP '+r.status);
+                let j = await r.json();
+                events = Array.isArray(j.data) ? j.data : [];
+                events = events.filter(ev => (ev?.sport?.id === '01') || /fútbol|soccer/i.test(ev?.sport?.name || ''));
+                if (events.length) { console.log('✅ UE directo OK'); cargado = true; break; }
+                console.warn('⚠️ UE directo sin datos; probando proxy...');
+            } catch(err){
+                console.warn('UE directo falló:', err);
             }
+            // Proxy
+            try {
+                console.log(`🔄 UE intento ${intento}/${maxIntentosUE}: proxy AllOrigins`);
+                const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+                let rp = await fetch(proxyUrl, { cache: 'no-store' });
+                if (!rp.ok) throw new Error('HTTP '+rp.status);
+                let jp = await rp.json();
+                events = Array.isArray(jp.data) ? jp.data : [];
+                events = events.filter(ev => (ev?.sport?.id === '01') || /fútbol|soccer/i.test(ev?.sport?.name || ''));
+                if (events.length) { console.log('✅ UE proxy OK'); cargado = true; break; }
+                console.warn('⚠️ UE proxy sin datos');
+            } catch(proxyErr){
+                console.warn('UE proxy falló:', proxyErr);
+            }
+            await esperar(baseDelayUE * intento);
         }
-
-        if (!events.length) return;
+        if (!cargado || !events.length) return;
 
         // Limpiar y construir
         track.innerHTML = '';
