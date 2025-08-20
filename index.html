@@ -1494,60 +1494,34 @@
 
         update();
 
-        // Auto-play cada 10 segundos si no tiene foco
+        // Auto-play cada 10 segundos (compatible con WebView)
         let promoAutoPlayInterval = null;
-        let promoHasFocus = false;
 
         function startPromoAutoPlay() {
             if (promoAutoPlayInterval) clearInterval(promoAutoPlayInterval);
             promoAutoPlayInterval = setInterval(() => {
-                if (!promoHasFocus && total > 1) {
-                    // Hacer fade out de la tarjeta actual
-                    const currentSlide = track.children[idx];
-                    if (currentSlide) {
-                        const currentCard = currentSlide.querySelector('promo-match-card');
-                        if (currentCard) {
-                            const currentTextElements = currentCard.shadowRoot.querySelectorAll('.team-name, .vs, .time-big, .time-sub');
-                            currentTextElements.forEach(el => {
-                                el.style.animation = 'fadeOut 0.5s ease-in-out forwards';
-                            });
-                        }
-                    }
+                if (total > 1) {
+                    // Cambio simple sin animaciones complejas
+                    idx = (idx + 1) % total;
+                    update();
                     
-                    // Hacer fade out del fondo del promo-carousel
-                    const promoCarousel = document.querySelector('#promo-carousel');
-                    if (promoCarousel) {
-                        promoCarousel.style.transition = 'opacity 0.5s ease-in-out';
-                        promoCarousel.style.opacity = '0';
-                    }
-                    
-                    // Navegar al siguiente slide después del fade out
+                    // Reiniciar animación del texto de forma simple
                     setTimeout(() => {
-                        idx = (idx + 1) % total;
-                        update();
-                        
-                        // Hacer fade in después del cambio
-                        setTimeout(() => {
-                            const newSlide = track.children[idx];
-                            if (newSlide) {
-                                const newCard = newSlide.querySelector('promo-match-card');
-                                if (newCard) {
-                                    // Reiniciar animación del texto con fade in
-                                    const textElements = newCard.shadowRoot.querySelectorAll('.team-name, .vs, .time-big, .time-sub');
-                                    textElements.forEach(el => {
-                                        el.style.animation = 'none';
-                                        el.offsetHeight; // Trigger reflow
-                                        el.style.animation = 'fadeIn 1s ease-in-out forwards';
-                                    });
-                                }
+                        const newSlide = track.children[idx];
+                        if (newSlide) {
+                            const newCard = newSlide.querySelector('promo-match-card');
+                            if (newCard && newCard.shadowRoot) {
+                                const textElements = newCard.shadowRoot.querySelectorAll('.team-name, .vs, .time-big, .time-sub');
+                                textElements.forEach(el => {
+                                    el.style.opacity = '0';
+                                    setTimeout(() => {
+                                        el.style.opacity = '1';
+                                        el.style.transition = 'opacity 1s ease-in-out';
+                                    }, 50);
+                                });
                             }
-                            
-                            // Hacer fade in del fondo del promo-carousel
-                            if (promoCarousel) {
-                                promoCarousel.style.opacity = '1';
-                            }
-                        }, 100);
-                    }, 500);
+                        }
+                    }, 100);
                 }
             }, 10000); // 10 segundos
         }
@@ -1559,21 +1533,9 @@
             }
         }
 
-        // Detectar cuando el promo-carousel tiene foco
-        container.addEventListener('focusin', () => {
-            promoHasFocus = true;
-            stopPromoAutoPlay();
-        });
-
-        container.addEventListener('focusout', () => {
-            setTimeout(() => {
-                const activeElement = document.activeElement;
-                if (!activeElement || !container.contains(activeElement)) {
-                    promoHasFocus = false;
-                    startPromoAutoPlay();
-                }
-            }, 100);
-        });
+        // Detectar foco de forma más simple
+        container.addEventListener('focusin', stopPromoAutoPlay);
+        container.addEventListener('focusout', startPromoAutoPlay);
 
         // Iniciar auto-play
         startPromoAutoPlay();
