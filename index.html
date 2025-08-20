@@ -1494,55 +1494,42 @@
 
         update();
 
-        // Auto-play cada 10 segundos después de un delay inicial
-        let promoAutoPlayInterval = null;
+        // Auto-play simple compatible con WebView
+        let promoAutoPlayTimeout = null;
+        let isAutoPlaying = false;
 
-        function startPromoAutoPlay() {
-            if (promoAutoPlayInterval) clearInterval(promoAutoPlayInterval);
-            console.log('🔄 Iniciando auto-play del promo-carousel');
-            promoAutoPlayInterval = setInterval(() => {
-                if (total > 1) {
-                    console.log('⏰ Auto-play: cambiando tarjeta del promo-carousel');
-                    // Cambio simple sin animaciones complejas
-                    idx = (idx + 1) % total;
-                    update();
-                    
-                    // Reiniciar animación del texto de forma simple
-                    setTimeout(() => {
-                        const newSlide = track.children[idx];
-                        if (newSlide) {
-                            const newCard = newSlide.querySelector('promo-match-card');
-                            if (newCard && newCard.shadowRoot) {
-                                const textElements = newCard.shadowRoot.querySelectorAll('.team-name, .vs, .time-big, .time-sub');
-                                textElements.forEach(el => {
-                                    el.style.opacity = '0';
-                                    setTimeout(() => {
-                                        el.style.opacity = '1';
-                                        el.style.transition = 'opacity 1s ease-in-out';
-                                    }, 50);
-                                });
-                            }
-                        }
-                    }, 100);
-                }
-            }, 10000); // 10 segundos
-        }
-
-        function stopPromoAutoPlay() {
-            if (promoAutoPlayInterval) {
-                clearInterval(promoAutoPlayInterval);
-                promoAutoPlayInterval = null;
+        function nextPromoSlide() {
+            if (total > 1 && isAutoPlaying) {
+                console.log('⏰ Auto-play: cambiando tarjeta del promo-carousel');
+                idx = (idx + 1) % total;
+                update();
+                
+                // Programar siguiente cambio
+                promoAutoPlayTimeout = setTimeout(nextPromoSlide, 10000);
             }
         }
 
-        // Detectar foco de forma más simple
+        function startPromoAutoPlay() {
+            if (isAutoPlaying) return;
+            console.log('🔄 Iniciando auto-play del promo-carousel');
+            isAutoPlaying = true;
+            promoAutoPlayTimeout = setTimeout(nextPromoSlide, 10000);
+        }
+
+        function stopPromoAutoPlay() {
+            if (promoAutoPlayTimeout) {
+                clearTimeout(promoAutoPlayTimeout);
+                promoAutoPlayTimeout = null;
+            }
+            isAutoPlaying = false;
+        }
+
+        // Detectar foco
         container.addEventListener('focusin', stopPromoAutoPlay);
         container.addEventListener('focusout', startPromoAutoPlay);
 
         // Iniciar auto-play después de 30 segundos
-        setTimeout(() => {
-            startPromoAutoPlay();
-        }, 30000);
+        setTimeout(startPromoAutoPlay, 30000);
 
         // Actualización diaria automática
         const msToMidnight = (()=>{
