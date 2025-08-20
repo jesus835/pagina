@@ -1120,12 +1120,15 @@
 
         // Función para configurar navegación por teclado
         function configurarNavegacionTeclado() {
-             // Detectar si es WebView
-             const isWebView = /wv|WebView/i.test(navigator.userAgent);
-             
-             // Log para debug
-             console.log('📱 WebView detectado:', isWebView);
-             console.log('🔧 User Agent:', navigator.userAgent);
+                     // Detectar si es WebView (mejorado para Android)
+        const isWebView = /wv|WebView|Android.*Chrome/i.test(navigator.userAgent) || 
+                         (navigator.userAgent.includes('Android') && navigator.userAgent.includes('Chrome'));
+        
+        // Log para debug
+        console.log('📱 WebView detectado:', isWebView);
+        console.log('🔧 User Agent:', navigator.userAgent);
+        console.log('🌐 Platform:', navigator.platform);
+        console.log('📱 User Agent Data:', navigator.userAgentData);
              
              document.addEventListener('keydown', function(e) {
                  const esBotonCarrusel = document.activeElement && document.activeElement.classList && document.activeElement.classList.contains('boton-siguiente-carrusel');
@@ -1354,16 +1357,43 @@
         const dateStr = `${yyyy}-${mm}-${dd}`;
         const tz = -6; // Guatemala
 
-        const url = `https://api.unidadeditorial.es/sports/v1/events/preset/1_99a16e5b?timezoneOffset=${tz}&date=${dateStr}`;
+        // Cargar datos de la API con proxy para WebView
         let events = [];
+        
+        // Detectar si es WebView
+        const isWebView = /wv|WebView|Android.*Chrome/i.test(navigator.userAgent) || 
+                         (navigator.userAgent.includes('Android') && navigator.userAgent.includes('Chrome'));
+        
+        // Intentar API directa primero
+        const url = `https://api.unidadeditorial.es/sports/v1/events/preset/1_99a16e5b?timezoneOffset=${tz}&date=${dateStr}`;
         try {
             const r = await fetch(url, { cache: 'no-store' });
             if (!r.ok) throw new Error('HTTP '+r.status);
             const j = await r.json();
             events = Array.isArray(j.data) ? j.data : [];
-            // Solo Fútbol
             events = events.filter(ev => (ev?.sport?.id === '01') || /fútbol|soccer/i.test(ev?.sport?.name || ''));
-        } catch(err){ console.warn('No se pudo cargar eventos de UE:', err); return; }
+            console.log('✅ Datos cargados directamente de la API');
+        } catch(err){ 
+            console.warn('API directa falló:', err);
+            
+            // Si es WebView, intentar con proxy
+            if (isWebView) {
+                try {
+                    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+                    const r = await fetch(proxyUrl, { cache: 'no-store' });
+                    if (!r.ok) throw new Error('HTTP '+r.status);
+                    const j = await r.json();
+                    events = Array.isArray(j.data) ? j.data : [];
+                    events = events.filter(ev => (ev?.sport?.id === '01') || /fútbol|soccer/i.test(ev?.sport?.name || ''));
+                    console.log('✅ Datos cargados via proxy para WebView');
+                } catch(proxyErr){ 
+                    console.warn('Proxy también falló:', proxyErr); 
+                    return; 
+                }
+            } else {
+                return;
+            }
+        }
 
         if (!events.length) return;
 
