@@ -537,52 +537,18 @@
             }
         }
 
-        /* Perfiles Android por resolución fija */
-        /* 720p (1280x720 o 720x1280) */
-        @media screen and (device-width: 1280px) and (device-height: 720px),
-               screen and (device-width: 720px) and (device-height: 1280px) {
-            #wraper { background-size: cover; background-position: center; }
-            .contenido-texto { top: 40vh; left: 4%; transform: translateY(-50%) scale(0.84); transform-origin: left center; max-width: 1030px; }
-            #promo-carousel { top: 68vh; left: 4%; }
-            #promo-carousel promo-match-card { transform: scale(0.48); transform-origin: left center; }
-            .menu-container { left: 18%; }
-            /* Menú 10% más grande */
-            .menu-button { padding: 10px 21px; font-size: 13px; min-width: 101px; }
-            /* Indicador al mismo nivel del menú superior */
-            #indicador-pagina { top: calc(56px - 5vh); bottom: auto !important; left: 18%; transform: translateX(0); }
-            /* Bajar el título 50% */
-            .promo-title { top: calc(384.912px + 18vh) !important; }
-        }
-        /* 1080p (1920x1080 o 1080x1920) */
-        @media screen and (device-width: 1920px) and (device-height: 1080px),
-               screen and (device-width: 1080px) and (device-height: 1920px) {
-            #wraper { background-size: cover; background-position: center; }
-            .contenido-texto { top: 40vh; left: 4%; transform: translateY(-50%) scale(0.84); transform-origin: left center; max-width: 1030px; }
-            #promo-carousel { top: 68vh; left: 4%; }
-            #promo-carousel promo-match-card { transform: scale(0.48); transform-origin: left center; }
-            .menu-container { left: 18%; }
-            /* Menú 10% más grande */
-            .menu-button { padding: 10px 21px; font-size: 13px; min-width: 101px; }
-            /* Indicador al mismo nivel del menú superior */
-            #indicador-pagina { top: calc(56px - 5vh); bottom: auto !important; left: 18%; transform: translateX(0); }
-            /* Bajar el título 50% */
-            .promo-title { top: calc(384.912px + 18vh) !important; }
-        }
-        /* 4K (3840x2160 o 2160x3840) */
-        @media screen and (device-width: 3840px) and (device-height: 2160px),
-               screen and (device-width: 2160px) and (device-height: 3840px) {
-            #wraper { background-size: cover; background-position: center; }
-            .contenido-texto { top: 40vh; left: 4%; transform: translateY(-50%) scale(0.84); transform-origin: left center; max-width: 1030px; }
-            #promo-carousel { top: 68vh; left: 4%; }
-            #promo-carousel promo-match-card { transform: scale(0.48); transform-origin: left center; }
-            .menu-container { left: 18%; }
-            /* Menú 10% más grande */
-            .menu-button { padding: 10px 21px; font-size: 13px; min-width: 101px; }
-            /* Indicador al mismo nivel del menú superior */
-            #indicador-pagina { top: calc(56px - 5vh); bottom: auto !important; left: 18%; transform: translateX(0); }
-            /* Bajar el título 50% */
-            .promo-title { top: calc(384.912px + 18vh) !important; }
-        }
+        /* Diseño responsive general basado en 720p */
+        #wraper { background-size: cover; background-position: center; }
+        .contenido-texto { top: 40vh; left: 4%; transform: translateY(-50%) scale(0.84); transform-origin: left center; max-width: 1030px; }
+        #promo-carousel { top: 68vh; left: 4%; }
+        #promo-carousel promo-match-card { transform: scale(0.48); transform-origin: left center; }
+        .menu-container { left: 18%; }
+        /* Menú 10% más grande */
+        .menu-button { padding: 10px 21px; font-size: 13px; min-width: 101px; }
+        /* Indicador al mismo nivel del menú superior */
+        #indicador-pagina { top: calc(56px - 5vh); bottom: auto !important; left: 18%; transform: translateX(0); }
+        /* Bajar el título 50% */
+        .promo-title { top: calc(384.912px + 18vh) !important; }
     </style>
 </head>
 <body>
