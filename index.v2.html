@@ -298,7 +298,7 @@
         .promo-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 100%; display: flex; justify-content: space-between; pointer-events: none; }
         .promo-btn { pointer-events: auto; background: rgba(0,0,0,.35); color:#fff; border:1px solid rgba(255,255,255,.3); border-radius: 50%; width: 40px; height: 40px; display:flex; align-items:center; justify-content:center; cursor:pointer; backdrop-filter: blur(6px); }
         .promo-btn:focus { outline: 2px solid transparent; }
-        .promo-dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); display:flex; gap:6px; }
+        .promo-dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); display: none; }
         .promo-dot { width:9px; height:9px; border-radius:50%; background: rgba(255,255,255,.35); cursor: pointer; }
         .promo-dot.active { background: rgba(255,255,255,.85); }
         .promo-close { position: absolute; top: -8px; right: 8px; background: rgba(0,0,0,.45); color:#fff; border:1px solid rgba(255,255,255,.25); border-radius: 12px; padding: 4px 8px; cursor: pointer; font-size: 12px; }
@@ -535,6 +535,53 @@
                 background-position: center;
                 background-attachment: scroll;
             }
+        }
+
+        /* Perfiles Android por resolución fija */
+        /* 720p (1280x720 o 720x1280) */
+        @media screen and (device-width: 1280px) and (device-height: 720px),
+               screen and (device-width: 720px) and (device-height: 1280px) {
+            #wraper { background-size: cover; background-position: center; }
+            .contenido-texto { top: 40vh; left: 4%; transform: translateY(-50%) scale(0.84); transform-origin: left center; max-width: 1030px; }
+            #promo-carousel { top: 68vh; left: 4%; }
+            #promo-carousel promo-match-card { transform: scale(0.48); transform-origin: left center; }
+            .menu-container { left: 18%; }
+            /* Menú 10% más grande */
+            .menu-button { padding: 10px 21px; font-size: 13px; min-width: 101px; }
+            /* Indicador al mismo nivel del menú superior */
+            #indicador-pagina { top: calc(56px - 5vh); bottom: auto !important; left: 18%; transform: translateX(0); }
+            /* Bajar el título 50% */
+            .promo-title { top: calc(384.912px + 18vh) !important; }
+        }
+        /* 1080p (1920x1080 o 1080x1920) */
+        @media screen and (device-width: 1920px) and (device-height: 1080px),
+               screen and (device-width: 1080px) and (device-height: 1920px) {
+            #wraper { background-size: cover; background-position: center; }
+            .contenido-texto { top: 40vh; left: 4%; transform: translateY(-50%) scale(0.84); transform-origin: left center; max-width: 1030px; }
+            #promo-carousel { top: 68vh; left: 4%; }
+            #promo-carousel promo-match-card { transform: scale(0.48); transform-origin: left center; }
+            .menu-container { left: 18%; }
+            /* Menú 10% más grande */
+            .menu-button { padding: 10px 21px; font-size: 13px; min-width: 101px; }
+            /* Indicador al mismo nivel del menú superior */
+            #indicador-pagina { top: calc(56px - 5vh); bottom: auto !important; left: 18%; transform: translateX(0); }
+            /* Bajar el título 50% */
+            .promo-title { top: calc(384.912px + 18vh) !important; }
+        }
+        /* 4K (3840x2160 o 2160x3840) */
+        @media screen and (device-width: 3840px) and (device-height: 2160px),
+               screen and (device-width: 2160px) and (device-height: 3840px) {
+            #wraper { background-size: cover; background-position: center; }
+            .contenido-texto { top: 40vh; left: 4%; transform: translateY(-50%) scale(0.84); transform-origin: left center; max-width: 1030px; }
+            #promo-carousel { top: 68vh; left: 4%; }
+            #promo-carousel promo-match-card { transform: scale(0.48); transform-origin: left center; }
+            .menu-container { left: 18%; }
+            /* Menú 10% más grande */
+            .menu-button { padding: 10px 21px; font-size: 13px; min-width: 101px; }
+            /* Indicador al mismo nivel del menú superior */
+            #indicador-pagina { top: calc(56px - 5vh); bottom: auto !important; left: 18%; transform: translateX(0); }
+            /* Bajar el título 50% */
+            .promo-title { top: calc(384.912px + 18vh) !important; }
         }
     </style>
 </head>
@@ -1290,11 +1337,35 @@
                  }
 
                  // 🔹 Navegación en botones de canal
-                 const esBotonCanal = focused && focused.tagName === 'A' && focused.closest('.botones-container');
+                 const esBotonCanal = focused && focused.closest && focused.closest('.botones-container');
                  if (esBotonCanal) {
                      const tarjetaActual = focused.closest('.google-tv-card');
-                     const botonesCanalActual = Array.from(tarjetaActual.querySelectorAll('.botones-container a[role="button"]'));
+                     const contenedorBotones = tarjetaActual.querySelector('.botones-container');
+                     const botonesCanalActual = Array.from(contenedorBotones.querySelectorAll('.botones-container a[role="button"], .botones-container button[role="button"]'));
                      const indexCanal = botonesCanalActual.indexOf(focused);
+
+                     // Helper para navegación vertical entre filas, eligiendo el candidato más cercano por coordenadas
+                     function enfocarVertical(direccion) {
+                         if (!focused || !contenedorBotones) return false;
+                         const rectActual = focused.getBoundingClientRect();
+                         const centroX = rectActual.left + rectActual.width / 2;
+                         const arriba = direccion === 'up';
+                         const candidatos = botonesCanalActual.filter(b => b !== focused);
+                         const lista = candidatos
+                             .map(el => ({ el, r: el.getBoundingClientRect() }))
+                             .filter(({ r }) => arriba ? (r.bottom <= rectActual.top - 2) : (r.top >= rectActual.bottom + 2))
+                             .map(({ el, r }) => {
+                                 const deltaY = arriba ? (rectActual.top - r.bottom) : (r.top - rectActual.bottom);
+                                 const deltaX = Math.abs((r.left + r.width / 2) - centroX);
+                                 return { el, deltaY, deltaX };
+                             })
+                             .sort((a, b) => (a.deltaY - b.deltaY) || (a.deltaX - b.deltaX));
+                         if (lista.length) {
+                             lista[0].el.focus();
+                             return true;
+                         }
+                         return false;
+                     }
 
                      if (e.key === "ArrowLeft" && indexCanal > 0) {
                          e.preventDefault();
@@ -1313,14 +1384,17 @@
                      if (e.key === "ArrowDown") {
                          e.preventDefault();
                          e.stopImmediatePropagation();
-                         const promoContainer = document.getElementById('promo-carousel');
-                         if (promoContainer && !promoContainer.hidden) {
-                             const dots = Array.from(promoContainer.querySelectorAll('#promoDots .promo-dot'));
-                             const activeIndex = dots.findIndex(d => d.classList.contains('active'));
-                             const slides = Array.from(promoContainer.querySelectorAll('#promoTrack .promo-slide'));
-                             const targetSlide = activeIndex >= 0 ? slides[activeIndex] : slides[0];
-                             const targetCard = targetSlide ? targetSlide.querySelector('promo-match-card') : null;
-                             if (targetCard) targetCard.focus();
+                         // Intentar moverse a la fila inferior dentro del grid; si no hay, fallback al promo-carousel
+                         if (!enfocarVertical('down')) {
+                             const promoContainer = document.getElementById('promo-carousel');
+                             if (promoContainer && !promoContainer.hidden) {
+                                 const dots = Array.from(promoContainer.querySelectorAll('#promoDots .promo-dot'));
+                                 const activeIndex = dots.findIndex(d => d.classList.contains('active'));
+                                 const slides = Array.from(promoContainer.querySelectorAll('#promoTrack .promo-slide'));
+                                 const targetSlide = activeIndex >= 0 ? slides[activeIndex] : slides[0];
+                                 const targetCard = targetSlide ? targetSlide.querySelector('promo-match-card') : null;
+                                 if (targetCard) targetCard.focus();
+                             }
                          }
                          return;
                      }
@@ -1328,12 +1402,15 @@
                      if (e.key === "ArrowUp") {
                          e.preventDefault();
                          e.stopImmediatePropagation();
-                         const botonSiguiente = document.querySelector('.boton-siguiente-carrusel');
-                         if (botonSiguiente) botonSiguiente.focus();
+                         // Intentar moverse a la fila superior dentro del grid; si no hay, fallback al botón siguiente del carrusel
+                         if (!enfocarVertical('up')) {
+                             const botonSiguiente = document.querySelector('.boton-siguiente-carrusel');
+                             if (botonSiguiente) botonSiguiente.focus();
+                         }
                          return;
                      }
                      
-                     return; // Solo manejar flechas izquierda/derecha en botones de canal
+                     return; // Manejar flechas en botones de canal
                  }
                  
                  // Navegación desde el menú superior (manejada en el sistema principal)
