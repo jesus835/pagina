@@ -69,7 +69,7 @@
         .google-tv-card {
             background: transparent;
             border-radius: 20px;
-            padding: 40px;
+            padding: 0;
             margin: 0;
             color: white;
             font-family: 'Roboto', Arial, sans-serif;
@@ -101,9 +101,10 @@
             max-width: 600px;
             margin: 0;
             opacity: 1;
-            top: 40%;
-            left: 5%;
-            transform: translateY(-50%);
+            top: 38vh;
+            left: 4%;
+            transform: translateY(-50%) scale(0.75);
+            transform-origin: left center;
         }
 
         .google-tv-card h2 {
@@ -182,6 +183,7 @@
             color: #ffffff;
             border-color: transparent;
             transform: scale(1.05);
+            outline: 2px solid transparent;
         }
 
          .boton-siguiente-carrusel {
@@ -219,6 +221,17 @@
             transform: translateY(-50%) scale(1.05);
             border-color: transparent;
             box-shadow: 0 6px 25px rgba(255, 255, 255, 0.2);
+            outline: 2px solid transparent;
+        }
+
+        /* Animación tipo tarjeta y sin blur cuando hay foco */
+        .boton-siguiente-carrusel:focus, .boton-siguiente-carrusel:focus-visible {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%) scale(1.05);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            outline: 2px solid transparent;
+            backdrop-filter: none;
         }
 
         .branding {
@@ -249,7 +262,7 @@
             max-width: 1200px;
             width: 100%;
             position: relative;
-            left: 10%;
+            left: 8%;
         }
         .menu-button {
             background: rgba(255, 255, 255, 0.15);
@@ -267,6 +280,21 @@
             color: #000000;
             font-family: 'Roboto', Arial, sans-serif;
         }
+        .menu-button:focus { outline: 2px solid transparent; }
+
+        /* Promo carousel (tarjetas de mañana) */
+        #promo-carousel { position: fixed; top: 68vh; left: 4%; width: 80vw; z-index: 10002; pointer-events: none; }
+        .promo-carousel-inner { position: relative; width: 100%; overflow: hidden; pointer-events: auto; }
+        .promo-track { display: flex; width: 100%; }
+        .promo-slide { flex: 0 0 100%; padding: 10px 12px; }
+        #promo-carousel promo-match-card { transform: scale(0.5); transform-origin: left center; }
+        .promo-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 100%; display: flex; justify-content: space-between; pointer-events: none; }
+        .promo-btn { pointer-events: auto; background: rgba(0,0,0,.35); color:#fff; border:1px solid rgba(255,255,255,.3); border-radius: 50%; width: 40px; height: 40px; display:flex; align-items:center; justify-content:center; cursor:pointer; backdrop-filter: blur(6px); }
+        .promo-btn:focus { outline: 2px solid transparent; }
+        .promo-dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); display:flex; gap:6px; }
+        .promo-dot { width:9px; height:9px; border-radius:50%; background: rgba(255,255,255,.35); cursor: pointer; }
+        .promo-dot.active { background: rgba(255,255,255,.85); }
+        .promo-close { position: absolute; top: -8px; right: 8px; background: rgba(0,0,0,.45); color:#fff; border:1px solid rgba(255,255,255,.25); border-radius: 12px; padding: 4px 8px; cursor: pointer; font-size: 12px; }
 
         /* Estilos para la tarjeta especial */
         .tarjeta-especial .contenido-texto {
@@ -432,10 +460,11 @@
             }
             
             .contenido-texto {
-                left: 5%;
+                left: 4%;
                 max-width: 90%;
-                top: 40%;
-                transform: translateY(-50%);
+                top: 38vh;
+                transform: translateY(-50%) scale(0.75);
+                transform-origin: left center;
             }
             
             .google-tv-card h2 {
@@ -516,6 +545,19 @@
         </div>
     </div>
     <div id="wraper">
+        <!-- Promo carousel (eventos del día siguiente) -->
+        <div class="promo-title" style="position: absolute; top: 384.912px; left: 10%; transform: translateX(-50%); font-size: 15.75px; font-weight: bold; color: white; text-align: center; z-index: 10002;">Partidos De mañana</div>
+        <div id="promo-carousel" aria-live="polite" hidden>
+            <div class="promo-carousel-inner">
+
+                <div class="promo-track" id="promoTrack"></div>
+                <div class="promo-nav">
+                    <button class="promo-btn" id="promoPrev" aria-label="Anterior" style="display: none;">❮</button>
+                    <button class="promo-btn" id="promoNext" aria-label="Siguiente" style="display: none;">❯</button>
+                </div>
+                <div class="promo-dots" id="promoDots"></div>
+            </div>
+        </div>
         <div id="google-tv-carrusel">
             <div id="tarjetas-google-tv">
                 <!-- Los eventos se cargarán dinámicamente desde la API -->
@@ -531,8 +573,8 @@
             <!-- Indicador de página actual -->
             <div id="indicador-pagina" style="
                 position: absolute;
-                bottom: 20px;
-                left: 50%;
+                bottom: 508px;
+                left: 5%;
                 transform: translateX(-50%);
                 display: flex;
                 gap: 8px;
@@ -777,9 +819,6 @@
                 tarjeta.style.width = '100%';
                 tarjeta.style.minWidth = '100%';
                 tarjeta.style.height = '100vh';
-                tarjeta.style.display = 'flex';
-                tarjeta.style.alignItems = 'center';
-                tarjeta.style.justifyContent = 'center';
                 tarjetasContainer.appendChild(tarjeta);
             }
               
@@ -825,6 +864,7 @@
               carruselContainer = document.getElementById('google-tv-carrusel');
               tarjetasContainer = document.getElementById('tarjetas-google-tv');
               configurarMenuSuperior();
+              try { await inicializarPromoCarousel(); } catch(e){ console.warn('promo-carousel:', e); }
               
               // Crear carrusel dinámico con datos de la API
               await crearCarruselDinamico();
@@ -966,40 +1006,52 @@
          }
 
          // Función para actualizar indicadores de página
-         function actualizarIndicadoresPagina() {
-             const indicadorContainer = document.getElementById('indicador-pagina');
-             const tarjetas = tarjetasContainer.querySelectorAll('.google-tv-card');
-             const totalTarjetas = tarjetas.length;
-             
-             if (!indicadorContainer || totalTarjetas === 0) return;
-             
-             // Limpiar indicadores existentes
-             indicadorContainer.innerHTML = '';
-             
-             // Crear indicadores para cada página
-             for (let i = 0; i < totalTarjetas; i++) {
+                 function actualizarIndicadoresPagina() {
+            const indicadorContainer = document.getElementById('indicador-pagina');
+            const tarjetas = tarjetasContainer.querySelectorAll('.google-tv-card');
+            const totalTarjetas = tarjetas.length;
+            
+            if (!indicadorContainer || totalTarjetas === 0) return;
+            
+            // Limpiar indicadores existentes
+            indicadorContainer.innerHTML = '';
+            
+            // Crear indicadores para cada página (máximo 3)
+            const maxIndicadores = Math.min(totalTarjetas, 3);
+            for (let i = 0; i < maxIndicadores; i++) {
                  const indicador = document.createElement('div');
+                 // Lógica circular para el indicador activo
+                 const indicadorActivo = paginaActual % maxIndicadores;
                  indicador.style.cssText = `
                      width: 12px;
                      height: 12px;
                      border-radius: 50%;
-                     background: ${i === paginaActual ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.3)'};
+                     background: ${i === indicadorActivo ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.3)'};
                      cursor: pointer;
                      transition: all 0.3s ease;
                  `;
                  
                  indicador.addEventListener('click', () => {
-                     irAPagina(i);
+                     // Navegación circular en los indicadores
+                     if (i === 0 && paginaActual === totalTarjetas - 1) {
+                         // Si está en la última página y hace clic en el primer indicador, va al principio
+                         irAPagina(0);
+                     } else if (i === maxIndicadores - 1 && paginaActual === 0) {
+                         // Si está en la primera página y hace clic en el último indicador, va al final
+                         irAPagina(totalTarjetas - 1);
+                     } else {
+                         irAPagina(i);
+                     }
                  });
                  
                  indicador.addEventListener('mouseenter', () => {
-                     if (i !== paginaActual) {
+                     if (i !== indicadorActivo) {
                          indicador.style.background = 'rgba(255, 255, 255, 0.6)';
                      }
                  });
                  
                  indicador.addEventListener('mouseleave', () => {
-                     if (i !== paginaActual) {
+                     if (i !== indicadorActivo) {
                          indicador.style.background = 'rgba(255, 255, 255, 0.3)';
                      }
                  });
@@ -1068,6 +1120,13 @@
 
         // Función para configurar navegación por teclado
         function configurarNavegacionTeclado() {
+             // Detectar si es WebView
+             const isWebView = /wv|WebView/i.test(navigator.userAgent);
+             
+             // Log para debug
+             console.log('📱 WebView detectado:', isWebView);
+             console.log('🔧 User Agent:', navigator.userAgent);
+             
              document.addEventListener('keydown', function(e) {
                  const esBotonCarrusel = document.activeElement && document.activeElement.classList && document.activeElement.classList.contains('boton-siguiente-carrusel');
                  
@@ -1176,6 +1235,21 @@
                          return;
                      }
                      
+                     if (e.key === "ArrowDown") {
+                         e.preventDefault();
+                         e.stopImmediatePropagation();
+                         const promoContainer = document.getElementById('promo-carousel');
+                         if (promoContainer && !promoContainer.hidden) {
+                             const dots = Array.from(promoContainer.querySelectorAll('#promoDots .promo-dot'));
+                             const activeIndex = dots.findIndex(d => d.classList.contains('active'));
+                             const slides = Array.from(promoContainer.querySelectorAll('#promoTrack .promo-slide'));
+                             const targetSlide = activeIndex >= 0 ? slides[activeIndex] : slides[0];
+                             const targetCard = targetSlide ? targetSlide.querySelector('promo-match-card') : null;
+                             if (targetCard) targetCard.focus();
+                         }
+                         return;
+                     }
+                     
                      if (e.key === "ArrowUp") {
                          e.preventDefault();
                          e.stopImmediatePropagation();
@@ -1262,6 +1336,330 @@
         }
 
         // El sistema de navegación tipo Google TV se maneja en configurarNavegacionTeclado()
+    </script>
+    <!-- Lógica del promo-carousel: usa API Unidad Editorial del día siguiente y crea tarjetas tipo promo-match-card -->
+    <script>
+    async function inicializarPromoCarousel(){
+        const container = document.getElementById('promo-carousel');
+        const track = document.getElementById('promoTrack');
+        const dots = document.getElementById('promoDots');
+        if (!container || !track || !dots) return;
+
+        // Fecha de mañana en formato YYYY-MM-DD
+        const now = new Date();
+        const tomorrow = new Date(now.getTime() + 24*60*60*1000);
+        const yyyy = tomorrow.getFullYear();
+        const mm = String(tomorrow.getMonth()+1).padStart(2,'0');
+        const dd = String(tomorrow.getDate()).padStart(2,'0');
+        const dateStr = `${yyyy}-${mm}-${dd}`;
+        const tz = -6; // Guatemala
+
+        const url = `https://api.unidadeditorial.es/sports/v1/events/preset/1_99a16e5b?timezoneOffset=${tz}&date=${dateStr}`;
+        let events = [];
+        try {
+            const r = await fetch(url, { cache: 'no-store' });
+            if (!r.ok) throw new Error('HTTP '+r.status);
+            const j = await r.json();
+            events = Array.isArray(j.data) ? j.data : [];
+            // Solo Fútbol
+            events = events.filter(ev => (ev?.sport?.id === '01') || /fútbol|soccer/i.test(ev?.sport?.name || ''));
+        } catch(err){ console.warn('No se pudo cargar eventos de UE:', err); return; }
+
+        if (!events.length) return;
+
+        // Limpiar y construir
+        track.innerHTML = '';
+        dots.innerHTML = '';
+        container.hidden = false;
+
+        const toLocal = (iso)=>{
+            try {
+                const utc = new Date(iso);
+                const shifted = new Date(utc.getTime() + tz * 60 * 60 * 1000);
+                return shifted.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', hour12:true, timeZone:'UTC' });
+            } catch { return ''; }
+        };
+
+        const slides = events.map(ev => {
+            const leftName = (ev?.sportEvent?.name||'').split(' vs ')[0]?.replace(/^.*?(?=\b[A-Z][a-z]+\b)/,'').replace(/^Previa Champions League |^Previa |^Libertadores |^CONMEBOL |^La Liga |^Liga |^Premier League |^Serie A |^Bundesliga |^Ligue 1 |^Eredivisie |^Primeira Liga |^Champions League |^UEFA |^Europa League |^Conference League |^Copa del Rey |^FA Cup |^Coppa Italia |^DFB Pokal |^Coupe de France |^Fútbol /gi,'').trim() || '';
+            const rightName = (ev?.sportEvent?.name||'').split(' vs ')[1]?.replace(/^.*?(?=\b[A-Z][a-z]+\b)/,'').replace(/^Previa Champions League |^Previa |^Libertadores |^CONMEBOL |^La Liga |^Liga |^Premier League |^Serie A |^Bundesliga |^Ligue 1 |^Eredivisie |^Primeira Liga |^Champions League |^UEFA |^Europa League |^Conference League |^Copa del Rey |^FA Cup |^Coppa Italia |^DFB Pokal |^Coupe de France |^Fútbol /gi,'').trim() || '';
+            const timeText = toLocal(ev?.startDate);
+            const comp = ev?.tournament?.name || ev?.sport?.name || '';
+            const leftLogo = ev?.sportEvent?.competitors?.homeTeam?.imageUrl || '';
+            const rightLogo = ev?.sportEvent?.competitors?.awayTeam?.imageUrl || '';
+
+            const slide = document.createElement('div');
+            slide.className = 'promo-slide';
+
+            const card = document.createElement('promo-match-card');
+            card.setAttribute('left-name', leftName.trim());
+            card.setAttribute('right-name', rightName.trim());
+            card.setAttribute('time', timeText);
+            card.setAttribute('comp', comp);
+            if (leftLogo) card.setAttribute('left-logo', leftLogo);
+            if (rightLogo) card.setAttribute('right-logo', rightLogo);
+            card.setAttribute('tabindex', '0');
+            card.setAttribute('role', 'button');
+            card.setAttribute('aria-label', `${leftName.trim()} vs ${rightName.trim()} - ${timeText}`);
+            slide.appendChild(card);
+            return slide;
+        });
+
+        slides.forEach(s => track.appendChild(s));
+
+        // Navegación
+        let idx = 0;
+        const total = slides.length;
+        function update(){
+            track.style.transform = `translateX(-${idx*100}%)`;
+            Array.from(dots.children).forEach((d,i)=>d.classList.toggle('active', i===idx));
+        }
+        for(let i=0;i<total;i++){
+            const d = document.createElement('div');
+            d.className = 'promo-dot' + (i===0?' active':'');
+            d.addEventListener('click', ()=>{ idx=i; update(); });
+            dots.appendChild(d);
+        }
+        document.getElementById('promoPrev')?.addEventListener('click', ()=>{ idx = (idx-1+total)%total; update(); });
+        document.getElementById('promoNext')?.addEventListener('click', ()=>{ idx = (idx+1)%total; update(); });
+        document.querySelector('#promo-carousel .promo-close')?.addEventListener('click', ()=>{ container.hidden = true; });
+
+        // Navegación por teclado para las tarjetas de promo
+        container.addEventListener('keydown', (e) => {
+            const focusedCard = container.querySelector('promo-match-card:focus');
+            if (!focusedCard) return;
+            
+            const currentSlide = focusedCard.closest('.promo-slide');
+            const currentIndex = Array.from(track.children).indexOf(currentSlide);
+            
+            switch(e.key) {
+                case 'ArrowUp':
+                    e.preventDefault();
+                    // Subir foco a los botones de canal de la tarjeta actual del carrusel principal
+                    try {
+                        const tarjetas = carruselContainer.querySelectorAll('.google-tv-card');
+                        if (tarjetas[paginaActual]) {
+                            const primerBoton = tarjetas[paginaActual].querySelector('.botones-container a[tabindex="0"], .botones-container button[tabindex="0"]');
+                            if (primerBoton) primerBoton.focus();
+                        }
+                    } catch(_) {}
+                    break;
+                case 'Enter':
+                    e.preventDefault();
+                    // Hacer fade out de la tarjeta actual
+                    const currentCard = focusedCard;
+                    const currentTextElements = currentCard.shadowRoot.querySelectorAll('.team-name, .vs, .time-big, .time-sub');
+                    currentTextElements.forEach(el => {
+                        el.style.animation = 'fadeOut 0.5s ease-in-out forwards';
+                    });
+                    
+                    // Hacer fade out del fondo del promo-carousel
+                    const promoCarousel = document.querySelector('#promo-carousel');
+                    if (promoCarousel) {
+                        promoCarousel.style.transition = 'opacity 0.5s ease-in-out';
+                        promoCarousel.style.opacity = '0';
+                    }
+                    
+                    // Navegar al siguiente slide después del fade out
+                    setTimeout(() => {
+                        idx = (idx + 1) % total;
+                        update();
+                        
+                        // Mantener el foco en la tarjeta actual y hacer fade in
+                        setTimeout(() => {
+                            const newSlide = track.children[idx];
+                            if (newSlide) {
+                                const newCard = newSlide.querySelector('promo-match-card');
+                                if (newCard) {
+                                    newCard.focus();
+                                    // Reiniciar animación del texto con fade in
+                                    const textElements = newCard.shadowRoot.querySelectorAll('.team-name, .vs, .time-big, .time-sub');
+                                    textElements.forEach(el => {
+                                        el.style.animation = 'none';
+                                        el.offsetHeight; // Trigger reflow
+                                        el.style.animation = 'fadeIn 1s ease-in-out forwards';
+                                    });
+                                }
+                            }
+                            
+                            // Hacer fade in del fondo del promo-carousel
+                            if (promoCarousel) {
+                                promoCarousel.style.opacity = '1';
+                            }
+                        }, 100);
+                    }, 500);
+                    break;
+            }
+        });
+
+        update();
+
+        // Auto-play cada 10 segundos si no tiene foco
+        let promoAutoPlayInterval = null;
+        let promoHasFocus = false;
+
+        function startPromoAutoPlay() {
+            if (promoAutoPlayInterval) clearInterval(promoAutoPlayInterval);
+            promoAutoPlayInterval = setInterval(() => {
+                if (!promoHasFocus && total > 1) {
+                    // Hacer fade out de la tarjeta actual
+                    const currentSlide = track.children[idx];
+                    if (currentSlide) {
+                        const currentCard = currentSlide.querySelector('promo-match-card');
+                        if (currentCard) {
+                            const currentTextElements = currentCard.shadowRoot.querySelectorAll('.team-name, .vs, .time-big, .time-sub');
+                            currentTextElements.forEach(el => {
+                                el.style.animation = 'fadeOut 0.5s ease-in-out forwards';
+                            });
+                        }
+                    }
+                    
+                    // Hacer fade out del fondo del promo-carousel
+                    const promoCarousel = document.querySelector('#promo-carousel');
+                    if (promoCarousel) {
+                        promoCarousel.style.transition = 'opacity 0.5s ease-in-out';
+                        promoCarousel.style.opacity = '0';
+                    }
+                    
+                    // Navegar al siguiente slide después del fade out
+                    setTimeout(() => {
+                        idx = (idx + 1) % total;
+                        update();
+                        
+                        // Hacer fade in después del cambio
+                        setTimeout(() => {
+                            const newSlide = track.children[idx];
+                            if (newSlide) {
+                                const newCard = newSlide.querySelector('promo-match-card');
+                                if (newCard) {
+                                    // Reiniciar animación del texto con fade in
+                                    const textElements = newCard.shadowRoot.querySelectorAll('.team-name, .vs, .time-big, .time-sub');
+                                    textElements.forEach(el => {
+                                        el.style.animation = 'none';
+                                        el.offsetHeight; // Trigger reflow
+                                        el.style.animation = 'fadeIn 1s ease-in-out forwards';
+                                    });
+                                }
+                            }
+                            
+                            // Hacer fade in del fondo del promo-carousel
+                            if (promoCarousel) {
+                                promoCarousel.style.opacity = '1';
+                            }
+                        }, 100);
+                    }, 500);
+                }
+            }, 10000); // 10 segundos
+        }
+
+        function stopPromoAutoPlay() {
+            if (promoAutoPlayInterval) {
+                clearInterval(promoAutoPlayInterval);
+                promoAutoPlayInterval = null;
+            }
+        }
+
+        // Detectar cuando el promo-carousel tiene foco
+        container.addEventListener('focusin', () => {
+            promoHasFocus = true;
+            stopPromoAutoPlay();
+        });
+
+        container.addEventListener('focusout', () => {
+            setTimeout(() => {
+                const activeElement = document.activeElement;
+                if (!activeElement || !container.contains(activeElement)) {
+                    promoHasFocus = false;
+                    startPromoAutoPlay();
+                }
+            }, 100);
+        });
+
+        // Iniciar auto-play
+        startPromoAutoPlay();
+
+        // Actualización diaria automática
+        const msToMidnight = (()=>{
+            const n = new Date();
+            const m = new Date(n.getFullYear(), n.getMonth(), n.getDate()+1, 0, 0, 5); // 00:00:05
+            return m - n;
+        })();
+        setTimeout(()=>{ inicializarPromoCarousel(); }, msToMidnight);
+    }
+    </script>
+    
+    <!-- Promo match card web component: reusable, encapsulated, safe to insert anywhere -->
+    <script>
+    (function(){
+        class PromoMatchCard extends HTMLElement {
+            static get observedAttributes(){
+                return ['left-name','right-name','time','comp','left-logo','right-logo','center-logo'];
+            }
+            constructor(){
+                super();
+                this._root = this.attachShadow({mode:'open'});
+                this._render();
+            }
+            attributeChangedCallback(){ this._render(); }
+            _val(name, def=''){ return this.getAttribute(name) || def; }
+            _render(){
+                const leftName = this._val('left-name');
+                const rightName = this._val('right-name');
+                const timeText = this._val('time');
+                const compText = this._val('comp');
+                const leftLogo = this._val('left-logo');
+                const rightLogo = this._val('right-logo');
+                const centerLogo = this._val('center-logo', 'https://upload.wikimedia.org/wikipedia/commons/3/3b/UEFA_Champions_League_logo_2.svg');
+                this._root.innerHTML = `
+                <style>
+                    @keyframes fadeIn {
+                        from { opacity: 0; }
+                        to { opacity: 1; }
+                    }
+                    @keyframes fadeOut {
+                        from { opacity: 1; }
+                        to { opacity: 0; }
+                    }
+                    :host{ display:block; outline: none; -webkit-tap-highlight-color: transparent; }
+                    :host(:focus), :host(:focus-visible), :host(:focus-within){ outline: none !important; box-shadow: none !important; }
+                    .promo-card{ background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.08); border-radius:48px; overflow:hidden; padding:0; color:#fff; font-family: inherit; transition: all 0.3s ease; cursor: pointer; }
+                    .promo-card:hover, .promo-card:focus-within{ transform: scale(1.05); border-color: rgba(255,255,255,0.08); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+                    :host(:focus) .promo-card, :host(:focus-visible) .promo-card { transform: scale(1.05); border-color: rgba(255,255,255,0.08); box-shadow: 0 8px 25px rgba(0,0,0,0.3); outline: none; }
+                    .promo-top{ display:grid; grid-template-columns:1fr 140px 1fr; min-height:140px; }
+                    .panel{ display:flex; flex-direction:column; justify-content:center; align-items:center; gap:6px; padding:16px 12px; }
+                    .panel-left{ background:transparent; color:#fff; }
+                    .panel-right{ background:transparent; color:#fff; }
+                    .panel-center{ background:transparent; color:#fff; }
+                    .team-logo{ width:44px; height:44px; object-fit:contain; }
+                    .team-name{ font-weight:900; font-size:clamp(18px,4vw,34px); line-height:1; text-align:center; letter-spacing:.5px; opacity: 0; animation: fadeIn 1s ease-in-out forwards; }
+                    .vs{ margin-top:10px; font-weight:800; letter-spacing:2px; font-size:clamp(24px,6vw,48px); text-align:center; opacity: 0; animation: fadeIn 1s ease-in-out forwards; }
+                    .promo-bottom{ background:#0b0b0b; display:flex; align-items:center; justify-content:center; padding:8px; gap:10px; }
+                    .time-big{ font-weight:900; font-size:clamp(18px,4.6vw,28px); letter-spacing:.5px; opacity: 0; animation: fadeIn 1s ease-in-out forwards; }
+                    .time-sub{ font-size:12px; color:#cfcfcf; opacity: 0; animation: fadeIn 1s ease-in-out forwards; }
+                </style>
+                <div class="promo-card" part="card">
+                    <div class="promo-top" part="top">
+                        <div class="panel panel-left" part="left">
+                            ${leftLogo?`<img class=\"team-logo\" src=\"${leftLogo}\" alt=\"\">`:''}
+                            <div class="team-name">${leftName}</div>
+                        </div>
+                        <div class="panel panel-center" part="center">
+                            <div class="vs">VS</div>
+                        </div>
+                        <div class="panel panel-right" part="right">
+                            ${rightLogo?`<img class=\"team-logo\" src=\"${rightLogo}\" alt=\"\">`:''}
+                            <div class="team-name">${rightName}</div>
+                        </div>
+                    </div>
+                    <div class="promo-bottom" part="bottom">
+                        <div class="time-big">${timeText}</div>
+                        ${compText?`<div class=\"time-sub\">${compText}</div>`:''}
+                    </div>
+                </div>`;
+            }
+        }
+        if (!customElements.get('promo-match-card')) customElements.define('promo-match-card', PromoMatchCard);
+    })();
     </script>
 </body>
 </html>
