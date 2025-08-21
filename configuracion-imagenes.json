@@ -117,6 +117,49 @@
       ],
       "descripcion": "Imágenes para eventos de Primera B Nacional - Selección aleatoria"
     }
+    ,
+    "uefa europa league": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes para eventos de UEFA Europa League - Selección aleatoria"
+    },
+    "uefa conference league": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes para eventos de UEFA Conference League - Selección aleatoria"
+    },
+    "copa del caribe": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes para eventos de Copa del Caribe - Selección aleatoria"
+    },
+    "copa ecuador": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes para eventos de Copa Ecuador - Selección aleatoria"
+    },
+    "amistoso": {
+      "urls": [
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png",
+        "https://i.imgur.com/3tkeh6s.png"
+      ],
+      "descripcion": "Imágenes para eventos Amistosos - Selección aleatoria"
+    }
   },
   "equipos_especificos": {
     "barcelona": {
@@ -524,6 +567,6 @@
   "configuracion": {
     "tiempo_cache": 300000,
     "url_base": "./configuracion-imagenes.json",
-    "version": "1.5"
+    "version": "1.6"
   }
 }
