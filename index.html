@@ -774,8 +774,8 @@
                  const horaOriginal = evento?.attributes?.diary_hour;
                  const horaCorregida = corregirHoraDesfase(horaOriginal);
                  const horaEvento = convertirHoraAMinutos(horaCorregida);
-                 // Solo mostrar eventos que aún no han pasado (con margen de 2 horas)
-                 return horaEvento > horaActual - 120;
+                 // Solo mostrar eventos que aún no han pasado (con margen de 3 horas)
+                 return horaEvento > horaActual - 180;
              });
              
              // Ordenar cronológicamente por hora (y por descripción como desempate)
