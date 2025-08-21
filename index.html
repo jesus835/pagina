@@ -544,11 +544,11 @@
         .contenido-texto { top: 40vh; left: 4%; transform: translateY(-50%) scale(0.84); transform-origin: left center; max-width: 1030px; }
         #promo-carousel { top: 68vh; left: 4%; }
         #promo-carousel promo-match-card { transform: scale(0.48); transform-origin: left center; }
-        .menu-container { left: 18%; }
+        .menu-container { left: 17%; }
         /* Menú 10% más grande */
         .menu-button { padding: 10px 21px; font-size: 13px; min-width: 101px; }
         /* Indicador al mismo nivel del menú superior */
-        #indicador-pagina { top: calc(56px - 5vh); bottom: auto !important; left: 18%; transform: translateX(0); }
+        #indicador-pagina { position: absolute !important; top: 31px !important; left: 181px !important; bottom: auto !important; transform: translate(-50%, -50%) !important; }
         /* Bajar el título 50% */
         .promo-title { top: calc(384.912px + 18vh) !important; }
     </style>
@@ -597,8 +597,8 @@
             <!-- Indicador de página actual -->
             <div id="indicador-pagina" style="
                 position: absolute;
-                bottom: 508px;
-                left: 15%;
+                bottom: 500px;
+                left: 14%;
                 transform: translateX(-50%);
                 display: flex;
                 gap: 8px;
@@ -905,7 +905,7 @@
               
               configurarEventos();
               configurarNavegacionTeclado();
-              iniciarAutoPlay();
+              // iniciarAutoPlay(); // Desactivado - carrusel manual
               actualizarFondoWrapper();
               
               // Iniciar recarga automática
@@ -1338,6 +1338,9 @@
 
         // Función para iniciar auto-play
         function iniciarAutoPlay() {
+            // Desactivado - el carrusel principal no se mueve automáticamente
+            return;
+            
             if (hayFoco) return;
             
             detenerAutoPlay();
@@ -1365,6 +1368,9 @@
 
         // Función para reiniciar timer de inactividad
         function reiniciarTimerInactividad() {
+            // Desactivado - no hay auto-play por inactividad
+            return;
+            
             if (inactividadTimer) {
                 clearTimeout(inactividadTimer);
             }
@@ -1403,6 +1409,35 @@
         }
 
         // El sistema de navegación tipo Google TV se maneja en configurarNavegacionTeclado()
+
+        // Script para detectar clics y mostrar coordenadas
+        document.addEventListener('click', function(e) {
+            const x = e.clientX;
+            const y = e.clientY;
+            const pageX = e.pageX;
+            const pageY = e.pageY;
+            const screenX = e.screenX;
+            const screenY = e.screenY;
+            
+            // Calcular el centro del elemento clickeado
+            const rect = e.target.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            console.log('🖱️ CLIC DETECTADO:');
+            console.log(`📍 Coordenadas del clic:`);
+            console.log(`   - Client (viewport): x=${x}, y=${y}`);
+            console.log(`   - Page (documento): x=${pageX}, y=${pageY}`);
+            console.log(`   - Screen (pantalla): x=${screenX}, y=${screenY}`);
+            console.log(`📍 Centro del elemento clickeado:`);
+            console.log(`   - Centro X: ${centerX.toFixed(0)}px`);
+            console.log(`   - Centro Y: ${centerY.toFixed(0)}px`);
+            console.log(`   - Elemento clickeado:`, e.target);
+            console.log(`   - Clase del elemento:`, e.target.className);
+            console.log(`   - ID del elemento:`, e.target.id);
+            console.log(`   - Dimensiones: ${rect.width.toFixed(0)}x${rect.height.toFixed(0)}px`);
+            console.log('---');
+        });
     </script>
     <!-- Lógica del promo-carousel: usa API Unidad Editorial del día siguiente y crea tarjetas tipo promo-match-card -->
     <script>
