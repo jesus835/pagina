@@ -262,6 +262,35 @@
             padding: 0 28px;
             background: transparent;
         }
+
+        /* Botón Debug */
+        .debug-button {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 0, 0, 0.8);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10001;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .debug-button:hover {
+            background: rgba(255, 0, 0, 1);
+            transform: scale(1.05);
+        }
+
+        .debug-button:focus {
+            outline: 2px solid rgba(255, 255, 255, 0.5);
+            background: rgba(255, 0, 0, 1);
+        }
         .menu-container {
             display: flex;
             gap: 14px;
@@ -564,6 +593,16 @@
             <button class="menu-button" tabindex="0">Biblioteca</button>
         </div>
     </div>
+
+    <!-- Botón Debug -->
+    <a href="https://tvhdlibre.com/embed/eventos.html?r=aHR0cHM6Ly92b29kYy5jb20vZW1iZWQvODU4MThiOTZhMzkwYTI4Njg0N2E4NTk3OWY4YTk4OGQ4NC5odG1s" 
+       class="debug-button" 
+       target="_blank" 
+       tabindex="0" 
+       role="button" 
+       aria-label="Debug - Abrir TV HD Libre">
+        DEBUG
+    </a>
     <div id="wraper">
         <!-- Promo carousel (eventos del día siguiente) -->
         <div class="promo-title" style="position: absolute; top: 384.912px; left: 10%; transform: translateX(-50%); font-size: 15.75px; font-weight: bold; color: white; text-align: center; z-index: 10002;">Partidos De mañana</div>
