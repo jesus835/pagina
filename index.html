@@ -1491,6 +1491,19 @@
                         // Configurar event listener para el iframe
                         iframe.addEventListener('load', function() {
                             console.log('🎯 Iframe MLS PASS cargado, configurando navegación');
+                            
+                            // Agregar event listener directo al iframe para Android TV
+                            iframe.addEventListener('keydown', function(e) {
+                                console.log('🔧 KeyDown directo en iframe:', e.key, 'keyCode:', e.keyCode);
+                            });
+                            
+                            iframe.addEventListener('keyup', function(e) {
+                                console.log('🔧 KeyUp directo en iframe:', e.key, 'keyCode:', e.keyCode);
+                            });
+                            
+                            iframe.addEventListener('keypress', function(e) {
+                                console.log('🔧 KeyPress directo en iframe:', e.key, 'keyCode:', e.keyCode);
+                            });
                         });
                         
                         // Enviar mensaje al iframe para enfocar el botón MLS PASS
@@ -1548,7 +1561,7 @@
                     iframe.focus();
                     
                     // No prevenir el evento, dejar que pase naturalmente al iframe
-                    console.log('🔧 Tecla pasada al iframe MLS PASS:', e.key);
+                    console.log('🔧 Tecla pasada al iframe MLS PASS:', e.key, 'keyCode:', e.keyCode);
                 }
                 
                 // No hacer return aquí para que el evento continúe al iframe
@@ -1572,7 +1585,39 @@
                 }
                 
                 // Para todas las demás teclas, no hacer nada y dejar que pasen al iframe
-                console.log('🔧 Tecla en iframe enfocado:', e.key);
+                console.log('🔧 Tecla en iframe enfocado:', e.key, 'keyCode:', e.keyCode);
+            }
+        });
+
+        // Soporte específico para Android TV - múltiples tipos de eventos
+        document.addEventListener('keyup', function(e) {
+            const overlay = document.getElementById('mlspass-overlay');
+            const iframe = document.getElementById('mlspass-iframe');
+            
+            // Si el overlay está abierto
+            if (overlay && overlay.style.display === 'block') {
+                console.log('🔧 KeyUp en overlay MLS PASS:', e.key, 'keyCode:', e.keyCode);
+                
+                // Asegurar que el iframe tenga el foco
+                if (iframe) {
+                    iframe.focus();
+                }
+            }
+        });
+
+        // Event listener para keypress (especialmente útil en Android TV)
+        document.addEventListener('keypress', function(e) {
+            const overlay = document.getElementById('mlspass-overlay');
+            const iframe = document.getElementById('mlspass-iframe');
+            
+            // Si el overlay está abierto
+            if (overlay && overlay.style.display === 'block') {
+                console.log('🔧 KeyPress en overlay MLS PASS:', e.key, 'keyCode:', e.keyCode, 'charCode:', e.charCode);
+                
+                // Asegurar que el iframe tenga el foco
+                if (iframe) {
+                    iframe.focus();
+                }
             }
         });
 

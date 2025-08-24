@@ -2506,6 +2506,29 @@
             }
         });
 
+        // Soporte específico para Android TV - mejorar navegación por teclado
+        document.addEventListener('keydown', function(e) {
+            console.log('🔧 KeyDown en applemejorado:', e.key, 'keyCode:', e.keyCode);
+            
+            // Detectar si es Android TV
+            const isAndroidTV = /Android.*TV|Android.*Fire|Android.*Stick/i.test(navigator.userAgent);
+            
+            if (isAndroidTV) {
+                console.log('📱 Android TV detectado, mejorando navegación');
+                
+                // Asegurar que los eventos de teclado funcionen correctamente
+                const focusedElement = document.activeElement;
+                if (focusedElement && (focusedElement.tagName === 'BUTTON' || focusedElement.tagName === 'A')) {
+                    console.log('🎯 Elemento enfocado:', focusedElement.textContent);
+                }
+            }
+        });
+
+        // Event listener adicional para keypress (especialmente útil en Android TV)
+        document.addEventListener('keypress', function(e) {
+            console.log('🔧 KeyPress en applemejorado:', e.key, 'keyCode:', e.keyCode, 'charCode:', e.charCode);
+        });
+
         // Función para configurar navegación de tarjetas de partido
         function configurarNavegacionTarjetasPartido() {
             const matchCards = document.querySelectorAll('.match-card');
