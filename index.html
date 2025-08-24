@@ -1487,6 +1487,19 @@
                     if (iframe) {
                         iframe.focus();
                         console.log('🎯 Iframe MLS PASS enfocado para navegación');
+                        
+                        // Enviar mensaje al iframe para enfocar el botón MLS PASS
+                        setTimeout(() => {
+                            try {
+                                iframe.contentWindow.postMessage({
+                                    action: 'focusMLSPass',
+                                    target: 'MLS PASS'
+                                }, '*');
+                                console.log('📨 Mensaje enviado al iframe para enfocar MLS PASS');
+                            } catch (error) {
+                                console.log('⚠️ No se pudo enviar mensaje al iframe:', error.message);
+                            }
+                        }, 200); // Delay para asegurar que el iframe esté cargado
                     }
                 }, 10);
                 
