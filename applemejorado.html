@@ -807,7 +807,7 @@
             <button class="menu-button" tabindex="0">Buscar</button>
             <button class="menu-button" tabindex="0">Para ti</button>
             <button class="menu-button" tabindex="0">En vivo</button>
-            <button class="menu-button" tabindex="0">Películas</button>
+            <button class="menu-button" tabindex="0">MLS PASS</button>
             <button class="menu-button" tabindex="0">Series</button>
             <button class="menu-button" tabindex="0">Aplicaciones</button>
             <button class="menu-button" tabindex="0">Biblioteca</button>
@@ -815,41 +815,7 @@
     </div>
 
 
-    <!-- Overlay de Apple TV (inicialmente oculto) -->
-    <div id="appletv-overlay" style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: #0a0a2e;
-        z-index: 20000;
-        display: none;
-        overflow: hidden;
-    ">
-        <iframe id="appletv-iframe" src="appletv.html" style="
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: transparent;
-        "></iframe>
-        
-        <!-- Botón de cerrar -->
-        <button id="cerrar-appletv" style="
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            z-index: 20001;
-            transition: all 0.3s ease;
-        " onclick="cerrarAppleTV()">✕ Cerrar</button>
-    </div>
+
 
     <div id="wraper">
 
@@ -2488,53 +2454,12 @@
 
     <!-- Script para manejar el overlay de Apple TV -->
     <script>
-        // Funciones para el overlay de Apple TV
-        function abrirAppleTV() {
-            const overlay = document.getElementById('appletv-overlay');
-            const iframe = document.getElementById('appletv-iframe');
-            
-            // Mostrar overlay
-            overlay.style.display = 'block';
-            
-            // Recargar iframe para asegurar contenido fresco
-            iframe.src = iframe.src;
-            
-            console.log('🎬 Apple TV overlay abierto');
-        }
 
-        function cerrarAppleTV() {
-            const overlay = document.getElementById('appletv-overlay');
-            overlay.style.display = 'none';
-            console.log('🎬 Apple TV overlay cerrado');
-        }
 
-        // Configurar botón "Películas" para abrir Apple TV
-        function configurarBotonPeliculas() {
-            const botonesMenu = document.querySelectorAll('.menu-button');
-            
-            botonesMenu.forEach(boton => {
-                if (boton.textContent === 'Películas') {
-                    boton.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        abrirAppleTV();
-                    });
-                    
-                    // También agregar evento de teclado
-                    boton.addEventListener('keydown', function(e) {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            abrirAppleTV();
-                        }
-                    });
-                    
-                    console.log('🎬 Botón "Películas" configurado para abrir Apple TV');
-                }
-            });
-        }
+
 
         // Inicializar cuando el DOM esté listo
         document.addEventListener('DOMContentLoaded', function() {
-            configurarBotonPeliculas();
             configurarNavegacionTarjetasPartido();
         });
 
