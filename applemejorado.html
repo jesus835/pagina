@@ -1438,8 +1438,12 @@
             }
             
             try {
-                // Usar navegación directa en lugar de window.open para evitar problemas de sandbox en móviles
-                window.location.href = url;
+                // Siempre abrir en nueva pestaña/ventana
+                const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
+                if (!newWindow) {
+                    // Si falla (popup bloqueado), mostrar mensaje
+                    alert('Por favor, permite popups para este sitio o usa Ctrl+Click para abrir en nueva pestaña');
+                }
             } catch (error) {
                 console.error('Error abriendo stream:', error);
                 alert('Error al abrir el stream');
@@ -1614,9 +1618,9 @@
                          ${embeds.map((embed, index) => {
                              const embedUrl = embed?.attributes?.embed_url || '';
                              const embedName = embed?.attributes?.embed_name || 'Ver';
-                             return `<a href="${embedUrl}" tabindex="0" role="button">${embedName}</a>`;
+                             return `<a href="javascript:void(0)" onclick="openStream('${embedUrl}')" tabindex="0" role="button">${embedName}</a>`;
                          }).join('')}
-                         ${embeds.length === 0 ? '<a href="#" tabindex="0" role="button">No hay streams disponibles</a>' : ''}
+                         ${embeds.length === 0 ? '<a href="javascript:void(0)" onclick="alert(\'No hay streams disponibles para este evento\')" tabindex="0" role="button">No hay streams disponibles</a>' : ''}
                      </div>
                 </div>
             `;
