@@ -116,8 +116,7 @@
         "https://i.imgur.com/3tkeh6s.png"
       ],
       "descripcion": "Imágenes para eventos de Primera B Nacional - Selección aleatoria"
-    }
-    ,
+    },
     "uefa europa league": {
       "urls": [
         "https://i.imgur.com/voTgJ7k.png",
@@ -399,6 +398,14 @@
       ],
       "descripcion": "Imágenes especiales para partidos del Charlotte FC"
     },
+    "charlotte": {
+      "urls": [
+        "https://i.imgur.com/2OLQIK6.png",
+        "https://i.imgur.com/JekEWcu.png",
+        "https://i.imgur.com/FSP3mNY.png"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Charlotte FC"
+    },
     "chicago fire": {
       "urls": [
         "https://i.imgur.com/2OLQIK6.png",
@@ -472,6 +479,14 @@
       "descripcion": "Imágenes especiales para partidos del New York City FC"
     },
     "new york red bulls": {
+      "urls": [
+        "https://i.imgur.com/2OLQIK6.png",
+        "https://i.imgur.com/JekEWcu.png",
+        "https://i.imgur.com/FSP3mNY.png"
+      ],
+      "descripcion": "Imágenes especiales para partidos del New York Red Bulls"
+    },
+    "new york rb": {
       "urls": [
         "https://i.imgur.com/2OLQIK6.png",
         "https://i.imgur.com/JekEWcu.png",
