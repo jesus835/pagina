@@ -606,7 +606,7 @@
             height: 100%;
             border: none;
             background: transparent;
-        "></iframe>
+        " tabindex="0"></iframe>
         
         <!-- Botón de cerrar -->
         <button id="cerrar-mlspass" style="
@@ -1473,6 +1473,8 @@
         // Función para abrir MLS PASS overlay
         function abrirMLSPass() {
             const overlay = document.getElementById('mlspass-overlay');
+            const iframe = document.getElementById('mlspass-iframe');
+            
             if (overlay) {
                 // Mostrar overlay
                 overlay.style.display = 'block';
@@ -1480,6 +1482,12 @@
                 // Pequeño delay para que la transición funcione
                 setTimeout(() => {
                     overlay.style.opacity = '1';
+                    
+                    // Enfocar el iframe para permitir navegación por teclado
+                    if (iframe) {
+                        iframe.focus();
+                        console.log('🎯 Iframe MLS PASS enfocado para navegación');
+                    }
                 }, 10);
                 
                 console.log('🎬 Botón "MLS PASS" configurado para abrir overlay');
@@ -1502,13 +1510,46 @@
             }
         }
 
-        // Event listener para cerrar overlay con Escape
+        // Event listener para navegación en el overlay MLS PASS
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                const overlay = document.getElementById('mlspass-overlay');
-                if (overlay && overlay.style.display === 'block') {
+            const overlay = document.getElementById('mlspass-overlay');
+            const iframe = document.getElementById('mlspass-iframe');
+            
+            // Si el overlay está abierto
+            if (overlay && overlay.style.display === 'block') {
+                
+                // Escape para cerrar
+                if (e.key === 'Escape') {
+                    e.preventDefault();
                     cerrarMLSPass();
+                    return;
                 }
+                
+                // Permitir que las teclas pasen al iframe para navegación
+                // Solo interceptar teclas específicas que queremos manejar
+                if (e.key === 'Tab' || e.key === 'Enter' || e.key === ' ' || 
+                    e.key === 'ArrowUp' || e.key === 'ArrowDown' || 
+                    e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                    
+                    // Intentar enfocar el iframe para que reciba las teclas
+                    if (iframe) {
+                        iframe.focus();
+                        
+                        // Enviar el evento al iframe si es posible
+                        try {
+                            if (iframe.contentWindow && iframe.contentDocument) {
+                                // El iframe está cargado, permitir que maneje las teclas
+                                return; // No prevenir el evento, dejar que pase al iframe
+                            }
+                        } catch (error) {
+                            // Error de CORS, pero aún así permitir la navegación
+                            console.log('🔧 Navegación en iframe MLS PASS');
+                        }
+                    }
+                }
+                
+                // Para otras teclas, permitir que pasen al iframe
+                return;
             }
         });
 
