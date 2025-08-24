@@ -551,6 +551,26 @@
         #indicador-pagina { position: absolute !important; top: 31px !important; left: 181px !important; bottom: auto !important; transform: translate(-50%, -50%) !important; }
         /* Bajar el título 50% */
         .promo-title { top: calc(384.912px + 18vh) !important; }
+
+        /* Animación para el botón de cerrar */
+        #cerrar-mlspass {
+            transition: all 0.3s ease;
+        }
+
+        #cerrar-mlspass:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.3) !important;
+        }
+
+        /* Animación sutil para el iframe */
+        #mlspass-iframe {
+            transform: scale(0.98);
+            transition: transform 0.3s ease;
+        }
+
+        #mlspass-overlay[style*="opacity: 1"] #mlspass-iframe {
+            transform: scale(1);
+        }
     </style>
 </head>
 <body>
@@ -560,13 +580,50 @@
             <button class="menu-button" tabindex="0">Buscar</button>
             <button class="menu-button" tabindex="0">Para ti</button>
             <button class="menu-button" tabindex="0">En vivo</button>
-            <button class="menu-button" tabindex="0">Películas</button>
+            <button class="menu-button" tabindex="0">MLS PASS</button>
             <button class="menu-button" tabindex="0">Series</button>
             <button class="menu-button" tabindex="0">Aplicaciones</button>
             <button class="menu-button" tabindex="0">Biblioteca</button>
         </div>
     </div>
 
+    <!-- Overlay de MLS PASS (inicialmente oculto) -->
+    <div id="mlspass-overlay" style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: #0a0a2e;
+        z-index: 20000;
+        display: none;
+        overflow: hidden;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    ">
+        <iframe id="mlspass-iframe" src="applemejorado.html" style="
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+        "></iframe>
+        
+        <!-- Botón de cerrar -->
+        <button id="cerrar-mlspass" style="
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 20001;
+            transition: all 0.3s ease;
+        " onclick="cerrarMLSPass()">✕ Cerrar</button>
+    </div>
 
     <div id="wraper">
         <!-- Promo carousel (eventos del día siguiente) -->
@@ -1393,6 +1450,11 @@
                 btn.addEventListener('click', function() {
                     menuButtons.forEach(b => b.classList.remove('active'));
                     this.classList.add('active');
+                    
+                    // Configurar botón "MLS PASS" para abrir overlay
+                    if (this.textContent === 'MLS PASS') {
+                        abrirMLSPass();
+                    }
                 });
                 btn.addEventListener('focus', () => detenerAutoPlay());
                 btn.addEventListener('blur', () => {
@@ -1407,6 +1469,48 @@
                 });
             });
         }
+
+        // Función para abrir MLS PASS overlay
+        function abrirMLSPass() {
+            const overlay = document.getElementById('mlspass-overlay');
+            if (overlay) {
+                // Mostrar overlay
+                overlay.style.display = 'block';
+                
+                // Pequeño delay para que la transición funcione
+                setTimeout(() => {
+                    overlay.style.opacity = '1';
+                }, 10);
+                
+                console.log('🎬 Botón "MLS PASS" configurado para abrir overlay');
+            }
+        }
+
+        // Función para cerrar MLS PASS overlay
+        function cerrarMLSPass() {
+            const overlay = document.getElementById('mlspass-overlay');
+            if (overlay) {
+                // Animar salida
+                overlay.style.opacity = '0';
+                
+                // Ocultar después de la animación
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                }, 300); // Duración de la transición
+                
+                console.log('🎬 Overlay MLS PASS cerrado');
+            }
+        }
+
+        // Event listener para cerrar overlay con Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const overlay = document.getElementById('mlspass-overlay');
+                if (overlay && overlay.style.display === 'block') {
+                    cerrarMLSPass();
+                }
+            }
+        });
 
         // El sistema de navegación tipo Google TV se maneja en configurarNavegacionTeclado()
 
