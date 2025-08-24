@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Roboto', Arial, sans-serif;
-            background: #0a0a2e;
+            background: #000000;
             color: white;
             overflow: hidden;
         }
@@ -33,7 +33,7 @@
             min-height: 720px;
             z-index: 9999;
             overflow: hidden;
-            background: #0a0a2e;
+            background: #000000;
             background-size: 100% 100%;
             background-position: center;
             background-repeat: no-repeat;
@@ -41,6 +41,49 @@
             box-shadow: none;
             border: none;
             opacity: 1;
+        }
+
+        /* Gradiente negro difuminado y suavizado */
+        #wraper::before {
+            content: '';
+            position: absolute;
+            top: 442px;
+            left: 0px;
+            width: 1280px;
+            height: 278px;
+            background: 
+                radial-gradient(ellipse 800px 200px at center bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 40%, transparent 70%),
+                linear-gradient(to top, 
+                    rgba(0,0,0,0.6) 0%, 
+                    rgba(0,0,0,0.4) 30%, 
+                    rgba(0,0,0,0.2) 60%, 
+                    rgba(0,0,0,0.05) 85%, 
+                    transparent 100%);
+            z-index: -1;
+            pointer-events: none;
+            filter: blur(1px);
+        }
+
+        /* Gradiente vertical en posición específica */
+        #wraper::after {
+            content: '';
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 1186px;
+            height: 720px;
+            background: 
+                radial-gradient(ellipse 1300px 800px at left center, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 30%, rgba(0,0,0,0.3) 60%, transparent 80%),
+                linear-gradient(to right, 
+                    rgba(0,0,0,0.8) 0%, 
+                    rgba(0,0,0,0.6) 20%, 
+                    rgba(0,0,0,0.4) 40%, 
+                    rgba(0,0,0,0.2) 60%, 
+                    rgba(0,0,0,0.05) 80%, 
+                    transparent 100%);
+            z-index: -1;
+            pointer-events: none;
+            filter: blur(1px);
         }
 
         #google-tv-carrusel {
@@ -862,191 +905,6 @@
             
             <div class="matches-carousel" id="matches-carousel">
                 <!-- Los partidos se cargarán dinámicamente aquí -->
-                <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                    <div class="match-card focused" tabindex="0" role="button" aria-label="Tarjeta de partido 1" style="background: rgb(135, 206, 235); position: relative; border: 1px solid rgba(255, 255, 255, 0.1);">
-                        <div class="match-date">23/08/2025</div>
-                        <div class="teams-container">
-                            <div class="team">
-                                <div class="team-logo">
-                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/9720.png" alt="CF Montréal" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
-                                </div>
-                            </div>
-                            <div class="team">
-                                <div class="team-logo">
-                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/20906.png" alt="Austin FC" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="apple-tv-badge">Apple TV+</div>
-                        <div style="position: absolute; top: 0px; right: 0px; width: 100%; height: 100%; background: rgb(50, 205, 50); clip-path: polygon(60% 0px, 100% 0px, 100% 100%, 40% 100%); z-index: 1;"></div>
-                    </div>
-                    <div class="match-info">
-                        <div class="match-teams">CF Montréal vs. Austin FC</div>
-                        <div class="match-league">MLS</div>
-                    </div>
-                </div>
-                <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                    <div class="match-card" tabindex="0" role="button" aria-label="Tarjeta de partido 2" style="background: rgb(255, 209, 0); position: relative; border: 1px solid rgba(255, 255, 255, 0.1);">
-                        <div class="match-date">23/08/2025</div>
-                        <div class="teams-container">
-                            <div class="team">
-                                <div class="team-logo">
-                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/183.png" alt="Columbus Crew" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
-                                </div>
-                            </div>
-                            <div class="team">
-                                <div class="team-logo">
-                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/189.png" alt="New England Revolution" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="apple-tv-badge">Apple TV+</div>
-                        <div style="position: absolute; top: 0px; right: 0px; width: 100%; height: 100%; background: rgb(0, 102, 204); clip-path: polygon(60% 0px, 100% 0px, 100% 100%, 40% 100%); z-index: 1;"></div>
-                    </div>
-                    <div class="match-info">
-                        <div class="match-teams">Columbus Crew vs. New England Revolution</div>
-                        <div class="match-league">MLS</div>
-                    </div>
-                </div>
-                <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                    <div class="match-card" tabindex="0" role="button" aria-label="Tarjeta de partido 3" style="background: rgb(200, 16, 46); position: relative; border: 1px solid rgba(255, 255, 255, 0.1);">
-                        <div class="match-date">23/08/2025</div>
-                        <div class="teams-container">
-                            <div class="team">
-                                <div class="team-logo">
-                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/193.png" alt="D.C. United" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
-                                </div>
-                            </div>
-                            <div class="team">
-                                <div class="team-logo">
-                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/20232.png" alt="Inter Miami CF" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="apple-tv-badge">Apple TV+</div>
-                        <div style="position: absolute; top: 0px; right: 0px; width: 100%; height: 100%; background: rgb(255, 105, 180); clip-path: polygon(60% 0px, 100% 0px, 100% 100%, 40% 100%); z-index: 1;"></div>
-                    </div>
-                    <div class="match-info">
-                        <div class="match-teams">D.C. United vs. Inter Miami CF</div>
-                        <div class="match-league">MLS</div>
-                    </div>
-                </div>
-                <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                    <div class="match-card" tabindex="0" role="button" aria-label="Tarjeta de partido 4" style="background: rgb(255, 107, 53); position: relative; border: 1px solid rgba(255, 255, 255, 0.1);">
-                        <div class="match-date">23/08/2025</div>
-                        <div class="teams-container">
-                            <div class="team">
-                                <div class="team-logo">
-                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/18267.png" alt="FC Cincinnati" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
-                                </div>
-                            </div>
-                            <div class="team">
-                                <div class="team-logo">
-                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/17606.png" alt="New York City FC" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="apple-tv-badge">Apple TV+</div>
-                        <div style="position: absolute; top: 0px; right: 0px; width: 100%; height: 100%; background: rgb(135, 206, 235); clip-path: polygon(60% 0px, 100% 0px, 100% 100%, 40% 100%); z-index: 1;"></div>
-                    </div>
-                    <div class="match-info">
-                        <div class="match-teams">FC Cincinnati vs. New York City FC</div>
-                        <div class="match-league">MLS</div>
-                    </div>
-                </div>
-                <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                    <div class="match-card" tabindex="0" role="button" aria-label="Tarjeta de partido 5" style="background: rgb(30, 58, 138); position: relative; border: 1px solid rgba(255, 255, 255, 0.1);">
-                        <div class="match-date">23/08/2025</div>
-                        <div class="teams-container">
-                            <div class="team">
-                                <div class="team-logo">
-                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/10739.png" alt="Philadelphia Union" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
-                                </div>
-                            </div>
-                            <div class="team">
-                                <div class="team-logo">
-                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/182.png" alt="Chicago Fire FC" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="apple-tv-badge">Apple TV+</div>
-                        <div style="position: absolute; top: 0px; right: 0px; width: 100%; height: 100%; background: rgb(200, 16, 46); clip-path: polygon(60% 0px, 100% 0px, 100% 100%, 40% 100%); z-index: 1;"></div>
-                    </div>
-                    <div class="match-info">
-                        <div class="match-teams">Philadelphia Union vs. Chicago Fire FC</div>
-                        <div class="match-league">MLS</div>
-                    </div>
-                </div>
-                <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                    <div class="match-card" tabindex="0" role="button" aria-label="Tarjeta de partido 6" style="background: rgb(200, 16, 46); position: relative; border: 1px solid rgba(255, 255, 255, 0.1);">
-                        <div class="match-date">23/08/2025</div>
-                        <div class="teams-container">
-                            <div class="team">
-                                <div class="team-logo">
-                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/185.png" alt="FC Dallas" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
-                                </div>
-                            </div>
-                            <div class="team">
-                                <div class="team-logo">
-                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/18966.png" alt="LAFC" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="apple-tv-badge">Apple TV+</div>
-                        <div style="position: absolute; top: 0px; right: 0px; width: 100%; height: 100%; background: rgb(0, 161, 228); clip-path: polygon(60% 0px, 100% 0px, 100% 100%, 40% 100%); z-index: 1;"></div>
-                    </div>
-                    <div class="match-info">
-                        <div class="match-teams">FC Dallas vs. LAFC</div>
-                        <div class="match-league">MLS</div>
-                    </div>
-                </div>
-                <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                    <div class="match-card" tabindex="0" role="button" aria-label="Tarjeta de partido 7" style="background: rgb(255, 107, 53); position: relative; border: 1px solid rgba(255, 255, 255, 0.1);">
-                        <div class="match-date">23/08/2025</div>
-                        <div class="teams-container">
-                            <div class="team">
-                                <div class="team-logo">
-                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/6077.png" alt="Houston Dynamo FC" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
-                                </div>
-                            </div>
-                            <div class="team">
-                                <div class="team-logo">
-                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/191.png" alt="San Jose Earthquakes" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="apple-tv-badge">Apple TV+</div>
-                        <div style="position: absolute; top: 0px; right: 0px; width: 100%; height: 100%; background: rgb(0, 102, 204); clip-path: polygon(60% 0px, 100% 0px, 100% 100%, 40% 100%); z-index: 1;"></div>
-                    </div>
-                    <div class="match-info">
-                        <div class="match-teams">Houston Dynamo FC vs. San Jose Earthquakes</div>
-                        <div class="match-league">MLS</div>
-                    </div>
-                </div>
-                <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                    <div class="match-card" tabindex="0" role="button" aria-label="Tarjeta de partido 8" style="background: rgb(255, 209, 0); position: relative; border: 1px solid rgba(255, 255, 255, 0.1);">
-                        <div class="match-date">23/08/2025</div>
-                        <div class="teams-container">
-                            <div class="team">
-                                <div class="team-logo">
-                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/18986.png" alt="Nashville SC" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
-                                </div>
-                            </div>
-                            <div class="team">
-                                <div class="team-logo">
-                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/12011.png" alt="Orlando City SC" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="apple-tv-badge">Apple TV+</div>
-                        <div style="position: absolute; top: 0px; right: 0px; width: 100%; height: 100%; background: rgb(128, 0, 128); clip-path: polygon(60% 0px, 100% 0px, 100% 100%, 40% 100%); z-index: 1;"></div>
-                    </div>
-                    <div class="match-info">
-                        <div class="match-teams">Nashville SC vs. Orlando City SC</div>
-                        <div class="match-league">MLS</div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -1318,6 +1176,7 @@
                      eventosData.push({
                          attributes: {
                              diary_hour: formatearHoraStreamed(match.date),
+                             diary_date: match.date, // Guardar la fecha completa
                              diary_description: `${match.league || match.competition || 'Fútbol'} - ${match.title || 'Partido'}`,
                              embeds: {
                                  data: embeds
@@ -1450,6 +1309,125 @@
             }
         }
 
+        // Función para crear tarjeta desde datos de ESPN (fallback)
+        async function crearTarjetaDesdeESPN(partido) {
+            const tarjeta = document.createElement('div');
+            tarjeta.className = 'google-tv-card';
+
+            const homeTeam = partido.competitions[0]?.competitors?.find(c => c.homeAway === 'home');
+            const awayTeam = partido.competitions[0]?.competitors?.find(c => c.homeAway === 'away');
+            
+            if (!homeTeam || !awayTeam) {
+                console.error('❌ Datos de equipo incompletos en partido ESPN');
+                return tarjeta;
+            }
+
+            const homeTeamName = homeTeam.team.name;
+            const awayTeamName = awayTeam.team.name;
+            const homeTeamLogo = homeTeam.team.logo;
+            const awayTeamLogo = awayTeam.team.logo;
+
+            // Formatear fecha y hora
+            const partidoDate = new Date(partido.date);
+            const partidoGuatemala = new Date(partidoDate.toLocaleString("en-US", {timeZone: "America/Guatemala"}));
+            const matchDate = partidoGuatemala.toLocaleDateString('es-ES');
+            const matchTime = partidoGuatemala.toLocaleTimeString('es-ES', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                timeZone: 'America/Guatemala'
+            });
+
+            // Determinar estado del partido
+            let estadoPartido = 'Próximamente';
+            let estadoColor = '#000000';
+            
+            if (partido.status && partido.status.type) {
+                if (partido.status.type.state === 'post') {
+                    const homeScore = homeTeam.score || '0';
+                    const awayScore = awayTeam.score || '0';
+                    estadoPartido = `${homeScore}-${awayScore} Finalizado`;
+                    estadoColor = '#666666';
+                } else if (partido.status.type.state === 'in') {
+                    const homeScore = homeTeam.score || '0';
+                    const awayScore = awayTeam.score || '0';
+                    const tiempo = partido.status.displayClock || 'En Vivo';
+                    estadoPartido = `${homeScore}-${awayScore} ${tiempo}`;
+                    estadoColor = '#ff0000';
+                } else if (partido.status.type.state === 'pre') {
+                    estadoPartido = 'Próximamente';
+                    estadoColor = '#000000';
+                }
+            }
+
+            // Obtener colores de equipos
+            const homeTeamColor = getTeamColor(homeTeamName);
+            const awayTeamColor = getTeamColor(awayTeamName);
+
+            // Cargar configuraciones de imágenes
+            const config = await (async () => {
+                try { return await fetch('https://loadplus.netlify.app/configuracion-imagenes.json?_t=' + Date.now(), { cache: 'no-store' }).then(r => r.json()); } catch(_) {}
+                try { return await fetch('./configuracion-imagenes.json?_t=' + Date.now(), { cache: 'no-store' }).then(r => r.json()); } catch(_) {}
+                return null;
+            })();
+
+            // Imagen de fondo
+            const imgFondo = config ? (function obtenerImagenFondoLocal(titulo, conf){
+                console.log('🔍 Buscando imagen para:', titulo);
+                console.log('🔍 Config cargada:', conf ? 'Sí' : 'No');
+                const t = (titulo||'').toLowerCase();
+                console.log('🔍 Título en minúsculas:', t);
+                
+                if (conf?.equipos_especificos) {
+                    console.log('🔍 Equipos específicos disponibles:', Object.keys(conf.equipos_especificos));
+                    for (const [equipo, imagen] of Object.entries(conf.equipos_especificos)) {
+                        console.log('🔍 Verificando equipo:', equipo, 'vs título:', t);
+                        if (t.includes(equipo.toLowerCase())) {
+                            console.log('✅ Coincidencia encontrada para:', equipo);
+                            return imagen;
+                        }
+                    }
+                }
+                console.log('❌ No se encontró coincidencia, usando imagen por defecto');
+                if (conf?.categorias?.futbol) {
+                    return conf.categorias.futbol[Math.floor(Math.random() * conf.categorias.futbol.length)];
+                }
+                return conf?.imagenes_por_defecto?.futbol || 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800';
+            })(`${homeTeamName} vs ${awayTeamName}`, config) : 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800';
+
+            tarjeta.setAttribute('data-imagen-fondo', imgFondo);
+
+            // Logos de canales (vacíos para ESPN)
+            const logosCanales = [];
+
+            const contenidoHTML = `
+                <div class="contenido-texto">
+                    <div class="branding">Apple TV+</div>
+                    <div class="metadata">
+                        <span>${matchTime}</span>
+                        <span>MLS</span>
+                        ${logosCanales.map(logo => `<img src=\"${logo.url}\" alt=\"${logo.alt}\" title=\"${logo.descripcion}\">`).join('')}
+                    </div>
+                    <div class="teams">
+                        <div class="team">
+                            <img src="${homeTeamLogo}" alt="${homeTeamName}" class="team-logo">
+                            <span class="team-name">${homeTeamName}</span>
+                        </div>
+                        <div class="team">
+                            <img src="${awayTeamLogo}" alt="${awayTeamName}" class="team-logo">
+                            <span class="team-name">${awayTeamName}</span>
+                        </div>
+                    </div>
+                    <p>Disfruta de la pasión del fútbol en su máxima expresión. Partidos llenos de emoción, goles espectaculares y momentos inolvidables que te mantendrán al borde del asiento.</p>
+                    <div class="botones-container">
+                        <a href="javascript:void(0)" onclick="alert('Próximamente disponible en Apple TV+')" tabindex="0" role="button">Próximamente</a>
+                    </div>
+                </div>
+            `;
+
+            tarjeta.innerHTML = contenidoHTML;
+            return tarjeta;
+        }
+
         // Función para crear tarjeta desde datos de la API
         async function crearTarjetaDesdeAPI(evento) {
              const tarjeta = document.createElement('div');
@@ -1552,19 +1530,22 @@
 
             // Función para obtener logo del equipo desde datos de ESPN
             function obtenerLogoEquipoESPN(nombreEquipo) {
-                for (const partido of mlsPartidosESPN) {
-                    const homeTeam = partido.competitions[0]?.competitors?.find(c => c.homeAway === 'home');
-                    const awayTeam = partido.competitions[0]?.competitors?.find(c => c.homeAway === 'away');
-                    
-                    if (homeTeam && homeTeam.team.name === nombreEquipo) {
-                        return homeTeam.team.logo;
-                    }
-                    if (awayTeam && awayTeam.team.name === nombreEquipo) {
-                        return awayTeam.team.logo;
+                // Primero intentar buscar en los datos de ESPN si están disponibles
+                if (mlsPartidosESPN && mlsPartidosESPN.length > 0) {
+                    for (const partido of mlsPartidosESPN) {
+                        const homeTeam = partido.competitions[0]?.competitors?.find(c => c.homeAway === 'home');
+                        const awayTeam = partido.competitions[0]?.competitors?.find(c => c.homeAway === 'away');
+                        
+                        if (homeTeam && homeTeam.team.name === nombreEquipo) {
+                            return homeTeam.team.logo;
+                        }
+                        if (awayTeam && awayTeam.team.name === nombreEquipo) {
+                            return awayTeam.team.logo;
+                        }
                     }
                 }
                 
-                // Si no encuentra en ESPN, usar URL directa de ESPN
+                // Si no encuentra en ESPN o no hay datos, usar mapeo directo
                 const logosEquipos = {
                     'CF Montréal': 'https://a.espncdn.com/i/teamlogos/soccer/500/9720.png',
                     'Austin FC': 'https://a.espncdn.com/i/teamlogos/soccer/500/20906.png',
@@ -1572,29 +1553,68 @@
                     'New England Revolution': 'https://a.espncdn.com/i/teamlogos/soccer/500/189.png',
                     'D.C. United': 'https://a.espncdn.com/i/teamlogos/soccer/500/193.png',
                     'Inter Miami': 'https://a.espncdn.com/i/teamlogos/soccer/500/20232.png',
+                    'Inter Miami CF': 'https://a.espncdn.com/i/teamlogos/soccer/500/20232.png',
                     'FC Cincinnati': 'https://a.espncdn.com/i/teamlogos/soccer/500/18267.png',
                     'New York City FC': 'https://a.espncdn.com/i/teamlogos/soccer/500/17606.png',
                     'Philadelphia Union': 'https://a.espncdn.com/i/teamlogos/soccer/500/10739.png',
                     'Chicago Fire': 'https://a.espncdn.com/i/teamlogos/soccer/500/182.png',
+                    'Chicago Fire FC': 'https://a.espncdn.com/i/teamlogos/soccer/500/182.png',
                     'FC Dallas': 'https://a.espncdn.com/i/teamlogos/soccer/500/185.png',
                     'LAFC': 'https://a.espncdn.com/i/teamlogos/soccer/500/18966.png',
+                    'Los Angeles FC': 'https://a.espncdn.com/i/teamlogos/soccer/500/18966.png',
                     'Houston Dynamo': 'https://a.espncdn.com/i/teamlogos/soccer/500/6077.png',
+                    'Houston Dynamo FC': 'https://a.espncdn.com/i/teamlogos/soccer/500/6077.png',
                     'San Jose Earthquakes': 'https://a.espncdn.com/i/teamlogos/soccer/500/191.png',
                     'Nashville SC': 'https://a.espncdn.com/i/teamlogos/soccer/500/18986.png',
                     'Orlando City': 'https://a.espncdn.com/i/teamlogos/soccer/500/12011.png',
+                    'Orlando City SC': 'https://a.espncdn.com/i/teamlogos/soccer/500/12011.png',
                     'Real Salt Lake': 'https://a.espncdn.com/i/teamlogos/soccer/500/4771.png',
                     'Minnesota United': 'https://a.espncdn.com/i/teamlogos/soccer/500/17362.png',
+                    'Minnesota United FC': 'https://a.espncdn.com/i/teamlogos/soccer/500/17362.png',
                     'Vancouver Whitecaps': 'https://a.espncdn.com/i/teamlogos/soccer/500/9727.png',
+                    'Vancouver Whitecaps FC': 'https://a.espncdn.com/i/teamlogos/soccer/500/9727.png',
                     'St. Louis City': 'https://a.espncdn.com/i/teamlogos/soccer/500/21812.png',
+                    'St. Louis City SC': 'https://a.espncdn.com/i/teamlogos/soccer/500/21812.png',
+                    'St. Louis CITY SC': 'https://a.espncdn.com/i/teamlogos/soccer/500/21812.png',
                     'LA Galaxy': 'https://a.espncdn.com/i/teamlogos/soccer/500/187.png',
                     'Colorado Rapids': 'https://a.espncdn.com/i/teamlogos/soccer/500/184.png',
                     'San Diego FC': 'https://a.espncdn.com/i/teamlogos/soccer/500/22529.png',
-                    'Portland Timbers': 'https://a.espncdn.com/i/teamlogos/soccer/500/9723.png'
+                    'Portland Timbers': 'https://a.espncdn.com/i/teamlogos/soccer/500/9723.png',
+                    'Atlanta United FC': 'https://a.espncdn.com/i/teamlogos/soccer/500/18268.png',
+                    'Charlotte FC': 'https://a.espncdn.com/i/teamlogos/soccer/500/20907.png',
+                    'New York Red Bulls': 'https://a.espncdn.com/i/teamlogos/soccer/500/190.png',
+                    'New York RB': 'https://a.espncdn.com/i/teamlogos/soccer/500/190.png',
+                    'Toronto FC': 'https://a.espncdn.com/i/teamlogos/soccer/500/9721.png',
+                    'Seattle Sounders FC': 'https://a.espncdn.com/i/teamlogos/soccer/500/9726.png',
+                    'Seattle Sounders': 'https://a.espncdn.com/i/teamlogos/soccer/500/9726.png',
+                    'Sporting Kansas City': 'https://a.espncdn.com/i/teamlogos/soccer/500/186.png',
+                    'Sporting KC': 'https://a.espncdn.com/i/teamlogos/soccer/500/186.png',
+                    'SKC': 'https://a.espncdn.com/i/teamlogos/soccer/500/186.png'
                 };
                 
-                return logosEquipos[nombreEquipo] || 'https://a.espncdn.com/i/teamlogos/soccer/500/default.png';
+                // Buscar coincidencia exacta primero
+                if (logosEquipos[nombreEquipo]) {
+                    return logosEquipos[nombreEquipo];
+                }
+                
+                // Si no encuentra coincidencia exacta, buscar coincidencia parcial
+                for (const [equipo, logo] of Object.entries(logosEquipos)) {
+                    if (nombreEquipo.includes(equipo) || equipo.includes(nombreEquipo)) {
+                        console.log(`🔍 Coincidencia parcial encontrada: "${nombreEquipo}" → "${equipo}" → ${logo}`);
+                        return logo;
+                    }
+                }
+                
+                // Si no encuentra nada, usar logo por defecto
+                console.log(`❌ No se encontró logo para: "${nombreEquipo}", usando logo por defecto`);
+                return 'https://a.espncdn.com/i/teamlogos/soccer/500/default.png';
             }
 
+
+
+            // Debug: mostrar nombres de equipos para verificar logos
+            console.log(`🔍 Debug logos - Equipo1: "${equipo1}", Equipo2: "${equipo2}"`);
+            
             const contenidoHTML = `
                 <div class="contenido-texto">
                     <div class="branding">Google TV</div>
@@ -1620,7 +1640,7 @@
                              const embedName = embed?.attributes?.embed_name || 'Ver';
                              return `<a href="javascript:void(0)" onclick="openStream('${embedUrl}')" tabindex="0" role="button">${embedName}</a>`;
                          }).join('')}
-                         ${embeds.length === 0 ? '<a href="javascript:void(0)" onclick="alert(\'No hay streams disponibles para este evento\')" tabindex="0" role="button">No hay streams disponibles</a>' : ''}
+                         ${embeds.length === 0 ? '<a href="javascript:void(0)" onclick="alert(\'Próximamente disponible\')" tabindex="0" role="button">Próximamente</a>' : ''}
                      </div>
                 </div>
             `;
@@ -1634,14 +1654,47 @@
              // Cargar datos de la API
              const eventos = await cargarEventosAPI();
              
+
+             
              // Filtrar eventos que ya pasaron su hora (horario de Guatemala UTC-6)
              const ahora = new Date();
              // Obtener hora en zona horaria de Guatemala
              const horaGuatemala = new Date(ahora.toLocaleString("en-US", {timeZone: "America/Guatemala"}));
              const horaActual = horaGuatemala.getHours() * 60 + horaGuatemala.getMinutes(); // Convertir a minutos
              
-                           // Mostrar todos los eventos de MLS disponibles (sin filtro de hora)
-                           const eventosFiltrados = eventos;
+             // Filtrar eventos usando fechas completas (más preciso que solo horas)
+             const eventosFiltrados = eventos.filter(evento => {
+                 const fechaEvento = evento?.attributes?.diary_date;
+                 if (!fechaEvento) return false;
+                 
+                 try {
+                     const fechaEventoObj = new Date(fechaEvento);
+                     const ahora = new Date();
+                     
+                     // Calcular diferencia en milisegundos
+                     const diferenciaMs = ahora.getTime() - fechaEventoObj.getTime();
+                     const diferenciaHoras = diferenciaMs / (1000 * 60 * 60); // Convertir a horas
+                     
+                     // Mantener eventos que no hayan pasado más de 3 horas
+                     const mantenerEvento = diferenciaHoras <= 3;
+                     
+                     if (!mantenerEvento) {
+                         const horasTranscurridas = Math.floor(diferenciaHoras);
+                         const minutosTranscurridos = Math.floor((diferenciaHoras - horasTranscurridas) * 60);
+                         console.log(`🗑️ Eliminando evento: ${evento?.attributes?.diary_description} (fecha: ${fechaEventoObj.toLocaleString()}, transcurrido: ${horasTranscurridas}h ${minutosTranscurridos}m)`);
+                     } else {
+                         console.log(`✅ Manteniendo evento: ${evento?.attributes?.diary_description} (fecha: ${fechaEventoObj.toLocaleString()}, transcurrido: ${diferenciaHoras.toFixed(1)}h)`);
+                     }
+                     
+                     return mantenerEvento;
+                     
+                 } catch (error) {
+                     console.error('❌ Error procesando fecha del evento:', error);
+                     return false;
+                 }
+             });
+             
+             console.log(`📊 Eventos filtrados: ${eventosFiltrados.length} de ${eventos.length} totales (eliminados eventos con más de 3 horas usando fechas completas)`);
               
               // Ordenar cronológicamente por hora (y por descripción como desempate)
               const eventosOrdenados = eventosFiltrados.slice().sort((a, b) => {
@@ -1661,18 +1714,48 @@
             }
             
             if (eventosOrdenados.length === 0) {
-                // Crear tarjeta especial si no hay eventos disponibles
-                const tarjetaEspecial = document.createElement('div');
-                tarjetaEspecial.className = 'google-tv-card tarjeta-especial';
-                tarjetaEspecial.innerHTML = `
-                    <div class="contenido-texto">
-                        <h1>No hay eventos próximos</h1>
-                        <h2>Los eventos de hoy ya han finalizado</h2>
-                        <p>Vuelve mañana para ver nuevos partidos y eventos deportivos</p>
-                    </div>
-                `;
-                tarjetasContainer.appendChild(tarjetaEspecial);
-                return;
+                console.log('🔄 No hay eventos de Streamed disponibles, usando fallback de ESPN...');
+                
+                // Usar datos de ESPN como fallback
+                const partidosESPN = await cargarPartidosMLSESPN();
+                
+                if (partidosESPN && partidosESPN.length > 0) {
+                    console.log(`✅ Usando ${partidosESPN.length} partidos de ESPN como fallback`);
+                    
+                    // Crear tarjetas desde datos de ESPN (todos los partidos de la jornada)
+                    for (let i = 0; i < partidosESPN.length; i++) {
+                        const partido = partidosESPN[i];
+                        const tarjeta = await crearTarjetaDesdeESPN(partido);
+                        tarjeta.style.margin = '0';
+                        tarjeta.style.flexShrink = '0';
+                        tarjeta.style.flexBasis = '100%';
+                        tarjeta.style.width = '100%';
+                        tarjeta.style.minWidth = '100%';
+                        tarjeta.style.height = '100vh';
+                        tarjetasContainer.appendChild(tarjeta);
+                    }
+                    
+                    // Actualizar el fondo del wrapper
+                    setTimeout(() => {
+                        actualizarFondoWrapper();
+                        actualizarVisibilidadBotones();
+                    }, 100);
+                    
+                    return;
+                } else {
+                    // Si tampoco hay datos de ESPN, mostrar tarjeta especial
+                    const tarjetaEspecial = document.createElement('div');
+                    tarjetaEspecial.className = 'google-tv-card tarjeta-especial';
+                    tarjetaEspecial.innerHTML = `
+                        <div class="contenido-texto">
+                            <h1>No hay eventos próximos</h1>
+                            <h2>Los eventos de hoy ya han finalizado</h2>
+                            <p>Vuelve mañana para ver nuevos partidos y eventos deportivos</p>
+                        </div>
+                    `;
+                    tarjetasContainer.appendChild(tarjetaEspecial);
+                    return;
+                }
             }
             
             // Crear tarjetas en segmentos de 2 en 2 para carga rápida
@@ -1744,28 +1827,126 @@
               }, 150);
           }
 
-          // Función para cargar partidos de MLS desde ESPN API
+          // Función para cargar partidos de MLS y Leagues Cup desde ESPN API
         async function cargarPartidosMLSESPN() {
             try {
-                console.log('🔍 Cargando partidos de MLS desde ESPN API...');
+                console.log('🔍 Cargando partidos de MLS y Leagues Cup desde ESPN API...');
                 
-                // URL de la API de ESPN para MLS
-                const response = await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/usa.1/scoreboard');
+                // Cargar partidos de MLS
+                let response = await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/usa.1/scoreboard?limit=50');
                 
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
                 
-                const data = await response.json();
+                let data = await response.json();
+                
+                // Verificar si todos los partidos ya terminaron (incluyendo 23 y 24)
+                if (data.events && Array.isArray(data.events)) {
+                    const partidosTerminados = data.events.filter(event => {
+                        return event.status && event.status.type && event.status.type.state === 'post';
+                    });
+                    
+                    // Verificar si hay partidos pendientes en la jornada actual
+                    const hayPendientes = hayPartidosPendientes(data.events);
+                    console.log(`🔍 Hay partidos pendientes en la jornada actual: ${hayPendientes}`);
+                    
+                    // Si no hay partidos pendientes en la fecha actual, verificar la fecha siguiente (24)
+                    if (!hayPendientes && data.events.length > 0) {
+                        console.log('🔍 No hay partidos pendientes en fecha actual, verificando fecha siguiente...');
+                        
+                        // Obtener la fecha siguiente (24 de agosto)
+                        const fechaActual = new Date(data.day.date);
+                        const fechaSiguiente = new Date(fechaActual);
+                        fechaSiguiente.setDate(fechaActual.getDate() + 1);
+                        const fechaSiguienteStr = fechaSiguiente.toISOString().split('T')[0].replace(/-/g, '');
+                        
+                        console.log(`📅 Consultando fecha siguiente: ${fechaSiguienteStr}`);
+                        const responseSiguiente = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/usa.1/scoreboard?dates=${fechaSiguienteStr}`);
+                        
+                        if (responseSiguiente.ok) {
+                            const dataSiguiente = await responseSiguiente.json();
+                            const hayPendientesSiguiente = hayPartidosPendientes(dataSiguiente.events || []);
+                            
+                            if (hayPendientesSiguiente && dataSiguiente.events && dataSiguiente.events.length > 0) {
+                                console.log('✅ Encontrados partidos pendientes en fecha siguiente, combinando datos...');
+                                // Combinar los datos de ambas fechas y eliminar duplicados
+                                const eventosCombinados = [...data.events, ...dataSiguiente.events];
+                                const eventosUnicos = eventosCombinados.filter((evento, index, self) => 
+                                    index === self.findIndex(e => e.id === evento.id)
+                                );
+                                data.events = eventosUnicos;
+                                console.log(`📊 Total de partidos combinados: ${data.events.length} (${data.events.length - dataSiguiente.events.length} del día actual + ${dataSiguiente.events.length} del día siguiente)`);
+                            } else {
+                                console.log('🏁 No hay partidos pendientes en fecha siguiente, buscando siguiente jornada...');
+                                // Buscar la siguiente jornada disponible
+                                const siguienteFecha = obtenerSiguienteFechaDisponible(data.leagues[0].calendar);
+                                
+                                if (siguienteFecha) {
+                                    console.log(`📅 Consultando siguiente jornada: ${siguienteFecha}`);
+                                    response = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/usa.1/scoreboard?dates=${siguienteFecha}`);
+                                    
+                                    if (response.ok) {
+                                        data = await response.json();
+                                        console.log(`✅ ${data.events?.length || 0} partidos encontrados para la siguiente jornada`);
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        console.log('⏳ Hay partidos pendientes, manteniendo jornada actual');
+                    }
+                }
                 
                 if (data.events && Array.isArray(data.events)) {
                     console.log(`✅ ${data.events.length} partidos de MLS cargados desde ESPN`);
                     
+                    // Verificar que tenemos todos los partidos esperados
+                    const partidosPorFecha = {};
+                    data.events.forEach(event => {
+                        const eventDate = new Date(event.date);
+                        const fecha = eventDate.toISOString().split('T')[0];
+                        if (!partidosPorFecha[fecha]) {
+                            partidosPorFecha[fecha] = [];
+                        }
+                        partidosPorFecha[fecha].push(event);
+                    });
+                    
+                    console.log('📅 Partidos por fecha:', Object.keys(partidosPorFecha).map(fecha => 
+                        `${fecha}: ${partidosPorFecha[fecha].length} partidos`
+                    ).join(', '));
+                    
+                                                // Cargar partidos de Leagues Cup
+                            console.log('🔍 Cargando partidos de Leagues Cup...');
+                            let responseLeaguesCup = await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/concacaf.leagues.cup/scoreboard?limit=50');
+                    
+                    let dataLeaguesCup = { events: [] };
+                    if (responseLeaguesCup.ok) {
+                        dataLeaguesCup = await responseLeaguesCup.json();
+                        console.log(`✅ ${dataLeaguesCup.events?.length || 0} partidos de Leagues Cup cargados`);
+                    } else {
+                        console.log('⚠️ No se pudieron cargar partidos de Leagues Cup');
+                    }
+                    
+                    // Combinar partidos de MLS y Leagues Cup
+                    const partidosMLS = (data.events || []).map(event => ({ ...event, isLeaguesCup: false }));
+                    const partidosLeaguesCup = (dataLeaguesCup.events || []).map(event => ({ ...event, isLeaguesCup: true }));
+                    const todosLosPartidos = [...partidosMLS, ...partidosLeaguesCup];
+                    
+                    console.log('🔍 Verificando partidos de Leagues Cup:');
+                    todosLosPartidos.forEach((partido, index) => {
+                        if (partido.isLeaguesCup) {
+                            console.log(`✅ Partido ${index + 1} es Leagues Cup: ${partido.name}`);
+                        }
+                    });
+                    
+                    console.log(`✅ Total: ${todosLosPartidos.length} partidos (MLS: ${data.events?.length || 0}, Leagues Cup: ${dataLeaguesCup.events?.length || 0})`);
+                    
                     // Guardar los datos de ESPN globalmente
-                    mlsPartidosESPN = data.events;
+                    mlsPartidosESPN = todosLosPartidos;
                     
                     // Actualizar la sección "Siguiente Jornada"
-                    actualizarSeccionSiguienteJornada(data.events);
+                    actualizarSeccionSiguienteJornada(todosLosPartidos);
                     
                     return data.events;
                 } else {
@@ -1776,6 +1957,51 @@
                 console.error('❌ Error cargando partidos MLS desde ESPN:', error);
                 return [];
             }
+        }
+
+
+
+
+        
+        // Función para obtener la siguiente fecha disponible
+        function obtenerSiguienteFechaDisponible(calendario) {
+            if (!calendario || !Array.isArray(calendario)) return null;
+            
+            const ahora = new Date();
+            const fechaActual = ahora.toISOString().split('T')[0].replace(/-/g, '');
+            
+            // Buscar la siguiente fecha en el calendario
+            for (const fecha of calendario) {
+                const fechaCalendario = fecha.split('T')[0].replace(/-/g, '');
+                if (fechaCalendario > fechaActual) {
+                    return fechaCalendario;
+                }
+            }
+            
+            return null;
+        }
+        
+        // Función para detectar qué días pertenecen a la jornada actual
+        function obtenerDiasJornadaActual(partidos) {
+            if (!partidos || !Array.isArray(partidos)) return [];
+            
+            const dias = new Set();
+            partidos.forEach(partido => {
+                const eventDate = new Date(partido.date);
+                const eventDay = eventDate.getUTCDate();
+                dias.add(eventDay);
+            });
+            
+            return Array.from(dias).sort((a, b) => a - b);
+        }
+        
+        // Función para verificar si hay partidos pendientes en la jornada actual
+        function hayPartidosPendientes(partidos) {
+            if (!partidos || !Array.isArray(partidos)) return false;
+            
+            return partidos.some(partido => {
+                return !partido.status || !partido.status.type || partido.status.type.state !== 'post';
+            });
         }
 
         // Mapeo de colores para equipos MLS organizados por conferencias
@@ -1795,7 +2021,7 @@
             'New York Red Bulls': '#c8102e', // Rojo
             'Orlando City SC': '#800080', // Púrpura
             'Philadelphia Union': '#1e3a8a', // Azul marino
-            'Toronto FC': '#c8102e', // Rojo
+            'Toronto FC': '#808080', // Gris
             
             // CONFERENCIA OESTE
             'Austin FC': '#32cd32', // Verde
@@ -1825,21 +2051,78 @@
         // Función para actualizar la sección "Siguiente Jornada"
         function actualizarSeccionSiguienteJornada(partidos) {
             const carousel = document.getElementById('matches-carousel');
+            const sectionTitle = document.querySelector('.section-title');
             if (!carousel) return;
             
             carousel.innerHTML = '';
             
-            partidos.forEach((partido, index) => {
+            // Verificar si hay partidos pendientes
+            const hayPendientes = hayPartidosPendientes(partidos);
+            console.log(`🔍 Hay partidos pendientes: ${hayPendientes}`);
+            console.log(`📊 Total de partidos recibidos: ${partidos.length}`);
+            
+            // Determinar el título y filtrar partidos
+            let partidosFiltrados = partidos;
+            let tituloSeccion = 'Siguiente Jornada';
+            
+            if (!hayPendientes && partidos.length > 0) {
+                // No hay partidos pendientes, mostrar como "Siguiente Jornada"
+                tituloSeccion = 'Siguiente Jornada';
+                console.log('🏁 Mostrando siguiente jornada (no hay partidos pendientes)');
+            } else {
+                // Hay partidos pendientes, determinar según la hora
+                const ahora = new Date();
+                const horaGuatemala = new Date(ahora.toLocaleString("en-US", {timeZone: "America/Guatemala"}));
+                const horaActual = horaGuatemala.getHours();
+                
+                if (horaActual >= 0 && horaActual < 6) {
+                    tituloSeccion = 'Partidos de Hoy';
+                    console.log('🌙 Después de medianoche: mostrando partidos de hoy');
+                } else if (horaActual >= 6 && horaActual < 12) {
+                    tituloSeccion = 'Partidos de Hoy';
+                    console.log('🌅 Mañana: mostrando partidos de hoy');
+                } else if (horaActual >= 12 && horaActual < 18) {
+                    tituloSeccion = 'Partidos de Hoy';
+                    console.log('☀️ Tarde: mostrando partidos de hoy');
+                } else {
+                    tituloSeccion = 'Siguiente Jornada';
+                    // Mostrar TODOS los partidos disponibles sin filtrar por hora
+                    partidosFiltrados = partidos;
+                    console.log('🌆 Noche: mostrando TODOS los partidos disponibles');
+                }
+            }
+            
+            // Actualizar el título de la sección
+            if (sectionTitle) {
+                sectionTitle.textContent = tituloSeccion;
+            }
+            
+            console.log(`🎯 Procesando ${partidosFiltrados.length} partidos para mostrar en tarjetas`);
+            
+                         
+            
+            partidosFiltrados.forEach((partido, index) => {
+                console.log(`🎯 Procesando partido ${index + 1}: ${partido.name} - isLeaguesCup: ${partido.isLeaguesCup}`);
                 const homeTeam = partido.competitions[0]?.competitors?.find(c => c.homeAway === 'home');
                 const awayTeam = partido.competitions[0]?.competitors?.find(c => c.homeAway === 'away');
                 
                 if (homeTeam && awayTeam) {
+                    console.log(`⚽ Creando tarjeta ${index + 1}: ${homeTeam.team.name} vs ${awayTeam.team.name}`);
                     const matchCard = document.createElement('div');
                     matchCard.style.display = 'flex';
                     matchCard.style.flexDirection = 'column';
                     matchCard.style.alignItems = 'flex-start';
                     
-                    const matchDate = new Date(partido.date).toLocaleDateString('es-ES');
+                    // Formatear fecha y hora en zona horaria de Guatemala
+                    const partidoDate = new Date(partido.date);
+                    const partidoGuatemala = new Date(partidoDate.toLocaleString("en-US", {timeZone: "America/Guatemala"}));
+                    const matchDate = partidoGuatemala.toLocaleDateString('es-ES');
+                    const matchTime = partidoGuatemala.toLocaleTimeString('es-ES', { 
+                        hour: '2-digit', 
+                        minute: '2-digit',
+                        timeZone: 'America/Guatemala'
+                    });
+                    
                     const homeTeamName = homeTeam.team.name;
                     const awayTeamName = awayTeam.team.name;
                     const homeTeamLogo = homeTeam.team.logo;
@@ -1849,8 +2132,37 @@
                     const homeTeamColor = getTeamColor(homeTeamName);
                     const awayTeamColor = getTeamColor(awayTeamName);
                     
+                    // Determinar el estado del partido y marcador
+                    let estadoPartido = 'Apple TV+';
+                    let estadoColor = '#000000';
+                    
+                    if (partido.status && partido.status.type) {
+                        if (partido.status.type.state === 'post') {
+                            // Partido finalizado - mostrar marcador y estado
+                            const homeScore = homeTeam.score || '0';
+                            const awayScore = awayTeam.score || '0';
+                            estadoPartido = `${homeScore}-${awayScore} Finalizado`;
+                            estadoColor = '#666666';
+                        } else if (partido.status.type.state === 'in') {
+                            // Partido en vivo - mostrar marcador y tiempo
+                            const homeScore = homeTeam.score || '0';
+                            const awayScore = awayTeam.score || '0';
+                            const tiempo = partido.status.displayClock || 'En Vivo';
+                            estadoPartido = `${homeScore}-${awayScore} ${tiempo}`;
+                            estadoColor = '#ff0000';
+                        } else if (partido.status.type.state === 'pre') {
+                            // Partido programado - mostrar "Pendiente"
+                            estadoPartido = 'Pendiente';
+                            estadoColor = '#000000';
+                        }
+                    }
+                    
                     matchCard.innerHTML = `
                         <div class="match-card" tabindex="0" role="button" aria-label="Tarjeta de partido ${index + 1}" style="background: ${homeTeamColor}; position: relative; border: 1px solid rgba(255, 255, 255, 0.1);">
+                            ${partido.isLeaguesCup 
+                                ? '<img src="https://a.espncdn.com/i/leaguelogos/soccer/500/2410.png" alt="Leagues Cup" style="position: absolute; top: -15px; right: 10px; height: 78px; width: auto; z-index: 10; filter: brightness(0) invert(1) drop-shadow(0 0 5px rgba(0,0,0,0.8));">'
+                                : ''
+                            }
                             <div class="match-date">${matchDate}</div>
                             <div class="teams-container">
                                 <div class="team">
@@ -1864,12 +2176,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="apple-tv-badge">Apple TV+</div>
+                            <div class="apple-tv-badge" style="background: ${estadoColor}; color: white;">${estadoPartido}</div>
                             <div style="position: absolute; top: 0px; right: 0px; width: 100%; height: 100%; background: ${awayTeamColor}; clip-path: polygon(60% 0px, 100% 0px, 100% 100%, 40% 100%); z-index: 1;"></div>
                         </div>
                         <div class="match-info">
                             <div class="match-teams">${homeTeamName} vs. ${awayTeamName}</div>
-                            <div class="match-league">MLS</div>
+                            <div class="match-league">${partido.isLeaguesCup ? 'Leagues Cup' : (partido.leagues?.[0]?.name || 'MLS')}</div>
                         </div>
                     `;
                     
@@ -1889,16 +2201,34 @@
                 }
             }, 100);
             
-            console.log(`🎯 Sección "Siguiente Jornada" actualizada con ${partidos.length} partidos`);
+            console.log(`🎯 Sección "Siguiente Jornada" actualizada con ${partidosFiltrados.length} partidos de ${partidos.length} totales`);
+        }
+
+        // Función para limpiar automáticamente eventos antiguos cada 30 minutos
+        function iniciarLimpiezaAutomatica() {
+            setInterval(async () => {
+                console.log('🧹 Limpieza automática de eventos antiguos...');
+                
+                // Recrear el carrusel para aplicar el filtro de 3 horas
+                await crearCarruselDinamico();
+                
+                // Actualizar el fondo del wrapper después de la limpieza
+                setTimeout(() => {
+                    actualizarFondoWrapper();
+                    actualizarVisibilidadBotones();
+                }, 100);
+                
+                console.log('✅ Limpieza automática completada');
+            }, 1800000); // 30 minutos = 1,800,000 ms
         }
 
         // Función para recargar automáticamente cada 5 minutos
-                        function iniciarRecargaAutomatica() {
-                  setInterval(async () => {
-                      console.log('⏰ Recarga automática de datos desde FTVHD API...');
-                  await recargarDatosAPI();
-              }, 300000); // 5 minutos = 300,000 ms
-          }
+        function iniciarRecargaAutomatica() {
+            setInterval(async () => {
+                console.log('⏰ Recarga automática de datos desde FTVHD API...');
+                await recargarDatosAPI();
+            }, 300000); // 5 minutos = 300,000 ms
+        }
 
           // Inicialización
           document.addEventListener('DOMContentLoaded', async function() {
@@ -1919,6 +2249,9 @@
               
               // Iniciar recarga automática
               iniciarRecargaAutomatica();
+              
+              // Iniciar limpieza automática de eventos (cada 30 minutos)
+              iniciarLimpiezaAutomatica();
           });
 
         // Función para actualizar el fondo del wrapper
