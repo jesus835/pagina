@@ -1491,19 +1491,6 @@
                         // Configurar event listener para el iframe
                         iframe.addEventListener('load', function() {
                             console.log('🎯 Iframe MLS PASS cargado, configurando navegación');
-                            
-                            // Agregar event listener directo al iframe para Android TV
-                            iframe.addEventListener('keydown', function(e) {
-                                console.log('🔧 KeyDown directo en iframe:', e.key, 'keyCode:', e.keyCode);
-                            });
-                            
-                            iframe.addEventListener('keyup', function(e) {
-                                console.log('🔧 KeyUp directo en iframe:', e.key, 'keyCode:', e.keyCode);
-                            });
-                            
-                            iframe.addEventListener('keypress', function(e) {
-                                console.log('🔧 KeyPress directo en iframe:', e.key, 'keyCode:', e.keyCode);
-                            });
                         });
                         
                         // Enviar mensaje al iframe para enfocar el botón MLS PASS
@@ -1520,6 +1507,52 @@
                         }, 200); // Delay para asegurar que el iframe esté cargado
                     }
                 }, 10);
+                
+                // Configurar listener para detectar cuando regresa del reproductor (Android TV)
+                window.addEventListener('focus', function restaurarFocoIframe() {
+                    if (overlay.style.display === 'block') {
+                        setTimeout(() => {
+                            if (iframe) {
+                                iframe.focus();
+                                console.log('🎯 Foco restaurado al iframe después de regresar del reproductor');
+                                
+                                // Re-enviar mensaje para restaurar foco en el botón MLS PASS
+                                try {
+                                    iframe.contentWindow.postMessage({
+                                        action: 'focusMLSPass',
+                                        target: 'MLS PASS'
+                                    }, '*');
+                                    console.log('📨 Mensaje de restauración enviado al iframe');
+                                } catch (error) {
+                                    console.log('⚠️ No se pudo enviar mensaje de restauración:', error.message);
+                                }
+                            }
+                        }, 100);
+                    }
+                });
+                
+                // Listener adicional para detectar cambios de visibilidad (útil para Android TV)
+                document.addEventListener('visibilitychange', function() {
+                    if (!document.hidden && overlay.style.display === 'block') {
+                        setTimeout(() => {
+                            if (iframe) {
+                                iframe.focus();
+                                console.log('🎯 Foco restaurado al iframe después de cambio de visibilidad');
+                                
+                                // Re-enviar mensaje para restaurar foco en el botón MLS PASS
+                                try {
+                                    iframe.contentWindow.postMessage({
+                                        action: 'focusMLSPass',
+                                        target: 'MLS PASS'
+                                    }, '*');
+                                    console.log('📨 Mensaje de restauración enviado al iframe (visibilitychange)');
+                                } catch (error) {
+                                    console.log('⚠️ No se pudo enviar mensaje de restauración:', error.message);
+                                }
+                            }
+                        }, 200);
+                    }
+                });
                 
                 console.log('🎬 Botón "MLS PASS" configurado para abrir overlay');
             }
