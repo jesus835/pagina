@@ -1488,6 +1488,11 @@
                         iframe.focus();
                         console.log('🎯 Iframe MLS PASS enfocado para navegación');
                         
+                        // Configurar event listener para el iframe
+                        iframe.addEventListener('load', function() {
+                            console.log('🎯 Iframe MLS PASS cargado, configurando navegación');
+                        });
+                        
                         // Enviar mensaje al iframe para enfocar el botón MLS PASS
                         setTimeout(() => {
                             try {
@@ -1531,38 +1536,43 @@
             // Si el overlay está abierto
             if (overlay && overlay.style.display === 'block') {
                 
-                // Escape para cerrar
+                // Solo manejar Escape para cerrar, el resto de teclas pasan al iframe
                 if (e.key === 'Escape') {
                     e.preventDefault();
                     cerrarMLSPass();
                     return;
                 }
                 
-                // Permitir que las teclas pasen al iframe para navegación
-                // Solo interceptar teclas específicas que queremos manejar
-                if (e.key === 'Tab' || e.key === 'Enter' || e.key === ' ' || 
-                    e.key === 'ArrowUp' || e.key === 'ArrowDown' || 
-                    e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                // Para todas las demás teclas, asegurar que el iframe tenga el foco
+                if (iframe) {
+                    iframe.focus();
                     
-                    // Intentar enfocar el iframe para que reciba las teclas
-                    if (iframe) {
-                        iframe.focus();
-                        
-                        // Enviar el evento al iframe si es posible
-                        try {
-                            if (iframe.contentWindow && iframe.contentDocument) {
-                                // El iframe está cargado, permitir que maneje las teclas
-                                return; // No prevenir el evento, dejar que pase al iframe
-                            }
-                        } catch (error) {
-                            // Error de CORS, pero aún así permitir la navegación
-                            console.log('🔧 Navegación en iframe MLS PASS');
-                        }
-                    }
+                    // No prevenir el evento, dejar que pase naturalmente al iframe
+                    console.log('🔧 Tecla pasada al iframe MLS PASS:', e.key);
                 }
                 
-                // Para otras teclas, permitir que pasen al iframe
-                return;
+                // No hacer return aquí para que el evento continúe al iframe
+            }
+        });
+
+        // Event listener específico para el iframe cuando está enfocado
+        document.addEventListener('keydown', function(e) {
+            const overlay = document.getElementById('mlspass-overlay');
+            const iframe = document.getElementById('mlspass-iframe');
+            
+            // Si el overlay está abierto y el iframe está enfocado
+            if (overlay && overlay.style.display === 'block' && 
+                document.activeElement === iframe) {
+                
+                // Solo manejar Escape, el resto de teclas se pasan al iframe
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    cerrarMLSPass();
+                    return;
+                }
+                
+                // Para todas las demás teclas, no hacer nada y dejar que pasen al iframe
+                console.log('🔧 Tecla en iframe enfocado:', e.key);
             }
         });
 
