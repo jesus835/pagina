@@ -159,6 +159,16 @@
         "https://i.imgur.com/3tkeh6s.png"
       ],
       "descripcion": "Imágenes para eventos Amistosos - Selección aleatoria"
+    },
+    "mls": {
+      "urls": [
+        "https://i.imgur.com/MLS1.jpg",
+        "https://i.imgur.com/MLS2.jpg",
+        "https://i.imgur.com/MLS3.jpg",
+        "https://i.imgur.com/MLS4.jpg",
+        "https://i.imgur.com/MLS5.jpg"
+      ],
+      "descripcion": "Imágenes para eventos de MLS (Major League Soccer) - Selección aleatoria"
     }
   },
   "equipos_especificos": {
@@ -374,6 +384,246 @@
         "https://i.imgur.com/3tkeh6s.png"
       ],
       "descripcion": "Imágenes especiales para partidos del CRB"
+    },
+    "atlanta united": {
+      "urls": [
+        "https://i.imgur.com/ATL1.jpg",
+        "https://i.imgur.com/ATL2.jpg",
+        "https://i.imgur.com/ATL3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Atlanta United FC"
+    },
+    "charlotte fc": {
+      "urls": [
+        "https://i.imgur.com/CLT1.jpg",
+        "https://i.imgur.com/CLT2.jpg",
+        "https://i.imgur.com/CLT3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Charlotte FC"
+    },
+    "chicago fire": {
+      "urls": [
+        "https://i.imgur.com/CHI1.jpg",
+        "https://i.imgur.com/CHI2.jpg",
+        "https://i.imgur.com/CHI3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Chicago Fire FC"
+    },
+    "fc cincinnati": {
+      "urls": [
+        "https://i.imgur.com/CIN1.jpg",
+        "https://i.imgur.com/CIN2.jpg",
+        "https://i.imgur.com/CIN3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del FC Cincinnati"
+    },
+    "columbus crew": {
+      "urls": [
+        "https://i.imgur.com/CLB1.jpg",
+        "https://i.imgur.com/CLB2.jpg",
+        "https://i.imgur.com/CLB3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Columbus Crew"
+    },
+    "dc united": {
+      "urls": [
+        "https://i.imgur.com/DC1.jpg",
+        "https://i.imgur.com/DC2.jpg",
+        "https://i.imgur.com/DC3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del D.C. United"
+    },
+    "inter miami": {
+      "urls": [
+        "https://i.imgur.com/MIA1.jpg",
+        "https://i.imgur.com/MIA2.jpg",
+        "https://i.imgur.com/MIA3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Inter Miami CF"
+    },
+    "cf montreal": {
+      "urls": [
+        "https://i.imgur.com/MTL1.jpg",
+        "https://i.imgur.com/MTL2.jpg",
+        "https://i.imgur.com/MTL3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del CF Montréal"
+    },
+    "nashville sc": {
+      "urls": [
+        "https://i.imgur.com/NSH1.jpg",
+        "https://i.imgur.com/NSH2.jpg",
+        "https://i.imgur.com/NSH3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Nashville SC"
+    },
+    "new england revolution": {
+      "urls": [
+        "https://i.imgur.com/NE1.jpg",
+        "https://i.imgur.com/NE2.jpg",
+        "https://i.imgur.com/NE3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del New England Revolution"
+    },
+    "new york city fc": {
+      "urls": [
+        "https://i.imgur.com/NYC1.jpg",
+        "https://i.imgur.com/NYC2.jpg",
+        "https://i.imgur.com/NYC3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del New York City FC"
+    },
+    "new york red bulls": {
+      "urls": [
+        "https://i.imgur.com/NY1.jpg",
+        "https://i.imgur.com/NY2.jpg",
+        "https://i.imgur.com/NY3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del New York Red Bulls"
+    },
+    "orlando city": {
+      "urls": [
+        "https://i.imgur.com/ORL1.jpg",
+        "https://i.imgur.com/ORL2.jpg",
+        "https://i.imgur.com/ORL3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Orlando City SC"
+    },
+    "philadelphia union": {
+      "urls": [
+        "https://i.imgur.com/PHI1.jpg",
+        "https://i.imgur.com/PHI2.jpg",
+        "https://i.imgur.com/PHI3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Philadelphia Union"
+    },
+    "toronto fc": {
+      "urls": [
+        "https://i.imgur.com/TOR1.jpg",
+        "https://i.imgur.com/TOR2.jpg",
+        "https://i.imgur.com/TOR3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Toronto FC"
+    },
+    "austin fc": {
+      "urls": [
+        "https://i.imgur.com/AUS1.jpg",
+        "https://i.imgur.com/AUS2.jpg",
+        "https://i.imgur.com/AUS3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Austin FC"
+    },
+    "colorado rapids": {
+      "urls": [
+        "https://i.imgur.com/COL1.jpg",
+        "https://i.imgur.com/COL2.jpg",
+        "https://i.imgur.com/COL3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Colorado Rapids"
+    },
+    "fc dallas": {
+      "urls": [
+        "https://i.imgur.com/DAL1.jpg",
+        "https://i.imgur.com/DAL2.jpg",
+        "https://i.imgur.com/DAL3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del FC Dallas"
+    },
+    "houston dynamo": {
+      "urls": [
+        "https://i.imgur.com/HOU1.jpg",
+        "https://i.imgur.com/HOU2.jpg",
+        "https://i.imgur.com/HOU3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Houston Dynamo FC"
+    },
+    "la galaxy": {
+      "urls": [
+        "https://i.imgur.com/LAG1.jpg",
+        "https://i.imgur.com/LAG2.jpg",
+        "https://i.imgur.com/LAG3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del LA Galaxy"
+    },
+    "lafc": {
+      "urls": [
+        "https://i.imgur.com/LAFC1.jpg",
+        "https://i.imgur.com/LAFC2.jpg",
+        "https://i.imgur.com/LAFC3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Los Angeles FC"
+    },
+    "minnesota united": {
+      "urls": [
+        "https://i.imgur.com/MIN1.jpg",
+        "https://i.imgur.com/MIN2.jpg",
+        "https://i.imgur.com/MIN3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Minnesota United FC"
+    },
+    "portland timbers": {
+      "urls": [
+        "https://i.imgur.com/POR1.jpg",
+        "https://i.imgur.com/POR2.jpg",
+        "https://i.imgur.com/POR3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Portland Timbers"
+    },
+    "real salt lake": {
+      "urls": [
+        "https://i.imgur.com/RSL1.jpg",
+        "https://i.imgur.com/RSL2.jpg",
+        "https://i.imgur.com/RSL3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Real Salt Lake"
+    },
+    "san diego fc": {
+      "urls": [
+        "https://i.imgur.com/SD1.jpg",
+        "https://i.imgur.com/SD2.jpg",
+        "https://i.imgur.com/SD3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del San Diego FC"
+    },
+    "san jose earthquakes": {
+      "urls": [
+        "https://i.imgur.com/SJ1.jpg",
+        "https://i.imgur.com/SJ2.jpg",
+        "https://i.imgur.com/SJ3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del San Jose Earthquakes"
+    },
+    "seattle sounders": {
+      "urls": [
+        "https://i.imgur.com/SEA1.jpg",
+        "https://i.imgur.com/SEA2.jpg",
+        "https://i.imgur.com/SEA3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Seattle Sounders FC"
+    },
+    "sporting kansas city": {
+      "urls": [
+        "https://i.imgur.com/SKC1.jpg",
+        "https://i.imgur.com/SKC2.jpg",
+        "https://i.imgur.com/SKC3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Sporting Kansas City"
+    },
+    "st louis city": {
+      "urls": [
+        "https://i.imgur.com/STL1.jpg",
+        "https://i.imgur.com/STL2.jpg",
+        "https://i.imgur.com/STL3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del St. Louis City SC"
+    },
+    "vancouver whitecaps": {
+      "urls": [
+        "https://i.imgur.com/VAN1.jpg",
+        "https://i.imgur.com/VAN2.jpg",
+        "https://i.imgur.com/VAN3.jpg"
+      ],
+      "descripcion": "Imágenes especiales para partidos del Vancouver Whitecaps FC"
     }
   },
   "logos_canales": {
@@ -511,6 +761,26 @@
       "url": "https://i.imgur.com/3tkeh6s.png",
       "alt": "ECDF",
       "descripcion": "Logo de ECDF"
+    },
+    "apple tv+": {
+      "url": "https://i.imgur.com/appletv-logo.png",
+      "alt": "Apple TV+",
+      "descripcion": "Logo de Apple TV+"
+    },
+    "apple tv": {
+      "url": "https://i.imgur.com/appletv-logo.png",
+      "alt": "Apple TV",
+      "descripcion": "Logo de Apple TV"
+    },
+    "mls season pass": {
+      "url": "https://i.imgur.com/mls-season-pass-logo.png",
+      "alt": "MLS Season Pass",
+      "descripcion": "Logo de MLS Season Pass"
+    },
+    "mls": {
+      "url": "https://i.imgur.com/mls-logo.png",
+      "alt": "MLS",
+      "descripcion": "Logo de Major League Soccer"
     }
   },
   "descripciones_generales": {
@@ -562,11 +832,24 @@
       "Sumérgete en el mundo del deporte donde la técnica y la pasión se encuentran. Eventos que definen campeones y crean leyendas en el deporte.",
       "Experimenta la adrenalina del deporte profesional con encuentros de máxima rivalidad. Cada acción puede cambiar el destino del evento.",
       "Descubre la magia del deporte a través de eventos épicos. Donde la estrategia se combina con el talento individual para crear espectáculos inolvidables."
+    ],
+    "mls": [
+      "Vive la pasión del fútbol americano con la Major League Soccer. Partidos llenos de intensidad, goles espectaculares y rivalidades históricas que definen el deporte en Estados Unidos y Canadá.",
+      "Disfruta de la MLS, la liga de fútbol más importante de Norteamérica. Desde jugadas magistrales hasta definiciones dramáticas, cada partido es una batalla por la gloria.",
+      "Sumérgete en el mundo de la MLS donde el talento internacional se encuentra con la pasión local. Partidos que crean leyendas y definen campeones en el fútbol norteamericano.",
+      "Experimenta la adrenalina de la MLS con encuentros de máxima rivalidad entre equipos de Estados Unidos y Canadá. Cada toque, cada pase y cada disparo puede cambiar el destino del partido.",
+      "Descubre la magia de la MLS a través de partidos épicos. Donde la estrategia se combina con el talento individual para crear espectáculos deportivos inolvidables en el fútbol norteamericano."
     ]
   },
   "configuracion": {
     "tiempo_cache": 300000,
     "url_base": "./configuracion-imagenes.json",
     "version": "1.6"
+  },
+  "categorias_personalizadas": {
+    "mls": {
+      "titulo": "MLS <span>Fútbol</span>",
+      "descripcion": "Major League Soccer - La liga de fútbol más importante de Norteamérica"
+    }
   }
 }
