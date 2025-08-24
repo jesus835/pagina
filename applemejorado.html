@@ -1706,6 +1706,13 @@
               // Inicializar visibilidad de botones
               setTimeout(() => {
                   actualizarVisibilidadBotones();
+                  
+                  // Mantener foco en el botón MLS PASS después de cargar las tarjetas
+                  const botonMLSPass = Array.from(document.querySelectorAll('.menu-button')).find(btn => btn.textContent === 'MLS PASS');
+                  if (botonMLSPass) {
+                      botonMLSPass.focus();
+                      console.log('🎯 Foco restaurado al botón MLS PASS después de cargar tarjetas');
+                  }
               }, 100);
               
                              console.log(`🎯 Carrusel creado con ${eventosOrdenados.length} eventos (${eventos.length - eventosOrdenados.length} eventos pasados filtrados)`);
@@ -1721,6 +1728,15 @@
               
               // Reconfigurar eventos después de recargar
               configurarEventos();
+              
+              // Mantener foco en el botón MLS PASS después de recargar
+              setTimeout(() => {
+                  const botonMLSPass = Array.from(document.querySelectorAll('.menu-button')).find(btn => btn.textContent === 'MLS PASS');
+                  if (botonMLSPass) {
+                      botonMLSPass.focus();
+                      console.log('🎯 Foco restaurado al botón MLS PASS después de recargar datos');
+                  }
+              }, 150);
           }
 
           // Función para cargar partidos de MLS desde ESPN API
@@ -1859,6 +1875,13 @@
             // Reconfigurar la navegación después de actualizar las tarjetas
             setTimeout(() => {
                 configurarNavegacionTarjetasPartido();
+                
+                // Mantener foco en el botón MLS PASS después de actualizar partidos
+                const botonMLSPass = Array.from(document.querySelectorAll('.menu-button')).find(btn => btn.textContent === 'MLS PASS');
+                if (botonMLSPass) {
+                    botonMLSPass.focus();
+                    console.log('🎯 Foco restaurado al botón MLS PASS después de actualizar partidos');
+                }
             }, 100);
             
             console.log(`🎯 Sección "Siguiente Jornada" actualizada con ${partidos.length} partidos`);
@@ -2461,6 +2484,26 @@
         // Inicializar cuando el DOM esté listo
         document.addEventListener('DOMContentLoaded', function() {
             configurarNavegacionTarjetasPartido();
+            
+            // Forzar foco al botón MLS PASS cuando se carga el embed
+            setTimeout(() => {
+                const botonMLSPass = Array.from(document.querySelectorAll('.menu-button')).find(btn => btn.textContent === 'MLS PASS');
+                if (botonMLSPass) {
+                    botonMLSPass.focus();
+                    console.log('🎯 Foco forzado al botón MLS PASS en el embed');
+                }
+            }, 100);
+        });
+
+        // Event listener para recibir mensajes del iframe padre
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.action === 'focusMLSPass') {
+                const botonMLSPass = Array.from(document.querySelectorAll('.menu-button')).find(btn => btn.textContent === 'MLS PASS');
+                if (botonMLSPass) {
+                    botonMLSPass.focus();
+                    console.log('🎯 Foco aplicado al botón MLS PASS desde mensaje del padre');
+                }
+            }
         });
 
         // Función para configurar navegación de tarjetas de partido
