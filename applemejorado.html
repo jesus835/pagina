@@ -1,0 +1,2647 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google TV - Load+ TV</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background: #0a0a2e;
+            color: white;
+            overflow: hidden;
+        }
+
+        #wraper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 1280px;
+            height: 720px;
+            margin: 0;
+            padding: 0;
+            border-radius: 0;
+            max-width: 1280px;
+            max-height: 720px;
+            min-width: 1280px;
+            min-height: 720px;
+            z-index: 9999;
+            overflow: hidden;
+            background: #0a0a2e;
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            box-shadow: none;
+            border: none;
+            opacity: 1;
+        }
+
+        #google-tv-carrusel {
+            width: 100%;
+            height: 720px;
+            background: transparent;
+            border-radius: 0;
+            margin: 0;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #tarjetas-google-tv {
+            display: flex;
+            transition: transform 0.8s ease;
+            height: 720px;
+            gap: 0;
+            width: 100%;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .google-tv-card {
+            background: transparent;
+            border-radius: 20px;
+            padding: 0;
+            margin: 0;
+            color: white;
+            font-family: 'Roboto', Arial, sans-serif;
+            position: relative;
+            overflow: hidden;
+            box-shadow: none;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 100%;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            flex-basis: 100%;
+            min-width: 100%;
+            height: 720px;
+            align-items: center;
+        }
+        
+
+
+        .contenido-texto {
+            position: absolute;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: transparent;
+            border-radius: 18px;
+            padding: 16px;
+            max-width: 688px;
+            margin: 0;
+            opacity: 1;
+            top: 237px;
+            left: 4%;
+            transform: translateY(-50%);
+            transform-origin: left center;
+        }
+
+        .google-tv-card .teams {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            align-items: flex-start;
+        }
+
+        .google-tv-card .team {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            flex-direction: row;
+            justify-content: flex-start;
+        }
+
+        .google-tv-card .team-logo {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            object-fit: contain;
+            background: linear-gradient(180deg, #fefefe, #dcdcdc);
+            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 1px 2px rgba(0, 0, 0, 0.25);
+            flex-shrink: 0;
+        }
+
+        .google-tv-card .team-name {
+            font-size: 25px;
+            line-height: 1.1;
+            font-weight: 800;
+            letter-spacing: 0.01em;
+            color: white;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            overflow: visible;
+            justify-content: flex-start;
+        }
+
+        .google-tv-card .metadata {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .google-tv-card .metadata span:first-child {
+            background: rgba(255, 255, 255, 0.5);
+            color: #0a0a0a;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-weight: 600;
+        }
+
+        .google-tv-card .metadata .bullet {
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 600;
+        }
+
+        .google-tv-card .metadata img {
+            height: 20px;
+            width: auto;
+            max-width: 60px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+            opacity: 0.9;
+        }
+
+        .google-tv-card p {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.68);
+            line-height: 1.35;
+            margin: 8px 0 14px 0;
+            font-weight: 400;
+            max-width: 400px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .botones-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .botones-container.compacto { gap: 8px; }
+        .botones-container.compacto a,
+        .botones-container.compacto button {
+            font-size: 13px;
+            padding: 8px 14px;
+            min-width: 90px;
+        }
+
+        .botones-container a,
+        .botones-container button {
+            background: #ececec;
+            color: #0a0a0a;
+            padding: 12px 20px;
+            border-radius: 14px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 700;
+            transition: transform 0.05s ease, filter 0.2s ease;
+            border: 0;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-width: 140px;
+            text-align: center;
+            outline: none;
+            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 5px 14px rgba(0, 0, 0, 0.35);
+        }
+
+        .botones-container a:hover,
+        .botones-container button:hover {
+            background: #f0f0f0;
+        }
+        
+        .botones-container a:active,
+        .botones-container button:active {
+            transform: translateY(1px);
+        }
+        
+        .botones-container a:focus-visible,
+        .botones-container button:focus-visible {
+            outline: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .botones-container a:focus,
+        .botones-container button:focus {
+            background: #4285f4;
+            color: #ffffff;
+            border-color: transparent;
+            transform: translateY(-2px) scale(1.02);
+            outline: 2px solid transparent;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+         .boton-siguiente-carrusel {
+             position: absolute;
+             right: 20px;
+             top: 30%;
+             transform: translateY(-50%);
+             background: rgba(255, 255, 255, 0.2);
+             color: white;
+             border: 2px solid rgba(255, 255, 255, 0.3);
+             border-radius: 50%;
+             padding: 15px;
+             font-size: 16px;
+             font-weight: 500;
+             cursor: pointer;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             transition: all 0.3s ease;
+             z-index: 10;
+             backdrop-filter: blur(10px);
+             box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+             width: 54px;
+             height: 54px;
+         }
+
+        .boton-siguiente-carrusel:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%) scale(1.05);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .boton-siguiente-carrusel:focus {
+            background: rgba(255, 255, 255, 0.4);
+            transform: translateY(-50%) scale(1.05);
+            border-color: transparent;
+            box-shadow: 0 6px 25px rgba(255, 255, 255, 0.2);
+            outline: 2px solid transparent;
+        }
+
+        /* Animación tipo tarjeta y sin blur cuando hay foco */
+        .boton-siguiente-carrusel:focus, .boton-siguiente-carrusel:focus-visible {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%) scale(1.05);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            outline: 2px solid transparent;
+            backdrop-filter: none;
+        }
+
+        .branding {
+            display: none;
+        }
+
+        /* Menú superior Google TV */
+        .google-tv-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 56px;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 28px;
+            background: transparent;
+        }
+
+
+        .menu-container {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            max-width: 1200px;
+            width: 100%;
+            position: relative;
+            left: 8%;
+        }
+        .menu-button {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            border-radius: 18px;
+            padding: 8px 17px;
+            color: white;
+            font-size: 11px;
+            min-width: 84px;
+            cursor: pointer;
+            outline: none;
+        }
+        .menu-button:focus, .menu-button.active {
+            background: #ffffff;
+            color: #000000;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+        .menu-button:focus { outline: 2px solid transparent; }
+
+
+
+        /* Estilos para la tarjeta especial */
+        .tarjeta-especial .contenido-texto {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            max-width: 800px;
+        }
+
+        .tarjeta-especial h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: white;
+            margin: 0 0 20px 0;
+            line-height: 1.2;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .tarjeta-especial h2 {
+            font-size: 24px;
+            font-weight: 400;
+            color: #ffffff;
+            margin: 0 0 30px 0;
+            line-height: 1.3;
+            opacity: 0.9;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .tarjeta-especial p {
+            font-size: 20px;
+            font-weight: 300;
+            color: #ffffff;
+            margin: 0 0 40px 0;
+            opacity: 0.8;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .logos-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            max-width: 600px;
+        }
+
+        .logo-canal {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-canal img {
+            height: 40px;
+            width: auto;
+            max-width: 80px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .logo-canal:hover img {
+            opacity: 1;
+        }
+
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .google-tv-card h2 {
+                font-size: 24px;
+            }
+
+            .google-tv-card p {
+                font-size: 16px;
+            }
+
+            .contenido-texto {
+                left: 10%;
+                max-width: 80%;
+            }
+
+            .botones-container {
+                flex-direction: column;
+            }
+
+            .botones-container a,
+            .botones-container button {
+                min-width: 100%;
+            }
+        }
+
+        /* Responsive para diferentes escalas */
+        @media (max-width: 1200px) {
+            #wraper {
+                background-size: 100% 100%;
+                background-position: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #wraper {
+                background-size: 100% 100%;
+                background-position: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #wraper {
+                background-size: 100% 100%;
+                background-position: center;
+            }
+        }
+
+        /* Para pantallas muy grandes */
+        @media (min-width: 1920px) {
+            #wraper {
+                background-size: 100% 100%;
+                background-position: center;
+            }
+        }
+
+        /* Para escalas específicas */
+        @media (min-resolution: 2dppx) {
+            #wraper {
+                background-size: 100% 100%;
+                background-position: center;
+            }
+        }
+
+        /* Asegurar que el fondo siempre cubra toda la pantalla */
+        @media (orientation: landscape) {
+            #wraper {
+                background-size: 100% 100%;
+                background-position: center;
+            }
+        }
+
+        @media (orientation: portrait) {
+            #wraper {
+                background-size: 100% 100%;
+                background-position: center;
+            }
+        }
+
+        /* Específico para Android y dispositivos móviles */
+        @media screen and (max-width: 1080px) and (max-height: 1920px) {
+            #wraper {
+                background-size: cover;
+                background-position: center;
+                background-attachment: scroll;
+            }
+            
+            .contenido-texto {
+                left: 4%;
+                max-width: 90%;
+                top: 38vh;
+                transform: translateY(-50%) scale(0.75);
+                transform-origin: left center;
+            }
+            
+            .google-tv-card h2 {
+                font-size: 20px;
+            }
+            
+            .google-tv-card p {
+                font-size: 16px;
+            }
+        }
+
+        /* Para Android específicamente */
+        @media screen and (max-width: 1920px) and (max-height: 1080px) {
+            #wraper {
+                background-size: cover;
+                background-position: center;
+                background-attachment: scroll;
+            }
+        }
+
+        /* Para dispositivos táctiles */
+        @media (pointer: coarse) {
+            #wraper {
+                background-attachment: scroll;
+            }
+            
+            .boton-siguiente-carrusel {
+                width: 60px;
+                height: 60px;
+                font-size: 18px;
+            }
+            
+            .menu-button {
+                padding: 12px 20px;
+                font-size: 13px;
+                min-width: 90px;
+            }
+        }
+
+        /* Para Android Chrome */
+        @media screen and (-webkit-min-device-pixel-ratio: 1) {
+            #wraper {
+                background-attachment: scroll;
+                background-size: cover;
+            }
+        }
+
+        /* Específico para Android */
+        @media screen and (max-device-width: 1920px) and (max-device-height: 1080px) {
+            #wraper {
+                background-size: cover;
+                background-position: center;
+                background-attachment: scroll;
+            }
+        }
+
+        /* Para dispositivos Android con viewport específico */
+        @media screen and (max-width: 1920px) and (max-height: 1080px) and (-webkit-min-device-pixel-ratio: 1) {
+            #wraper {
+                background-size: cover;
+                background-position: center;
+                background-attachment: scroll;
+            }
+        }
+
+        /* Diseño responsive general basado en 720p */
+        #wraper { background-size: cover; background-position: center; }
+        .menu-container { left: 17%; }
+        /* Menú 10% más grande */
+        .menu-button { padding: 10px 21px; font-size: 13px; min-width: 101px; }
+        /* Indicador al mismo nivel del menú superior */
+        #indicador-pagina { position: absolute !important; top: 397px !important; left: 636px !important; bottom: auto !important; transform: translate(-50%, -50%) !important; }
+        /* Bajar el título 50% */
+        .promo-title { top: calc(384.912px + 18vh) !important; }
+
+        /* Estilos para el carrusel de partidos */
+        .bottom-section {
+            background: transparent;
+            padding: 20px 10px;
+            height: 320px;
+            overflow: hidden;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .section-header {
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        .section-title {
+            font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            letter-spacing: -0.01em;
+        }
+
+        .section-subtitle {
+            font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 12px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.2;
+            letter-spacing: -0.01em;
+        }
+
+        .matches-carousel {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 12px 0 12px 30px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            scroll-behavior: smooth;
+            scroll-snap-type: x mandatory;
+            width: 1210px;
+            height: 230px;
+            margin: 0 auto;
+            position: relative;
+            transform: translateX(0.5%);
+        }
+
+        .matches-carousel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .match-card {
+            min-width: 288px;
+            width: 288px;
+            height: 200px;
+            border-radius: 8px;
+            padding: 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.5s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            outline: none;
+            transform: translateY(0px) scale(1);
+            scroll-snap-align: start;
+        }
+
+        .match-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .match-card:focus {
+            outline: 3px solid transparent;
+            outline-offset: 2px;
+            transform: translateY(-2px);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .match-card.focused {
+            outline: 3px solid transparent;
+            outline-offset: 2px;
+            transform: translateY(-2px);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .match-date {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            font-size: 10px;
+            color: #333;
+            font-weight: 500;
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 9px;
+        }
+
+        .teams-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 2;
+        }
+
+        .team {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            flex: 1;
+            z-index: 2;
+            position: relative;
+        }
+
+        .team-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .team-name {
+            font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 12px;
+            color: white;
+            text-align: center;
+            line-height: 1.2;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+            max-width: 90px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            letter-spacing: -0.01em;
+        }
+
+        .vs-divider {
+            width: 1px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.6);
+            margin: 0 12px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .apple-tv-badge {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            font-size: 9px;
+            color: #333;
+            font-weight: 500;
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 4px 8px;
+            border-radius: 12px;
+        }
+
+        .match-info {
+            margin-top: 6px;
+            text-align: left;
+            width: 100%;
+        }
+
+        .match-teams {
+            font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 1px;
+            letter-spacing: -0.01em;
+        }
+
+        .match-league {
+            font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+            letter-spacing: -0.01em;
+        }
+
+
+    </style>
+</head>
+<body>
+    <!-- Menú superior Google TV -->
+    <div class="google-tv-menu">
+        <div class="menu-container">
+            <button class="menu-button" tabindex="0">Buscar</button>
+            <button class="menu-button" tabindex="0">Para ti</button>
+            <button class="menu-button" tabindex="0">En vivo</button>
+            <button class="menu-button" tabindex="0">Películas</button>
+            <button class="menu-button" tabindex="0">Series</button>
+            <button class="menu-button" tabindex="0">Aplicaciones</button>
+            <button class="menu-button" tabindex="0">Biblioteca</button>
+        </div>
+    </div>
+
+
+    <!-- Overlay de Apple TV (inicialmente oculto) -->
+    <div id="appletv-overlay" style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: #0a0a2e;
+        z-index: 20000;
+        display: none;
+        overflow: hidden;
+    ">
+        <iframe id="appletv-iframe" src="appletv.html" style="
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+        "></iframe>
+        
+        <!-- Botón de cerrar -->
+        <button id="cerrar-appletv" style="
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 20001;
+            transition: all 0.3s ease;
+        " onclick="cerrarAppleTV()">✕ Cerrar</button>
+    </div>
+
+    <div id="wraper">
+
+        <div id="google-tv-carrusel">
+            <div id="tarjetas-google-tv">
+                <!-- Los eventos se cargarán dinámicamente desde la API -->
+                <div class="google-tv-card" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
+                    <div class="contenido-texto" style="text-align: center; position: absolute; top: 239px; left: 642px; transform: translate(-50%, -50%);">
+                        <div class="branding">Google TV</div>
+                        <h2>Cargando eventos...</h2>
+                        <p>Obteniendo la información más reciente de la agenda deportiva</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Indicador de página actual -->
+            <div id="indicador-pagina" style="
+                position: absolute;
+                top: 397px;
+                left: 636px;
+                transform: translate(-50%, -50%);
+                display: flex;
+                gap: 8px;
+                z-index: 10;
+            ">
+                <div style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255, 255, 255, 0.8); cursor: pointer; transition: 0.3s;"></div>
+                <div style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255, 255, 255, 0.3); cursor: pointer; transition: 0.3s;"></div>
+                <div style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255, 255, 255, 0.3); cursor: pointer; transition: 0.3s;"></div>
+            </div>
+
+            <button class="boton-siguiente-carrusel" tabindex="0" aria-label="Siguiente evento">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 5L15 12L8 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Bottom Carousel Section -->
+        <div class="bottom-section">
+            <div class="section-header">
+                <h2 class="section-title">Siguiente Jornada</h2>
+                <p class="section-subtitle">Mira Gratis Partidos de MLS season pass - No todos pueden estar disponibles al momento de Su Emision.</p>
+            </div>
+            
+            <div class="matches-carousel" id="matches-carousel">
+                <!-- Los partidos se cargarán dinámicamente aquí -->
+                <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                    <div class="match-card focused" tabindex="0" role="button" aria-label="Tarjeta de partido 1" style="background: rgb(135, 206, 235); position: relative; border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <div class="match-date">23/08/2025</div>
+                        <div class="teams-container">
+                            <div class="team">
+                                <div class="team-logo">
+                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/9720.png" alt="CF Montréal" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
+                                </div>
+                            </div>
+                            <div class="team">
+                                <div class="team-logo">
+                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/20906.png" alt="Austin FC" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="apple-tv-badge">Apple TV+</div>
+                        <div style="position: absolute; top: 0px; right: 0px; width: 100%; height: 100%; background: rgb(50, 205, 50); clip-path: polygon(60% 0px, 100% 0px, 100% 100%, 40% 100%); z-index: 1;"></div>
+                    </div>
+                    <div class="match-info">
+                        <div class="match-teams">CF Montréal vs. Austin FC</div>
+                        <div class="match-league">MLS</div>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                    <div class="match-card" tabindex="0" role="button" aria-label="Tarjeta de partido 2" style="background: rgb(255, 209, 0); position: relative; border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <div class="match-date">23/08/2025</div>
+                        <div class="teams-container">
+                            <div class="team">
+                                <div class="team-logo">
+                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/183.png" alt="Columbus Crew" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
+                                </div>
+                            </div>
+                            <div class="team">
+                                <div class="team-logo">
+                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/189.png" alt="New England Revolution" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="apple-tv-badge">Apple TV+</div>
+                        <div style="position: absolute; top: 0px; right: 0px; width: 100%; height: 100%; background: rgb(0, 102, 204); clip-path: polygon(60% 0px, 100% 0px, 100% 100%, 40% 100%); z-index: 1;"></div>
+                    </div>
+                    <div class="match-info">
+                        <div class="match-teams">Columbus Crew vs. New England Revolution</div>
+                        <div class="match-league">MLS</div>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                    <div class="match-card" tabindex="0" role="button" aria-label="Tarjeta de partido 3" style="background: rgb(200, 16, 46); position: relative; border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <div class="match-date">23/08/2025</div>
+                        <div class="teams-container">
+                            <div class="team">
+                                <div class="team-logo">
+                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/193.png" alt="D.C. United" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
+                                </div>
+                            </div>
+                            <div class="team">
+                                <div class="team-logo">
+                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/20232.png" alt="Inter Miami CF" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="apple-tv-badge">Apple TV+</div>
+                        <div style="position: absolute; top: 0px; right: 0px; width: 100%; height: 100%; background: rgb(255, 105, 180); clip-path: polygon(60% 0px, 100% 0px, 100% 100%, 40% 100%); z-index: 1;"></div>
+                    </div>
+                    <div class="match-info">
+                        <div class="match-teams">D.C. United vs. Inter Miami CF</div>
+                        <div class="match-league">MLS</div>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                    <div class="match-card" tabindex="0" role="button" aria-label="Tarjeta de partido 4" style="background: rgb(255, 107, 53); position: relative; border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <div class="match-date">23/08/2025</div>
+                        <div class="teams-container">
+                            <div class="team">
+                                <div class="team-logo">
+                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/18267.png" alt="FC Cincinnati" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
+                                </div>
+                            </div>
+                            <div class="team">
+                                <div class="team-logo">
+                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/17606.png" alt="New York City FC" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="apple-tv-badge">Apple TV+</div>
+                        <div style="position: absolute; top: 0px; right: 0px; width: 100%; height: 100%; background: rgb(135, 206, 235); clip-path: polygon(60% 0px, 100% 0px, 100% 100%, 40% 100%); z-index: 1;"></div>
+                    </div>
+                    <div class="match-info">
+                        <div class="match-teams">FC Cincinnati vs. New York City FC</div>
+                        <div class="match-league">MLS</div>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                    <div class="match-card" tabindex="0" role="button" aria-label="Tarjeta de partido 5" style="background: rgb(30, 58, 138); position: relative; border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <div class="match-date">23/08/2025</div>
+                        <div class="teams-container">
+                            <div class="team">
+                                <div class="team-logo">
+                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/10739.png" alt="Philadelphia Union" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
+                                </div>
+                            </div>
+                            <div class="team">
+                                <div class="team-logo">
+                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/182.png" alt="Chicago Fire FC" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="apple-tv-badge">Apple TV+</div>
+                        <div style="position: absolute; top: 0px; right: 0px; width: 100%; height: 100%; background: rgb(200, 16, 46); clip-path: polygon(60% 0px, 100% 0px, 100% 100%, 40% 100%); z-index: 1;"></div>
+                    </div>
+                    <div class="match-info">
+                        <div class="match-teams">Philadelphia Union vs. Chicago Fire FC</div>
+                        <div class="match-league">MLS</div>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                    <div class="match-card" tabindex="0" role="button" aria-label="Tarjeta de partido 6" style="background: rgb(200, 16, 46); position: relative; border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <div class="match-date">23/08/2025</div>
+                        <div class="teams-container">
+                            <div class="team">
+                                <div class="team-logo">
+                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/185.png" alt="FC Dallas" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
+                                </div>
+                            </div>
+                            <div class="team">
+                                <div class="team-logo">
+                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/18966.png" alt="LAFC" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="apple-tv-badge">Apple TV+</div>
+                        <div style="position: absolute; top: 0px; right: 0px; width: 100%; height: 100%; background: rgb(0, 161, 228); clip-path: polygon(60% 0px, 100% 0px, 100% 100%, 40% 100%); z-index: 1;"></div>
+                    </div>
+                    <div class="match-info">
+                        <div class="match-teams">FC Dallas vs. LAFC</div>
+                        <div class="match-league">MLS</div>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                    <div class="match-card" tabindex="0" role="button" aria-label="Tarjeta de partido 7" style="background: rgb(255, 107, 53); position: relative; border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <div class="match-date">23/08/2025</div>
+                        <div class="teams-container">
+                            <div class="team">
+                                <div class="team-logo">
+                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/6077.png" alt="Houston Dynamo FC" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
+                                </div>
+                            </div>
+                            <div class="team">
+                                <div class="team-logo">
+                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/191.png" alt="San Jose Earthquakes" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="apple-tv-badge">Apple TV+</div>
+                        <div style="position: absolute; top: 0px; right: 0px; width: 100%; height: 100%; background: rgb(0, 102, 204); clip-path: polygon(60% 0px, 100% 0px, 100% 100%, 40% 100%); z-index: 1;"></div>
+                    </div>
+                    <div class="match-info">
+                        <div class="match-teams">Houston Dynamo FC vs. San Jose Earthquakes</div>
+                        <div class="match-league">MLS</div>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                    <div class="match-card" tabindex="0" role="button" aria-label="Tarjeta de partido 8" style="background: rgb(255, 209, 0); position: relative; border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <div class="match-date">23/08/2025</div>
+                        <div class="teams-container">
+                            <div class="team">
+                                <div class="team-logo">
+                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/18986.png" alt="Nashville SC" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
+                                </div>
+                            </div>
+                            <div class="team">
+                                <div class="team-logo">
+                                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/12011.png" alt="Orlando City SC" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="apple-tv-badge">Apple TV+</div>
+                        <div style="position: absolute; top: 0px; right: 0px; width: 100%; height: 100%; background: rgb(128, 0, 128); clip-path: polygon(60% 0px, 100% 0px, 100% 100%, 40% 100%); z-index: 1;"></div>
+                    </div>
+                    <div class="match-info">
+                        <div class="match-teams">Nashville SC vs. Orlando City SC</div>
+                        <div class="match-league">MLS</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let paginaActual = 0;
+        let autoPlayInterval = null;
+        let hayFoco = false;
+        let inactividadTimer = null;
+        let ultimaActividad = Date.now();
+        let carruselContainer = null;
+        let tarjetasContainer = null;
+        let eventosData = [];
+        let mlsTeams = []; // Array para almacenar equipos de MLS
+        let mlsPartidosESPN = []; // Array para almacenar partidos de MLS desde ESPN
+
+        // Esperar (promesa) para backoff
+        function esperar(ms){ return new Promise(res => setTimeout(res, ms)); }
+
+        // Función para obtener equipos de MLS desde ESPN API
+        async function loadMLSTeams() {
+            try {
+                console.log('🔍 Cargando equipos de MLS desde ESPN API...');
+                
+                // URL de la API de ESPN para MLS
+                const response = await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/usa.1/teams');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.sports && data.sports[0] && data.sports[0].leagues && data.sports[0].leagues[0] && data.sports[0].leagues[0].teams) {
+                    mlsTeams = data.sports[0].leagues[0].teams.map(team => ({
+                        name: team.team.name,
+                        abbreviation: team.team.abbreviation,
+                        displayName: team.team.displayName,
+                        shortName: team.team.shortName
+                    }));
+                    
+                    console.log('✅ Equipos de MLS cargados:', mlsTeams.length);
+                    console.log('📋 Lista de equipos MLS:', mlsTeams.map(t => t.name));
+                    
+                    return mlsTeams;
+                } else {
+                    throw new Error('Estructura de datos inesperada en ESPN API');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error cargando equipos MLS:', error);
+                
+                // Fallback con equipos MLS conocidos (lista completa actualizada)
+                mlsTeams = [
+                    // Conferencia Este
+                    { name: 'Atlanta United FC', abbreviation: 'ATL' },
+                    { name: 'Charlotte FC', abbreviation: 'CLT' },
+                    { name: 'Chicago Fire FC', abbreviation: 'CHI' },
+                    { name: 'Chicago Fire', abbreviation: 'CHI' }, // Variante sin FC
+                    { name: 'FC Cincinnati', abbreviation: 'CIN' },
+                    { name: 'Columbus Crew', abbreviation: 'CLB' },
+                    { name: 'D.C. United', abbreviation: 'DC' },
+                    { name: 'DC United', abbreviation: 'DC' }, // Variante sin punto
+                    { name: 'Inter Miami CF', abbreviation: 'MIA' },
+                    { name: 'Inter Miami', abbreviation: 'MIA' }, // Variante sin CF
+                    { name: 'CF Montréal', abbreviation: 'MTL' },
+                    { name: 'Nashville SC', abbreviation: 'NSH' },
+                    { name: 'New England Revolution', abbreviation: 'NE' },
+                    { name: 'New York City FC', abbreviation: 'NYC' },
+                    { name: 'New York Red Bulls', abbreviation: 'NY' },
+                    { name: 'Orlando City SC', abbreviation: 'ORL' },
+                    { name: 'Orlando City', abbreviation: 'ORL' }, // Variante sin SC
+                    { name: 'Philadelphia Union', abbreviation: 'PHI' },
+                    { name: 'Toronto FC', abbreviation: 'TOR' },
+                    // Conferencia Oeste
+                    { name: 'Austin FC', abbreviation: 'AUS' },
+                    { name: 'Austin FC II', abbreviation: 'AUS2' }, // Equipo reserva
+                    { name: 'Colorado Rapids', abbreviation: 'COL' },
+                    { name: 'FC Dallas', abbreviation: 'DAL' },
+                    { name: 'Houston Dynamo FC', abbreviation: 'HOU' },
+                    { name: 'Houston Dynamo', abbreviation: 'HOU' }, // Variante sin FC
+                    { name: 'LA Galaxy', abbreviation: 'LA' },
+                    { name: 'Los Angeles FC', abbreviation: 'LAFC' },
+                    { name: 'LAFC', abbreviation: 'LAFC' }, // Variante corta
+                    { name: 'Minnesota United FC', abbreviation: 'MIN' },
+                    { name: 'Minnesota United', abbreviation: 'MIN' }, // Variante sin FC
+                    { name: 'Portland Timbers', abbreviation: 'POR' },
+                    { name: 'Real Salt Lake', abbreviation: 'RSL' },
+                    { name: 'San Diego FC', abbreviation: 'SD' },
+                    { name: 'San Jose Earthquakes', abbreviation: 'SJ' },
+                    { name: 'Seattle Sounders FC', abbreviation: 'SEA' },
+                    { name: 'Sporting Kansas City', abbreviation: 'SKC' },
+                    { name: 'St. Louis City SC', abbreviation: 'STL' },
+                    { name: 'St. Louis CITY SC', abbreviation: 'STL' }, // Variante de ESPN
+                    { name: 'Vancouver Whitecaps FC', abbreviation: 'VAN' },
+                    { name: 'Vancouver Whitecaps', abbreviation: 'VAN' } // Variante sin FC
+                ];
+                
+                console.log('🔄 Usando lista fallback de equipos MLS:', mlsTeams.length);
+                return mlsTeams;
+            }
+        }
+
+        // Función para verificar si un partido es de MLS
+        function isMLSMatch(match) {
+            if (!mlsTeams || mlsTeams.length === 0) {
+                console.log('❌ No hay equipos MLS cargados');
+                return false;
+            }
+            
+            let homeTeam = '';
+            let awayTeam = '';
+            
+            // Extraer nombres de equipos
+            if (match.teams) {
+                try {
+                    const teams = typeof match.teams === 'string' ? JSON.parse(match.teams) : match.teams;
+                    if (teams.home && teams.home.name) {
+                        homeTeam = teams.home.name.toLowerCase();
+                    }
+                    if (teams.away && teams.away.name) {
+                        awayTeam = teams.away.name.toLowerCase();
+                    }
+                } catch (e) {
+                    console.error('Error parseando teams:', e.message);
+                }
+            }
+            
+            // Si no hay equipos, intentar extraer del título
+            if (!homeTeam && !awayTeam && match.title) {
+                const title = match.title.toLowerCase();
+                
+                // Excluir canales de TV y contenido que no son partidos
+                const tvKeywords = ['tv', 'channel', 'live', 'news', 'konferenz', 'goal rush', 'premier league live'];
+                const isTVContent = tvKeywords.some(keyword => title.includes(keyword));
+                
+                if (isTVContent) {
+                    console.log(`❌ Excluyendo contenido de TV: ${match.title}`);
+                    return false;
+                }
+                
+                if (title.includes(' vs ')) {
+                    const parts = title.split(' vs ');
+                    homeTeam = parts[0].trim();
+                    awayTeam = parts[1].trim();
+                }
+            }
+            
+            // Verificar si alguno de los equipos es de MLS (búsqueda más precisa)
+            const isMLS = mlsTeams.some(mlsTeam => {
+                const mlsName = mlsTeam.name.toLowerCase();
+                
+                // Buscar coincidencias exactas o muy cercanas
+                const homeMatch = homeTeam === mlsName || 
+                                 homeTeam.includes(mlsName + ' ') || 
+                                 homeTeam.includes(' ' + mlsName) ||
+                                 homeTeam === mlsName.replace(' fc', '').replace('fc ', '') ||
+                                 homeTeam === mlsName.replace(' d.c. ', 'dc ').replace('d.c. ', 'dc ') ||
+                                 homeTeam === mlsName.replace(' cf', '').replace('cf ', '');
+                
+                const awayMatch = awayTeam === mlsName || 
+                                 awayTeam.includes(mlsName + ' ') || 
+                                 awayTeam.includes(' ' + mlsName) ||
+                                 awayTeam === mlsName.replace(' fc', '').replace('fc ', '') ||
+                                 awayTeam === mlsName.replace(' d.c. ', 'dc ').replace('d.c. ', 'dc ') ||
+                                 awayTeam === mlsName.replace(' cf', '').replace('cf ', '');
+                
+                const matchFound = homeMatch || awayMatch;
+                
+                if (matchFound) {
+                    console.log(`✅ Partido MLS encontrado: ${homeTeam} vs ${awayTeam} (coincide con: ${mlsTeam.name})`);
+                }
+                
+                return matchFound;
+            });
+            
+            if (!isMLS && (homeTeam || awayTeam)) {
+                console.log(`❌ No es MLS: ${homeTeam} vs ${awayTeam}`);
+            }
+            
+            return isMLS;
+        }
+
+
+
+                 // Función helper para resolver sources a embeds (unificada para fútbol, béisbol y fallbacks)
+        async function resolveSourcesToEmbeds(sources) {
+            const embeds = [];
+            
+            if (!sources || !Array.isArray(sources)) {
+                return embeds;
+            }
+            
+            for (const source of sources) {
+                try {
+                    const response = await fetch(`https://streamed.pk/api/stream/${source.source}/${source.id}`);
+                    const streams = await response.json();
+                    
+                    if (streams && streams.length > 0) {
+                        streams.forEach(stream => {
+                            embeds.push({
+                                attributes: {
+                                    embed_url: stream.embedUrl, // Usar embedUrl resuelto, no el endpoint
+                                    embed_name: `${stream.hd ? 'HD' : 'SD'} - ${stream.language || source.source}`
+                                }
+                            });
+                        });
+                    }
+                } catch (error) {
+                    console.log(`Error cargando stream para ${source.source}:`, error.message);
+                }
+            }
+            
+            return embeds;
+        }
+
+        // Función para cargar datos desde la API de Streamed
+         async function cargarEventosAPI() {
+             try {
+                 console.log('🔄 Cargando eventos desde Streamed API...');
+                 const respuesta = await fetch('https://streamed.pk/api/matches/football?_t=' + Date.now(), { cache: 'no-store' });
+                 if (!respuesta.ok) {
+                     throw new Error(`HTTP error! status: ${respuesta.status}`);
+                 }
+                 const matches = await respuesta.json();
+                 
+                 console.log('📊 Datos recibidos de Streamed API:', matches);
+                 console.log('🏆 Ligas disponibles:', matches.map(m => m.league || m.competition || m.tournament || m.event || m.category || 'Sin liga'));
+                 
+                 // Primero cargar equipos de MLS
+                 await loadMLSTeams();
+                 
+                 // Mostrar algunos ejemplos de partidos para debugging
+                 console.log('🔍 Primeros 5 partidos recibidos:');
+                 matches.slice(0, 5).forEach((match, index) => {
+                     console.log(`  ${index + 1}. ${match.title || 'Sin título'} - Teams: ${JSON.stringify(match.teams)}`);
+                 });
+                 
+                 // Filtrar partidos de MLS por nombres de equipos
+                 const mlsMatches = matches.filter(match => {
+                     const isMLS = isMLSMatch(match);
+                     
+                     // Debug específico para Inter Miami
+                     if (match.title && match.title.toLowerCase().includes('inter miami')) {
+                         console.log(`🔍 Debug Inter Miami: "${match.title}" - Es MLS: ${isMLS}`);
+                         console.log(`   Teams: ${JSON.stringify(match.teams)}`);
+                     }
+                     
+                     return isMLS;
+                 });
+                 
+                 console.log(`⚽ Partidos de MLS encontrados: ${mlsMatches.length}`);
+                 if (mlsMatches.length > 0) {
+                     console.log('📋 Partidos MLS encontrados:');
+                     mlsMatches.forEach((match, index) => {
+                         console.log(`  ${index + 1}. ${match.title || 'Sin título'}`);
+                     });
+                 }
+                 
+                 // Si no hay partidos de MLS, usar los primeros 5 partidos de fútbol como fallback
+                 const partidosAUsar = mlsMatches.length > 0 ? mlsMatches : matches.slice(0, 5);
+                 
+                 // Convertir formato de Streamed al formato esperado
+                 eventosData = [];
+                 
+                 for (const match of partidosAUsar) {
+                     const embeds = await resolveSourcesToEmbeds(match.sources);
+                     
+                     eventosData.push({
+                         attributes: {
+                             diary_hour: formatearHoraStreamed(match.date),
+                             diary_description: `${match.league || match.competition || 'Fútbol'} - ${match.title || 'Partido'}`,
+                             embeds: {
+                                 data: embeds
+                             }
+                         }
+                     });
+                 }
+                 
+
+                 
+
+                 
+                 console.log(`✅ ${eventosData.length} eventos cargados desde Streamed API`);
+                 
+                 // Si no hay eventos, crear eventos por defecto con embeds vacíos (botón "No hay streams disponibles")
+                 if (eventosData.length === 0) {
+                     console.log('⚠️ No hay eventos disponibles, creando eventos por defecto...');
+                     eventosData = [
+                         {
+                             attributes: {
+                                 diary_hour: '18:30',
+                                 diary_description: 'MLS - CF Montréal vs Austin FC',
+                                 embeds: {
+                                     data: [] // Embeds vacíos para mostrar "No hay streams disponibles"
+                                 }
+                             }
+                         },
+                         {
+                             attributes: {
+                                 diary_hour: '20:00',
+                                 diary_description: 'MLS - Columbus Crew vs New England Revolution',
+                                 embeds: {
+                                     data: [] // Embeds vacíos para mostrar "No hay streams disponibles"
+                                 }
+                             }
+                         }
+                     ];
+                 }
+                 
+                 return eventosData;
+             } catch (error) {
+                 console.error('❌ Error al cargar eventos desde Streamed API:', error);
+                 
+                 // Crear eventos por defecto en caso de error con embeds vacíos
+                 console.log('⚠️ Creando eventos por defecto debido al error...');
+                 return [
+                     {
+                         attributes: {
+                             diary_hour: '18:30',
+                             diary_description: 'MLS - CF Montréal vs Austin FC',
+                             embeds: {
+                                 data: [] // Embeds vacíos para mostrar "No hay streams disponibles"
+                             }
+                         }
+                     }
+                 ];
+             }
+         }
+
+        // Utilidad: formatear hora a HH:MM y convertir a minutos (acepta HH:MM o HH:MM:SS)
+        function formatearHora(horaStr) {
+            if (!horaStr || typeof horaStr !== 'string') return '';
+            const partes = horaStr.split(':');
+            if (partes.length >= 2) {
+                const h = partes[0].padStart(2, '0');
+                const m = partes[1].padStart(2, '0');
+                return `${h}:${m}`;
+            }
+            return horaStr;
+        }
+
+        // Función para formatear hora desde timestamp de Streamed
+        function formatearHoraStreamed(dateString) {
+            if (!dateString) return '6:30 PM';
+            
+            try {
+                const date = new Date(dateString);
+                if (isNaN(date.getTime())) return '6:30 PM';
+                
+                return date.toLocaleTimeString('en-US', {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true
+                });
+            } catch (e) {
+                return '6:30 PM';
+            }
+        }
+
+
+
+        function convertirHoraAMinutos(horaStr) {
+            if (!horaStr || typeof horaStr !== 'string') return Number.POSITIVE_INFINITY;
+            const partes = horaStr.split(':');
+            if (partes.length < 2) return Number.POSITIVE_INFINITY;
+            const h = parseInt(partes[0], 10);
+            const mm = parseInt(partes[1], 10);
+            if (isNaN(h) || isNaN(mm)) return Number.POSITIVE_INFINITY;
+            return h * 60 + mm;
+        }
+
+
+
+        
+
+                         // Función para abrir streams
+        function openStream(url) {
+            if (!url || url === 'undefined' || url === '') {
+                alert('No hay streams disponibles para este evento');
+                return;
+            }
+            
+            // Verificar que sea una URL válida (no un endpoint de API)
+            if (url.includes('/api/stream/') && !url.includes('embedUrl')) {
+                console.warn('⚠️ Intento de abrir endpoint de API en lugar de URL de embed:', url);
+                alert('Error: URL de stream no válida');
+                return;
+            }
+            
+            try {
+                window.open(url, '_blank');
+            } catch (error) {
+                console.error('Error abriendo stream:', error);
+                alert('Error al abrir el stream');
+            }
+        }
+
+        // Función para crear tarjeta desde datos de la API
+        async function crearTarjetaDesdeAPI(evento) {
+             const tarjeta = document.createElement('div');
+             tarjeta.className = 'google-tv-card';
+
+             const hora = evento?.attributes?.diary_hour || '18:30';
+             const descripcion = evento?.attributes?.diary_description || '';
+             const embeds = evento?.attributes?.embeds?.data || [];
+
+             // Extraer equipos y categoría
+             let tituloEquipos = descripcion;
+             let categoriaTitulo = 'Deportes';
+             if (descripcion.includes(':')) {
+                 const partes = descripcion.split(':');
+                 if (partes.length > 1) {
+                     tituloEquipos = partes[1].trim();
+                     categoriaTitulo = partes[0].trim();
+                 }
+             }
+             if (descripcion.includes(' - ')) {
+                 const partes = descripcion.split(' - ');
+                 if (partes.length > 1) {
+                     tituloEquipos = partes[1].trim();
+                     categoriaTitulo = partes[0].trim();
+                 }
+             }
+             tituloEquipos = tituloEquipos.replace(/\n/g, ' ').replace(/\t/g, ' ').trim();
+
+            // Cargar configuraciones de imágenes/logos (remoto/local)
+            const config = await (async () => {
+                try { return await fetch('https://loadplus.netlify.app/configuracion-imagenes.json?_t=' + Date.now(), { cache: 'no-store' }).then(r => r.json()); } catch(_) {}
+                try { return await fetch('./configuracion-imagenes.json?_t=' + Date.now(), { cache: 'no-store' }).then(r => r.json()); } catch(_) {}
+                return null;
+            })();
+
+            // Imagen de fondo
+            const imgFondo = config ? (function obtenerImagenFondoLocal(titulo, conf){
+                const t = (titulo||'').toLowerCase();
+                if (conf?.equipos_especificos) {
+                    for (const [eq, cfg] of Object.entries(conf.equipos_especificos)) {
+                        if (t.includes(eq.toLowerCase())) { const a=cfg.urls||[]; if (a.length) return a[Math.floor(Math.random()*a.length)]; }
+                    }
+                }
+                if (conf?.imagenes_eventos) {
+                    for (const [cat, cfg] of Object.entries(conf.imagenes_eventos)) {
+                        if (t.includes(cat.toLowerCase())) { const a=cfg.urls||[]; if (a.length) return a[Math.floor(Math.random()*a.length)]; }
+                    }
+                }
+                const gen = conf?.imagenes_generales; if (Array.isArray(gen) && gen.length) return gen[Math.floor(Math.random()*gen.length)];
+                return 'https://i.imgur.com/3tkeh6s.png';
+            })(descripcion, config) : 'https://i.imgur.com/3tkeh6s.png';
+            tarjeta.setAttribute('data-imagen-fondo', imgFondo);
+
+                         const logosCanales = (function obtenerLogosLocal(titulo, embeds, conf){
+                 if (!conf || !conf.logos_canales) return [];
+                 const encontrados = [];
+                 const familiasCanales = { 'espn': ['espn','espn premium ar','espn premium','espn2','espn 2'], 'disney': ['disney+','disney +'], 'tvhd': ['tvhd','tvhd '], 'eventos': ['eventos','eventos '] };
+                 const familiaDe = (n)=>{ const s=n.toLowerCase(); for (const [f,ms] of Object.entries(familiasCanales)) if (ms.some(m=>s.includes(m))) return f; return s; };
+                 const usadas = new Set();
+                 const tituloLower = (titulo||'').toLowerCase();
+                 embeds.forEach(e=>{
+                     const name = e?.attributes?.embed_name || '';
+                     for (const [canal,cfg] of Object.entries(conf.logos_canales)) {
+                         if (name.toLowerCase().includes(canal.toLowerCase())) { const fam=familiaDe(canal); if (!usadas.has(fam)) { usadas.add(fam); encontrados.push({url:cfg.url,alt:cfg.alt||canal,descripcion:cfg.descripcion||canal}); } }
+                     }
+                 });
+                 for (const [canal,cfg] of Object.entries(conf.logos_canales)) {
+                     if (encontrados.length>=5) break;
+                     if (tituloLower.includes(canal.toLowerCase())) { const fam=familiaDe(canal); if (!usadas.has(fam)) { usadas.add(fam); encontrados.push({url:cfg.url,alt:cfg.alt||canal,descripcion:cfg.descripcion||canal}); } }
+                 }
+                 return encontrados.slice(0,5);
+             })(descripcion, embeds, config);
+
+                         const esCompacto = (embeds && embeds.length > 5);
+
+            // Extraer nombres de equipos del título
+            let equipo1 = '';
+            let equipo2 = '';
+            if (tituloEquipos.includes(' vs ')) {
+                const equipos = tituloEquipos.split(' vs ');
+                equipo1 = equipos[0].trim();
+                equipo2 = equipos[1].trim();
+            } else if (tituloEquipos.includes(' vs. ')) {
+                const equipos = tituloEquipos.split(' vs. ');
+                equipo1 = equipos[0].trim();
+                equipo2 = equipos[1].trim();
+            } else {
+                equipo1 = tituloEquipos;
+                equipo2 = '';
+            }
+            
+            // Ordenar equipos por longitud del nombre (más largo abajo)
+            if (equipo1 && equipo2) {
+                if (equipo1.length > equipo2.length) {
+                    [equipo1, equipo2] = [equipo2, equipo1];
+                }
+            }
+
+
+
+            // Función para obtener logo del equipo desde datos de ESPN
+            function obtenerLogoEquipoESPN(nombreEquipo) {
+                for (const partido of mlsPartidosESPN) {
+                    const homeTeam = partido.competitions[0]?.competitors?.find(c => c.homeAway === 'home');
+                    const awayTeam = partido.competitions[0]?.competitors?.find(c => c.homeAway === 'away');
+                    
+                    if (homeTeam && homeTeam.team.name === nombreEquipo) {
+                        return homeTeam.team.logo;
+                    }
+                    if (awayTeam && awayTeam.team.name === nombreEquipo) {
+                        return awayTeam.team.logo;
+                    }
+                }
+                
+                // Si no encuentra en ESPN, usar URL directa de ESPN
+                const logosEquipos = {
+                    'CF Montréal': 'https://a.espncdn.com/i/teamlogos/soccer/500/9720.png',
+                    'Austin FC': 'https://a.espncdn.com/i/teamlogos/soccer/500/20906.png',
+                    'Columbus Crew': 'https://a.espncdn.com/i/teamlogos/soccer/500/183.png',
+                    'New England Revolution': 'https://a.espncdn.com/i/teamlogos/soccer/500/189.png',
+                    'D.C. United': 'https://a.espncdn.com/i/teamlogos/soccer/500/193.png',
+                    'Inter Miami': 'https://a.espncdn.com/i/teamlogos/soccer/500/20232.png',
+                    'FC Cincinnati': 'https://a.espncdn.com/i/teamlogos/soccer/500/18267.png',
+                    'New York City FC': 'https://a.espncdn.com/i/teamlogos/soccer/500/17606.png',
+                    'Philadelphia Union': 'https://a.espncdn.com/i/teamlogos/soccer/500/10739.png',
+                    'Chicago Fire': 'https://a.espncdn.com/i/teamlogos/soccer/500/182.png',
+                    'FC Dallas': 'https://a.espncdn.com/i/teamlogos/soccer/500/185.png',
+                    'LAFC': 'https://a.espncdn.com/i/teamlogos/soccer/500/18966.png',
+                    'Houston Dynamo': 'https://a.espncdn.com/i/teamlogos/soccer/500/6077.png',
+                    'San Jose Earthquakes': 'https://a.espncdn.com/i/teamlogos/soccer/500/191.png',
+                    'Nashville SC': 'https://a.espncdn.com/i/teamlogos/soccer/500/18986.png',
+                    'Orlando City': 'https://a.espncdn.com/i/teamlogos/soccer/500/12011.png',
+                    'Real Salt Lake': 'https://a.espncdn.com/i/teamlogos/soccer/500/4771.png',
+                    'Minnesota United': 'https://a.espncdn.com/i/teamlogos/soccer/500/17362.png',
+                    'Vancouver Whitecaps': 'https://a.espncdn.com/i/teamlogos/soccer/500/9727.png',
+                    'St. Louis City': 'https://a.espncdn.com/i/teamlogos/soccer/500/21812.png',
+                    'LA Galaxy': 'https://a.espncdn.com/i/teamlogos/soccer/500/187.png',
+                    'Colorado Rapids': 'https://a.espncdn.com/i/teamlogos/soccer/500/184.png',
+                    'San Diego FC': 'https://a.espncdn.com/i/teamlogos/soccer/500/22529.png',
+                    'Portland Timbers': 'https://a.espncdn.com/i/teamlogos/soccer/500/9723.png'
+                };
+                
+                return logosEquipos[nombreEquipo] || 'https://a.espncdn.com/i/teamlogos/soccer/500/default.png';
+            }
+
+            const contenidoHTML = `
+                <div class="contenido-texto">
+                    <div class="branding">Google TV</div>
+                    <div class="metadata">
+                        <span>${hora}</span>
+                        <span>MLS</span>
+                        ${logosCanales.map(logo => `<img src=\"${logo.url}\" alt=\"${logo.alt}\" title=\"${logo.descripcion}\">`).join('')}
+                    </div>
+                    <div class="teams">
+                        <div class="team">
+                            <img src="${obtenerLogoEquipoESPN(equipo1)}" alt="${equipo1}" class="team-logo">
+                            <span class="team-name">${equipo1}</span>
+                        </div>
+                        <div class="team">
+                            <img src="${obtenerLogoEquipoESPN(equipo2)}" alt="${equipo2}" class="team-logo">
+                            <span class="team-name">${equipo2}</span>
+                        </div>
+                    </div>
+                    <p>${(config?.descripciones_generales?.futbol || config?.descripciones_generales?.generico || ['Disfruta del mejor contenido'])[0]}</p>
+                                         <div class="botones-container${esCompacto ? ' compacto' : ''}">
+                         ${embeds.map((embed, index) => {
+                             const embedUrl = embed?.attributes?.embed_url || '';
+                             const embedName = embed?.attributes?.embed_name || 'Ver';
+                             return `<button data-url="${embedUrl}" data-index="${index}" tabindex="0" role="button">${embedName}</button>`;
+                         }).join('')}
+                         ${embeds.length === 0 ? '<button data-no-streams="true" tabindex="0" role="button">No hay streams disponibles</button>' : ''}
+                     </div>
+                </div>
+            `;
+
+            tarjeta.innerHTML = contenidoHTML;
+            return tarjeta;
+        }
+
+        // Función para crear carrusel dinámico
+        async function crearCarruselDinamico() {
+             // Cargar datos de la API
+             const eventos = await cargarEventosAPI();
+             
+             // Filtrar eventos que ya pasaron su hora (horario de Guatemala UTC-6)
+             const ahora = new Date();
+             // Obtener hora en zona horaria de Guatemala
+             const horaGuatemala = new Date(ahora.toLocaleString("en-US", {timeZone: "America/Guatemala"}));
+             const horaActual = horaGuatemala.getHours() * 60 + horaGuatemala.getMinutes(); // Convertir a minutos
+             
+                           // Mostrar todos los eventos de MLS disponibles (sin filtro de hora)
+                           const eventosFiltrados = eventos;
+              
+              // Ordenar cronológicamente por hora (y por descripción como desempate)
+              const eventosOrdenados = eventosFiltrados.slice().sort((a, b) => {
+                  const horaA = a?.attributes?.diary_hour;
+                  const horaB = b?.attributes?.diary_hour;
+                  const tA = convertirHoraAMinutos(horaA);
+                  const tB = convertirHoraAMinutos(horaB);
+                  if (tA !== tB) return tA - tB;
+                  const dA = (a?.attributes?.diary_description || '').toString();
+                  const dB = (b?.attributes?.diary_description || '').toString();
+                  return dA.localeCompare(dB);
+              });
+             
+            // Limpiar contenedor existente
+            if (tarjetasContainer) {
+                tarjetasContainer.innerHTML = '';
+            }
+            
+            if (eventosOrdenados.length === 0) {
+                // Crear tarjeta especial si no hay eventos disponibles
+                const tarjetaEspecial = document.createElement('div');
+                tarjetaEspecial.className = 'google-tv-card tarjeta-especial';
+                tarjetaEspecial.innerHTML = `
+                    <div class="contenido-texto">
+                        <h1>No hay eventos próximos</h1>
+                        <h2>Los eventos de hoy ya han finalizado</h2>
+                        <p>Vuelve mañana para ver nuevos partidos y eventos deportivos</p>
+                    </div>
+                `;
+                tarjetasContainer.appendChild(tarjetaEspecial);
+                return;
+            }
+            
+            // Crear tarjetas en segmentos de 2 en 2 para carga rápida
+            const segmentSize = 2;
+            const totalEventos = eventosOrdenados.length;
+            
+            // Cargar las primeras 2 tarjetas inmediatamente
+            for (let i = 0; i < Math.min(segmentSize, totalEventos); i++) {
+                const tarjeta = await crearTarjetaDesdeAPI(eventosOrdenados[i]);
+                tarjeta.style.margin = '0';
+                tarjeta.style.flexShrink = '0';
+                tarjeta.style.flexBasis = '100%';
+                tarjeta.style.width = '100%';
+                tarjeta.style.minWidth = '100%';
+                tarjeta.style.height = '100vh';
+                tarjetasContainer.appendChild(tarjeta);
+            }
+            
+            // Cargar el resto de tarjetas en segundo plano
+            if (totalEventos > segmentSize) {
+                setTimeout(async () => {
+                    for (let i = segmentSize; i < totalEventos; i++) {
+                        const tarjeta = await crearTarjetaDesdeAPI(eventosOrdenados[i]);
+                        tarjeta.style.margin = '0';
+                        tarjeta.style.flexShrink = '0';
+                        tarjeta.style.flexBasis = '100%';
+                        tarjeta.style.width = '100%';
+                        tarjeta.style.minWidth = '100%';
+                        tarjeta.style.height = '100vh';
+                        tarjetasContainer.appendChild(tarjeta);
+                    }
+                    console.log(`✅ Carga completa: ${totalEventos} tarjetas cargadas`);
+                }, 100);
+            }
+              
+              // Inicializar visibilidad de botones
+              setTimeout(() => {
+                  actualizarVisibilidadBotones();
+              }, 100);
+              
+                             console.log(`🎯 Carrusel creado con ${eventosOrdenados.length} eventos (${eventos.length - eventosOrdenados.length} eventos pasados filtrados)`);
+               console.log(`🕐 Hora actual en Guatemala: ${horaGuatemala.toLocaleTimeString('es-GT', {timeZone: "America/Guatemala"})}`);
+         }
+
+                  // Función para recargar datos de la API
+          async function recargarDatosAPI() {
+              console.log('🔄 Recargando datos de la API Streamed...');
+              paginaActual = 0; // Resetear a la primera página
+              await crearCarruselDinamico();
+              actualizarFondoWrapper();
+              
+              // Reconfigurar eventos después de recargar
+              configurarEventos();
+          }
+
+          // Función para cargar partidos de MLS desde ESPN API
+        async function cargarPartidosMLSESPN() {
+            try {
+                console.log('🔍 Cargando partidos de MLS desde ESPN API...');
+                
+                // URL de la API de ESPN para MLS
+                const response = await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/usa.1/scoreboard');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.events && Array.isArray(data.events)) {
+                    console.log(`✅ ${data.events.length} partidos de MLS cargados desde ESPN`);
+                    
+                    // Guardar los datos de ESPN globalmente
+                    mlsPartidosESPN = data.events;
+                    
+                    // Actualizar la sección "Siguiente Jornada"
+                    actualizarSeccionSiguienteJornada(data.events);
+                    
+                    return data.events;
+                } else {
+                    throw new Error('Estructura de datos inesperada en ESPN API');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error cargando partidos MLS desde ESPN:', error);
+                return [];
+            }
+        }
+
+        // Mapeo de colores para equipos MLS organizados por conferencias
+        const mlsTeamColors = {
+            // CONFERENCIA ESTE
+            'Atlanta United FC': '#c8102e', // Rojo
+            'Charlotte FC': '#87ceeb', // Azul celeste
+            'Chicago Fire FC': '#c8102e', // Rojo
+            'FC Cincinnati': '#ff6b35', // Naranja
+            'Columbus Crew': '#ffd100', // Amarillo
+            'D.C. United': '#c8102e', // Rojo
+            'Inter Miami CF': '#ff69b4', // Rosa
+            'CF Montréal': '#87ceeb', // Azul claro
+            'Nashville SC': '#ffd100', // Amarillo
+            'New England Revolution': '#0066cc', // Azul
+            'New York City FC': '#87ceeb', // Celeste
+            'New York Red Bulls': '#c8102e', // Rojo
+            'Orlando City SC': '#800080', // Púrpura
+            'Philadelphia Union': '#1e3a8a', // Azul marino
+            'Toronto FC': '#c8102e', // Rojo
+            
+            // CONFERENCIA OESTE
+            'Austin FC': '#32cd32', // Verde
+            'Colorado Rapids': '#8b0000', // Burdeos/Granate
+            'FC Dallas': '#c8102e', // Rojo
+            'Houston Dynamo FC': '#ff6b35', // Naranja
+            'LA Galaxy': '#1e3a8a', // Azul marino
+            'Los Angeles FC': '#000000', // Negro
+            'LAFC': '#000000', // Negro
+            'Minnesota United FC': '#808080', // Gris
+            'Portland Timbers': '#32cd32', // Verde
+            'Real Salt Lake': '#8b0000', // Granate
+            'San Diego FC': '#0066cc', // Azul
+            'San Jose Earthquakes': '#0066cc', // Azul
+            'Seattle Sounders FC': '#32cd32', // Verde
+            'Sporting Kansas City': '#87ceeb', // Azul claro (sporting blue)
+            'St. Louis City SC': '#c8102e', // Rojo
+            'St. Louis CITY SC': '#c8102e', // Rojo (variante del nombre)
+            'Vancouver Whitecaps FC': '#1e3a8a' // Azul marino (diferente al azul de St. Louis)
+        };
+
+        // Función para obtener color del equipo
+        function getTeamColor(teamName) {
+            return mlsTeamColors[teamName] || '#135CEB'; // Color por defecto
+        }
+
+        // Función para actualizar la sección "Siguiente Jornada"
+        function actualizarSeccionSiguienteJornada(partidos) {
+            const carousel = document.getElementById('matches-carousel');
+            if (!carousel) return;
+            
+            carousel.innerHTML = '';
+            
+            partidos.forEach((partido, index) => {
+                const homeTeam = partido.competitions[0]?.competitors?.find(c => c.homeAway === 'home');
+                const awayTeam = partido.competitions[0]?.competitors?.find(c => c.homeAway === 'away');
+                
+                if (homeTeam && awayTeam) {
+                    const matchCard = document.createElement('div');
+                    matchCard.style.display = 'flex';
+                    matchCard.style.flexDirection = 'column';
+                    matchCard.style.alignItems = 'flex-start';
+                    
+                    const matchDate = new Date(partido.date).toLocaleDateString('es-ES');
+                    const homeTeamName = homeTeam.team.name;
+                    const awayTeamName = awayTeam.team.name;
+                    const homeTeamLogo = homeTeam.team.logo;
+                    const awayTeamLogo = awayTeam.team.logo;
+                    
+                    // Obtener colores específicos de cada equipo
+                    const homeTeamColor = getTeamColor(homeTeamName);
+                    const awayTeamColor = getTeamColor(awayTeamName);
+                    
+                    matchCard.innerHTML = `
+                        <div class="match-card" tabindex="0" role="button" aria-label="Tarjeta de partido ${index + 1}" style="background: ${homeTeamColor}; position: relative; border: 1px solid rgba(255, 255, 255, 0.1);">
+                            <div class="match-date">${matchDate}</div>
+                            <div class="teams-container">
+                                <div class="team">
+                                    <div class="team-logo">
+                                        <img src="${homeTeamLogo}" alt="${homeTeamName}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
+                                    </div>
+                                </div>
+                                <div class="team">
+                                    <div class="team-logo">
+                                        <img src="${awayTeamLogo}" alt="${awayTeamName}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="apple-tv-badge">Apple TV+</div>
+                            <div style="position: absolute; top: 0px; right: 0px; width: 100%; height: 100%; background: ${awayTeamColor}; clip-path: polygon(60% 0px, 100% 0px, 100% 100%, 40% 100%); z-index: 1;"></div>
+                        </div>
+                        <div class="match-info">
+                            <div class="match-teams">${homeTeamName} vs. ${awayTeamName}</div>
+                            <div class="match-league">MLS</div>
+                        </div>
+                    `;
+                    
+                    carousel.appendChild(matchCard);
+                }
+            });
+            
+            // Reconfigurar la navegación después de actualizar las tarjetas
+            setTimeout(() => {
+                configurarNavegacionTarjetasPartido();
+            }, 100);
+            
+            console.log(`🎯 Sección "Siguiente Jornada" actualizada con ${partidos.length} partidos`);
+        }
+
+        // Función para recargar automáticamente cada 5 minutos
+                        function iniciarRecargaAutomatica() {
+                  setInterval(async () => {
+                      console.log('⏰ Recarga automática de datos desde FTVHD API...');
+                  await recargarDatosAPI();
+              }, 300000); // 5 minutos = 300,000 ms
+          }
+
+          // Inicialización
+          document.addEventListener('DOMContentLoaded', async function() {
+              carruselContainer = document.getElementById('google-tv-carrusel');
+              tarjetasContainer = document.getElementById('tarjetas-google-tv');
+              configurarMenuSuperior();
+              
+              // Crear carrusel dinámico con datos de la API
+              await crearCarruselDinamico();
+              
+              // Cargar partidos de MLS desde ESPN para la sección "Siguiente Jornada"
+              await cargarPartidosMLSESPN();
+              
+              configurarEventos();
+              configurarNavegacionTeclado();
+              // iniciarAutoPlay(); // Desactivado - carrusel manual
+              actualizarFondoWrapper();
+              
+              // Iniciar recarga automática
+              iniciarRecargaAutomatica();
+          });
+
+        // Función para actualizar el fondo del wrapper
+        function actualizarFondoWrapper() {
+            const wrapper = document.querySelector('#wraper');
+            if (!wrapper) return;
+            
+            const tarjetas = tarjetasContainer.querySelectorAll('.google-tv-card');
+            if (tarjetas.length === 0 || paginaActual >= tarjetas.length) return;
+            
+            const tarjetaActual = tarjetas[paginaActual];
+            const imagenFondo = tarjetaActual.getAttribute('data-imagen-fondo');
+            
+            if (imagenFondo) {
+                // Detectar si es Android o dispositivo móvil
+                const isAndroid = /Android/i.test(navigator.userAgent);
+                const isMobile = /Mobile|Android|iPhone|iPad/i.test(navigator.userAgent);
+                const isTouchDevice = 'ontouchstart' in window;
+                
+                wrapper.style.background = `url('${imagenFondo}')`;
+                wrapper.style.backgroundSize = '100% 100%';
+                wrapper.style.backgroundPosition = 'center';
+                wrapper.style.backgroundRepeat = 'no-repeat';
+                
+                // Usar 'scroll' en Android/móviles para mejor rendimiento
+                if (isAndroid || isMobile || isTouchDevice) {
+                    wrapper.style.backgroundAttachment = 'scroll';
+                    wrapper.style.backgroundSize = 'cover';
+                } else {
+                    wrapper.style.backgroundAttachment = 'fixed';
+                    wrapper.style.backgroundSize = '100% 100%';
+                }
+                
+                console.log('🎨 Fondo del wrapper actualizado con imagen:', imagenFondo);
+                console.log('📱 Dispositivo:', isAndroid ? 'Android' : isMobile ? 'Móvil' : 'Desktop');
+                
+                // Verificar tamaño de la imagen
+                const img = new Image();
+                img.onload = function() {
+                    console.log('📏 Tamaño de imagen de fondo:', this.width + 'x' + this.height);
+                };
+                img.src = imagenFondo;
+            }
+        }
+
+        // Función para ir a una página específica
+        function irAPagina(pagina) {
+             if (!tarjetasContainer) return;
+             
+             const tarjetas = tarjetasContainer.querySelectorAll('.google-tv-card');
+             const totalTarjetas = tarjetas.length;
+             
+             if (totalTarjetas === 0) return;
+             
+             const nuevaPagina = Math.max(0, Math.min(pagina, totalTarjetas - 1));
+             
+             // Cambiar de página
+             paginaActual = nuevaPagina;
+             
+             // Calcular el offset correctamente (cada tarjeta ocupa 100% del ancho)
+             const offset = paginaActual * 100;
+             
+             // Aplicar la transformación con transición suave
+             tarjetasContainer.style.transition = 'transform 0.8s ease';
+             tarjetasContainer.style.transform = `translateX(-${offset}%)`;
+             
+             // Actualizar el fondo del wrapper después de la transición
+             setTimeout(() => {
+                 actualizarFondoWrapper();
+             }, 800);
+             
+             console.log(`Página ${paginaActual + 1} de ${totalTarjetas}, offset: -${offset}%`);
+             
+             // Actualizar visibilidad de botones
+             actualizarVisibilidadBotones();
+         }
+
+        // Función para ir a la siguiente página
+        function siguientePagina() {
+             if (!tarjetasContainer) return;
+             
+             const tarjetas = tarjetasContainer.querySelectorAll('.google-tv-card');
+             const totalTarjetas = tarjetas.length;
+             
+             if (paginaActual < totalTarjetas - 1) {
+                 irAPagina(paginaActual + 1);
+             }
+         }
+
+         // Función para ir a la página anterior
+         function paginaAnterior() {
+             if (!tarjetasContainer) return;
+             
+             const tarjetas = tarjetasContainer.querySelectorAll('.google-tv-card');
+             const totalTarjetas = tarjetas.length;
+             
+             if (paginaActual > 0) {
+                 irAPagina(paginaActual - 1);
+             }
+         }
+
+         // Función para actualizar visibilidad de botones
+         function actualizarVisibilidadBotones() {
+             const botonSiguiente = document.querySelector('.boton-siguiente-carrusel');
+             const tarjetas = tarjetasContainer.querySelectorAll('.google-tv-card');
+             const totalTarjetas = tarjetas.length;
+             
+             if (botonSiguiente) {
+                 if (paginaActual === totalTarjetas - 1) {
+                     botonSiguiente.style.opacity = '0.3';
+                     botonSiguiente.style.pointerEvents = 'none';
+                 } else {
+                     botonSiguiente.style.opacity = '1';
+                     botonSiguiente.style.pointerEvents = 'auto';
+                 }
+             }
+             
+             // Actualizar indicadores de página
+             actualizarIndicadoresPagina();
+         }
+
+         // Función para actualizar indicadores de página
+                 function actualizarIndicadoresPagina() {
+            const indicadorContainer = document.getElementById('indicador-pagina');
+            const tarjetas = tarjetasContainer.querySelectorAll('.google-tv-card');
+            const totalTarjetas = tarjetas.length;
+            
+            if (!indicadorContainer || totalTarjetas === 0) return;
+            
+            // Limpiar indicadores existentes
+            indicadorContainer.innerHTML = '';
+            
+            // Crear indicadores para cada página (máximo 3)
+            const maxIndicadores = Math.min(totalTarjetas, 3);
+            for (let i = 0; i < maxIndicadores; i++) {
+                 const indicador = document.createElement('div');
+                 // Lógica circular para el indicador activo
+                 const indicadorActivo = paginaActual % maxIndicadores;
+                 indicador.style.cssText = `
+                     width: 12px;
+                     height: 12px;
+                     border-radius: 50%;
+                     background: ${i === indicadorActivo ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.3)'};
+                     cursor: pointer;
+                     transition: all 0.3s ease;
+                 `;
+                 
+                 indicador.addEventListener('click', () => {
+                     // Navegación circular en los indicadores
+                     if (i === 0 && paginaActual === totalTarjetas - 1) {
+                         // Si está en la última página y hace clic en el primer indicador, va al principio
+                         irAPagina(0);
+                     } else if (i === maxIndicadores - 1 && paginaActual === 0) {
+                         // Si está en la primera página y hace clic en el último indicador, va al final
+                         irAPagina(totalTarjetas - 1);
+                     } else {
+                         irAPagina(i);
+                     }
+                 });
+                 
+                 indicador.addEventListener('mouseenter', () => {
+                     if (i !== indicadorActivo) {
+                         indicador.style.background = 'rgba(255, 255, 255, 0.6)';
+                     }
+                 });
+                 
+                 indicador.addEventListener('mouseleave', () => {
+                     if (i !== indicadorActivo) {
+                         indicador.style.background = 'rgba(255, 255, 255, 0.3)';
+                     }
+                 });
+                 
+                 indicadorContainer.appendChild(indicador);
+             }
+         }
+
+        // Función para configurar eventos
+        function configurarEventos() {
+            
+
+                          // Botón siguiente
+             const botonSiguiente = document.querySelector('.boton-siguiente-carrusel');
+             if (botonSiguiente) {
+                 botonSiguiente.addEventListener('click', function() {
+                     siguientePagina();
+                     registrarActividad();
+                 });
+
+                 // Permitir Enter/Espacio para navegar
+                 botonSiguiente.addEventListener('keydown', function(e) {
+                     if (e.key === 'Enter' || e.key === ' ') {
+                         e.preventDefault();
+                         siguientePagina();
+                         registrarActividad();
+                     }
+                 });
+             }
+
+             // Configurar event listeners para botones de stream (delegación de eventos)
+             carruselContainer.addEventListener('click', function(e) {
+                 const button = e.target.closest('button[data-url], button[data-no-streams]');
+                 if (!button) return;
+                 
+                 e.preventDefault();
+                 registrarActividad();
+                 
+                 if (button.hasAttribute('data-no-streams')) {
+                     alert('No hay streams disponibles para este evento');
+                     return;
+                 }
+                 
+                 const url = button.getAttribute('data-url');
+                 openStream(url);
+             });
+
+             // Configurar event listeners para teclado en botones de stream
+             carruselContainer.addEventListener('keydown', function(e) {
+                 const button = e.target.closest('button[data-url], button[data-no-streams]');
+                 if (!button) return;
+                 
+                 if (e.key === 'Enter' || e.key === ' ') {
+                     e.preventDefault();
+                     registrarActividad();
+                     
+                     if (button.hasAttribute('data-no-streams')) {
+                         alert('No hay streams disponibles para este evento');
+                         return;
+                     }
+                     
+                     const url = button.getAttribute('data-url');
+                     openStream(url);
+                 }
+             });
+
+            // Eventos de foco
+            carruselContainer.addEventListener('focusin', function(e) {
+                if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON' || e.target.closest('a, button')) {
+                    hayFoco = true;
+                    detenerAutoPlay();
+                }
+            });
+
+            carruselContainer.addEventListener('focusout', function(e) {
+                setTimeout(() => {
+                    const elementoActivo = document.activeElement;
+                    if (!elementoActivo || !carruselContainer.contains(elementoActivo)) {
+                        hayFoco = false;
+                        iniciarAutoPlay();
+                    }
+                }, 100);
+            });
+
+            // Eventos de mouse
+            carruselContainer.addEventListener('mouseenter', function() {
+                hayFoco = true;
+                detenerAutoPlay();
+                registrarActividad();
+            });
+
+            carruselContainer.addEventListener('mouseleave', function() {
+                hayFoco = false;
+                iniciarAutoPlay();
+                registrarActividad();
+            });
+
+            // Eventos de interacción
+            carruselContainer.addEventListener('click', registrarActividad);
+            carruselContainer.addEventListener('mousemove', registrarActividad);
+            carruselContainer.addEventListener('keydown', registrarActividad);
+        }
+
+        // Función para configurar navegación por teclado
+        function configurarNavegacionTeclado() {
+                     // Detectar si es WebView (mejorado para Android)
+        const isWebView = /wv|WebView|Android.*Chrome/i.test(navigator.userAgent) || 
+                         (navigator.userAgent.includes('Android') && navigator.userAgent.includes('Chrome'));
+        
+        // Log para debug
+        console.log('📱 WebView detectado:', isWebView);
+        console.log('🔧 User Agent:', navigator.userAgent);
+        console.log('🌐 Platform:', navigator.platform);
+        console.log('📱 User Agent Data:', navigator.userAgentData);
+             
+             document.addEventListener('keydown', function(e) {
+                 const esBotonCarrusel = document.activeElement && document.activeElement.classList && document.activeElement.classList.contains('boton-siguiente-carrusel');
+                 
+                 // Tecla R para recargar datos de la API
+                 if (e.key === 'r' || e.key === 'R') {
+                     e.preventDefault();
+                     console.log('🔄 Recarga manual solicitada con tecla R');
+                     recargarDatosAPI();
+                     registrarActividad();
+                     return;
+                 }
+                 
+                 // Sistema de navegación específico por niveles
+                 const focused = document.activeElement;
+
+                 // 🔹 Navegación del carrusel (solo desde el botón siguiente)
+                 if (esBotonCarrusel) {
+                     if (e.key === 'ArrowLeft') {
+                         e.preventDefault();
+                         e.stopImmediatePropagation();
+                         paginaAnterior();
+                         registrarActividad();
+                         return;
+                     }
+                     
+                     if (e.key === 'ArrowRight') {
+                         e.preventDefault();
+                         e.stopImmediatePropagation();
+                         siguientePagina();
+                         registrarActividad();
+                         return;
+                     }
+                     
+                     if (e.key === 'ArrowUp') {
+                         e.preventDefault();
+                         const primerBotonMenu = document.querySelector('.menu-button');
+                         if (primerBotonMenu) primerBotonMenu.focus();
+                     }
+                     
+                     if (e.key === 'ArrowDown') {
+                         e.preventDefault();
+                         setTimeout(() => {
+                             const tarjetas = carruselContainer.querySelectorAll('.google-tv-card');
+                             if (tarjetas[paginaActual]) {
+                                 const botonesCanal = tarjetas[paginaActual].querySelectorAll('.botones-container a[role="button"], .botones-container button[role="button"]');
+                                 if (botonesCanal.length > 0) {
+                                     botonesCanal[0].focus();
+                                 }
+                             }
+                         }, 0);
+                     }
+                     return; // Solo manejar navegación del carrusel
+                 }
+
+                 // 🔹 Navegación en el menú superior
+                 const esBotonMenu = focused && focused.classList && focused.classList.contains('menu-button');
+                 if (esBotonMenu) {
+                     const menuButtons = Array.from(document.querySelectorAll('.menu-button'));
+                     const indexMenu = menuButtons.indexOf(focused);
+                     
+                     if (e.key === "ArrowLeft" && indexMenu > 0) {
+                         e.preventDefault();
+                         e.stopImmediatePropagation();
+                         menuButtons.forEach(b => b.classList.remove('active'));
+                         menuButtons[indexMenu - 1].classList.add('active');
+                         menuButtons[indexMenu - 1].focus();
+                         return;
+                     }
+                     
+                     if (e.key === "ArrowRight" && indexMenu < menuButtons.length - 1) {
+                         e.preventDefault();
+                         e.stopImmediatePropagation();
+                         menuButtons.forEach(b => b.classList.remove('active'));
+                         menuButtons[indexMenu + 1].classList.add('active');
+                         menuButtons[indexMenu + 1].focus();
+                         return;
+                     }
+                     
+                     if (e.key === "ArrowDown") {
+                         e.preventDefault();
+                         e.stopImmediatePropagation();
+                         const botonSiguiente = document.querySelector('.boton-siguiente-carrusel');
+                         if (botonSiguiente) botonSiguiente.focus();
+                         return;
+                     }
+                     
+
+                     
+                     return; // Solo manejar flechas arriba/abajo en el menú
+                 }
+
+                 // 🔹 Navegación en botones de canal
+                 const esBotonCanal = focused && focused.closest && focused.closest('.botones-container');
+                 if (esBotonCanal) {
+                     const tarjetaActual = focused.closest('.google-tv-card');
+                     const contenedorBotones = tarjetaActual.querySelector('.botones-container');
+                     const botonesCanalActual = Array.from(contenedorBotones.querySelectorAll('.botones-container a[role="button"], .botones-container button[role="button"]'));
+                     const indexCanal = botonesCanalActual.indexOf(focused);
+
+                     // Helper para navegación vertical entre filas, eligiendo el candidato más cercano por coordenadas
+                     function enfocarVertical(direccion) {
+                         if (!focused || !contenedorBotones) return false;
+                         const rectActual = focused.getBoundingClientRect();
+                         const centroX = rectActual.left + rectActual.width / 2;
+                         const arriba = direccion === 'up';
+                         const candidatos = botonesCanalActual.filter(b => b !== focused);
+                         const lista = candidatos
+                             .map(el => ({ el, r: el.getBoundingClientRect() }))
+                             .filter(({ r }) => arriba ? (r.bottom <= rectActual.top - 2) : (r.top >= rectActual.bottom + 2))
+                             .map(({ el, r }) => {
+                                 const deltaY = arriba ? (rectActual.top - r.bottom) : (r.top - rectActual.bottom);
+                                 const deltaX = Math.abs((r.left + r.width / 2) - centroX);
+                                 return { el, deltaY, deltaX };
+                             })
+                             .sort((a, b) => (a.deltaY - b.deltaY) || (a.deltaX - b.deltaX));
+                         if (lista.length) {
+                             lista[0].el.focus();
+                             return true;
+                         }
+                         return false;
+                     }
+
+                     if (e.key === "ArrowLeft" && indexCanal > 0) {
+                         e.preventDefault();
+                         e.stopImmediatePropagation();
+                         botonesCanalActual[indexCanal - 1].focus();
+                         return;
+                     }
+                     
+                     if (e.key === "ArrowRight" && indexCanal < botonesCanalActual.length - 1) {
+                         e.preventDefault();
+                         e.stopImmediatePropagation();
+                         botonesCanalActual[indexCanal + 1].focus();
+                         return;
+                     }
+                     
+                     if (e.key === "ArrowDown") {
+                         e.preventDefault();
+                         e.stopImmediatePropagation();
+                         // Intentar moverse a la fila inferior dentro del grid; si no hay, ir a las tarjetas de partido
+                         if (!enfocarVertical('down')) {
+                             const matchCards = document.querySelectorAll('.match-card');
+                             if (matchCards.length > 0) {
+                                 matchCards[0].focus();
+                             }
+                         }
+                         return;
+                     }
+                     
+                     if (e.key === "ArrowUp") {
+                         e.preventDefault();
+                         e.stopImmediatePropagation();
+                         // Intentar moverse a la fila superior dentro del grid; si no hay, ir al botón siguiente del carrusel
+                         if (!enfocarVertical('up')) {
+                             const botonSiguiente = document.querySelector('.boton-siguiente-carrusel');
+                             if (botonSiguiente) botonSiguiente.focus();
+                         }
+                         return;
+                     }
+                     
+                     return; // Manejar flechas en botones de canal
+                 }
+                 
+                 // Navegación desde el menú superior (manejada en el sistema principal)
+                 
+                 if (e.key === 'Tab') {
+                     registrarActividad();
+                 }
+             });
+         }
+
+        // Función para iniciar auto-play
+        function iniciarAutoPlay() {
+            // Desactivado - el carrusel principal no se mueve automáticamente
+            return;
+            
+            if (hayFoco) return;
+            
+            detenerAutoPlay();
+            iniciarTimerInactividad();
+        }
+
+        // Función para detener auto-play
+        function detenerAutoPlay() {
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+            }
+        }
+
+        // Función para registrar actividad
+        function registrarActividad() {
+            ultimaActividad = Date.now();
+            reiniciarTimerInactividad();
+        }
+
+        // Función para iniciar timer de inactividad
+        function iniciarTimerInactividad() {
+            reiniciarTimerInactividad();
+        }
+
+        // Función para reiniciar timer de inactividad
+        function reiniciarTimerInactividad() {
+            // Desactivado - no hay auto-play por inactividad
+            return;
+            
+            if (inactividadTimer) {
+                clearTimeout(inactividadTimer);
+            }
+            
+            inactividadTimer = setTimeout(() => {
+                console.log('Inactividad detectada, pasando al siguiente evento automáticamente');
+                siguientePagina();
+                const tarjetas = tarjetasContainer.querySelectorAll('.google-tv-card');
+                const totalTarjetas = tarjetas.length;
+                if (paginaActual < totalTarjetas - 1) {
+                    reiniciarTimerInactividad();
+                }
+            }, 60000); // 60 segundos
+        }
+
+        // Configurar menú superior
+        function configurarMenuSuperior() {
+            const menuButtons = document.querySelectorAll('.menu-button');
+            menuButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    menuButtons.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+                btn.addEventListener('focus', () => detenerAutoPlay());
+                btn.addEventListener('blur', () => {
+                    iniciarAutoPlay();
+                    // Limpiar clase active cuando se sale del menú
+                    setTimeout(() => {
+                        const elementoActivo = document.activeElement;
+                        if (!elementoActivo || !elementoActivo.classList.contains('menu-button')) {
+                            menuButtons.forEach(b => b.classList.remove('active'));
+                        }
+                    }, 100);
+                });
+            });
+        }
+
+        // El sistema de navegación tipo Google TV se maneja en configurarNavegacionTeclado()
+
+        // Script para detectar clics y mostrar coordenadas
+        document.addEventListener('click', function(e) {
+            const x = e.clientX;
+            const y = e.clientY;
+            const pageX = e.pageX;
+            const pageY = e.pageY;
+            const screenX = e.screenX;
+            const screenY = e.screenY;
+            
+            // Calcular el centro del elemento clickeado
+            const rect = e.target.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            console.log('🖱️ CLIC DETECTADO:');
+            console.log(`📍 Coordenadas del clic:`);
+            console.log(`   - Client (viewport): x=${x}, y=${y}`);
+            console.log(`   - Page (documento): x=${pageX}, y=${pageY}`);
+            console.log(`   - Screen (pantalla): x=${screenX}, y=${screenY}`);
+            console.log(`📍 Centro del elemento clickeado:`);
+            console.log(`   - Centro X: ${centerX.toFixed(0)}px`);
+            console.log(`   - Centro Y: ${centerY.toFixed(0)}px`);
+            console.log(`   - Elemento clickeado:`, e.target);
+            console.log(`   - Clase del elemento:`, e.target.className);
+            console.log(`   - ID del elemento:`, e.target.id);
+            console.log(`   - Dimensiones: ${rect.width.toFixed(0)}x${rect.height.toFixed(0)}px`);
+            console.log('---');
+        });
+    </script>
+
+    
+
+
+    <!-- Script para manejar el overlay de Apple TV -->
+    <script>
+        // Funciones para el overlay de Apple TV
+        function abrirAppleTV() {
+            const overlay = document.getElementById('appletv-overlay');
+            const iframe = document.getElementById('appletv-iframe');
+            
+            // Mostrar overlay
+            overlay.style.display = 'block';
+            
+            // Recargar iframe para asegurar contenido fresco
+            iframe.src = iframe.src;
+            
+            console.log('🎬 Apple TV overlay abierto');
+        }
+
+        function cerrarAppleTV() {
+            const overlay = document.getElementById('appletv-overlay');
+            overlay.style.display = 'none';
+            console.log('🎬 Apple TV overlay cerrado');
+        }
+
+        // Configurar botón "Películas" para abrir Apple TV
+        function configurarBotonPeliculas() {
+            const botonesMenu = document.querySelectorAll('.menu-button');
+            
+            botonesMenu.forEach(boton => {
+                if (boton.textContent === 'Películas') {
+                    boton.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        abrirAppleTV();
+                    });
+                    
+                    // También agregar evento de teclado
+                    boton.addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            abrirAppleTV();
+                        }
+                    });
+                    
+                    console.log('🎬 Botón "Películas" configurado para abrir Apple TV');
+                }
+            });
+        }
+
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            configurarBotonPeliculas();
+            configurarNavegacionTarjetasPartido();
+        });
+
+        // Función para configurar navegación de tarjetas de partido
+        function configurarNavegacionTarjetasPartido() {
+            const matchCards = document.querySelectorAll('.match-card');
+            let currentIndex = 0;
+
+            // Limpiar eventos anteriores
+            matchCards.forEach(card => {
+                card.removeEventListener('keydown', card._keydownHandler);
+                card.removeEventListener('focus', card._focusHandler);
+            });
+
+            // Agregar eventos de teclado a cada tarjeta
+            matchCards.forEach((card, index) => {
+                // Handler para teclado
+                card._keydownHandler = function(e) {
+                    switch(e.key) {
+                        case 'ArrowRight':
+                            e.preventDefault();
+                            const nextIndex = (currentIndex + 1) % matchCards.length;
+                            const nextCard = matchCards[nextIndex];
+                            if (nextCard) {
+                                nextCard.focus();
+                                currentIndex = nextIndex;
+                                
+                                // Scroll suave si la tarjeta no está visible
+                                const carousel = document.getElementById('matches-carousel');
+                                if (carousel) {
+                                    const carouselRect = carousel.getBoundingClientRect();
+                                    const cardRect = nextCard.getBoundingClientRect();
+                                    
+                                    if (cardRect.right > carouselRect.right) {
+                                        nextCard.scrollIntoView({
+                                            behavior: 'smooth',
+                                            inline: 'start',
+                                            block: 'nearest'
+                                        });
+                                    }
+                                }
+                            }
+                            break;
+                        case 'ArrowLeft':
+                            e.preventDefault();
+                            const prevIndex = (currentIndex - 1 + matchCards.length) % matchCards.length;
+                            const prevCard = matchCards[prevIndex];
+                            if (prevCard) {
+                                prevCard.focus();
+                                currentIndex = prevIndex;
+                                
+                                // Scroll suave si la tarjeta no está visible
+                                const carousel = document.getElementById('matches-carousel');
+                                if (carousel) {
+                                    const carouselRect = carousel.getBoundingClientRect();
+                                    const cardRect = prevCard.getBoundingClientRect();
+                                    
+                                    if (cardRect.left < carouselRect.left) {
+                                        prevCard.scrollIntoView({
+                                            behavior: 'smooth',
+                                            inline: 'start',
+                                            block: 'nearest'
+                                        });
+                                    }
+                                }
+                            }
+                            break;
+                        case 'ArrowUp':
+                            e.preventDefault();
+                            // Subir foco a los botones de canal
+                            const botonesCanal = document.querySelectorAll('.botones-container a[role="button"], .botones-container button[role="button"]');
+                            if (botonesCanal.length > 0) {
+                                botonesCanal[0].focus();
+                            }
+                            break;
+                        case 'ArrowDown':
+                            e.preventDefault();
+                            // Ya estamos en la parte inferior, no hacer nada
+                            break;
+                        case 'Enter':
+                        case ' ':
+                            e.preventDefault();
+                            // Aquí puedes agregar la acción al hacer clic en la tarjeta
+                            console.log('Tarjeta seleccionada:', card.getAttribute('aria-label'));
+                            break;
+                    }
+                };
+
+                // Handler para focus
+                card._focusHandler = function() {
+                    currentIndex = index;
+                    // Remover clase focused de todas las tarjetas
+                    matchCards.forEach(c => c.classList.remove('focused'));
+                    // Agregar clase focused a la tarjeta actual
+                    card.classList.add('focused');
+                };
+
+                // Agregar los event listeners
+                card.addEventListener('keydown', card._keydownHandler);
+                card.addEventListener('focus', card._focusHandler);
+            });
+
+            // Enfocar la primera tarjeta si existe
+            if (matchCards.length > 0) {
+                matchCards[0].focus();
+            }
+        }
+    </script>
+</body>
+</html>
