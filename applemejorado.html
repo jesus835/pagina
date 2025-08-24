@@ -1438,7 +1438,8 @@
             }
             
             try {
-                window.open(url, '_blank');
+                // Usar navegación directa en lugar de window.open para evitar problemas de sandbox en móviles
+                window.location.href = url;
             } catch (error) {
                 console.error('Error abriendo stream:', error);
                 alert('Error al abrir el stream');
@@ -1613,9 +1614,9 @@
                          ${embeds.map((embed, index) => {
                              const embedUrl = embed?.attributes?.embed_url || '';
                              const embedName = embed?.attributes?.embed_name || 'Ver';
-                             return `<button data-url="${embedUrl}" data-index="${index}" tabindex="0" role="button">${embedName}</button>`;
+                             return `<a href="${embedUrl}" tabindex="0" role="button">${embedName}</a>`;
                          }).join('')}
-                         ${embeds.length === 0 ? '<button data-no-streams="true" tabindex="0" role="button">No hay streams disponibles</button>' : ''}
+                         ${embeds.length === 0 ? '<a href="#" tabindex="0" role="button">No hay streams disponibles</a>' : ''}
                      </div>
                 </div>
             `;
@@ -2112,39 +2113,36 @@
                  });
              }
 
-             // Configurar event listeners para botones de stream (delegación de eventos)
+             // Configurar event listeners para enlaces de stream (delegación de eventos)
              carruselContainer.addEventListener('click', function(e) {
-                 const button = e.target.closest('button[data-url], button[data-no-streams]');
-                 if (!button) return;
+                 const link = e.target.closest('a[href]');
+                 if (!link) return;
                  
-                 e.preventDefault();
-                 registrarActividad();
-                 
-                 if (button.hasAttribute('data-no-streams')) {
+                 // Si es el enlace "No hay streams disponibles", prevenir navegación
+                 if (link.getAttribute('href') === '#') {
+                     e.preventDefault();
                      alert('No hay streams disponibles para este evento');
                      return;
                  }
                  
-                 const url = button.getAttribute('data-url');
-                 openStream(url);
+                 // Para otros enlaces, permitir navegación normal
+                 registrarActividad();
              });
 
-             // Configurar event listeners para teclado en botones de stream
+             // Configurar event listeners para teclado en enlaces de stream
              carruselContainer.addEventListener('keydown', function(e) {
-                 const button = e.target.closest('button[data-url], button[data-no-streams]');
-                 if (!button) return;
+                 const link = e.target.closest('a[href]');
+                 if (!link) return;
                  
                  if (e.key === 'Enter' || e.key === ' ') {
-                     e.preventDefault();
+                     // Para enlaces, permitir navegación normal con Enter/Espacio
                      registrarActividad();
                      
-                     if (button.hasAttribute('data-no-streams')) {
+                     // Si es el enlace "No hay streams disponibles", prevenir navegación
+                     if (link.getAttribute('href') === '#') {
+                         e.preventDefault();
                          alert('No hay streams disponibles para este evento');
-                         return;
                      }
-                     
-                     const url = button.getAttribute('data-url');
-                     openStream(url);
                  }
              });
 
@@ -2241,10 +2239,10 @@
                          setTimeout(() => {
                              const tarjetas = carruselContainer.querySelectorAll('.google-tv-card');
                              if (tarjetas[paginaActual]) {
-                                 const botonesCanal = tarjetas[paginaActual].querySelectorAll('.botones-container a[role="button"], .botones-container button[role="button"]');
-                                 if (botonesCanal.length > 0) {
-                                     botonesCanal[0].focus();
-                                 }
+                                                      const enlacesCanal = tarjetas[paginaActual].querySelectorAll('.botones-container a[role="button"]');
+                     if (enlacesCanal.length > 0) {
+                         enlacesCanal[0].focus();
+                     }
                              }
                          }, 0);
                      }
@@ -2288,21 +2286,21 @@
                      return; // Solo manejar flechas arriba/abajo en el menú
                  }
 
-                 // 🔹 Navegación en botones de canal
-                 const esBotonCanal = focused && focused.closest && focused.closest('.botones-container');
-                 if (esBotonCanal) {
+                 // 🔹 Navegación en enlaces de canal
+                 const esEnlaceCanal = focused && focused.closest && focused.closest('.botones-container');
+                 if (esEnlaceCanal) {
                      const tarjetaActual = focused.closest('.google-tv-card');
-                     const contenedorBotones = tarjetaActual.querySelector('.botones-container');
-                     const botonesCanalActual = Array.from(contenedorBotones.querySelectorAll('.botones-container a[role="button"], .botones-container button[role="button"]'));
-                     const indexCanal = botonesCanalActual.indexOf(focused);
+                     const contenedorEnlaces = tarjetaActual.querySelector('.botones-container');
+                     const enlacesCanalActual = Array.from(contenedorEnlaces.querySelectorAll('.botones-container a[role="button"]'));
+                     const indexCanal = enlacesCanalActual.indexOf(focused);
 
                      // Helper para navegación vertical entre filas, eligiendo el candidato más cercano por coordenadas
                      function enfocarVertical(direccion) {
-                         if (!focused || !contenedorBotones) return false;
+                         if (!focused || !contenedorEnlaces) return false;
                          const rectActual = focused.getBoundingClientRect();
                          const centroX = rectActual.left + rectActual.width / 2;
                          const arriba = direccion === 'up';
-                         const candidatos = botonesCanalActual.filter(b => b !== focused);
+                         const candidatos = enlacesCanalActual.filter(e => e !== focused);
                          const lista = candidatos
                              .map(el => ({ el, r: el.getBoundingClientRect() }))
                              .filter(({ r }) => arriba ? (r.bottom <= rectActual.top - 2) : (r.top >= rectActual.bottom + 2))
@@ -2322,14 +2320,14 @@
                      if (e.key === "ArrowLeft" && indexCanal > 0) {
                          e.preventDefault();
                          e.stopImmediatePropagation();
-                         botonesCanalActual[indexCanal - 1].focus();
+                         enlacesCanalActual[indexCanal - 1].focus();
                          return;
                      }
                      
-                     if (e.key === "ArrowRight" && indexCanal < botonesCanalActual.length - 1) {
+                     if (e.key === "ArrowRight" && indexCanal < enlacesCanalActual.length - 1) {
                          e.preventDefault();
                          e.stopImmediatePropagation();
-                         botonesCanalActual[indexCanal + 1].focus();
+                         enlacesCanalActual[indexCanal + 1].focus();
                          return;
                      }
                      
@@ -2357,7 +2355,7 @@
                          return;
                      }
                      
-                     return; // Manejar flechas en botones de canal
+                     return; // Manejar flechas en enlaces de canal
                  }
                  
                  // Navegación desde el menú superior (manejada en el sistema principal)
@@ -2576,11 +2574,11 @@
                             break;
                         case 'ArrowUp':
                             e.preventDefault();
-                            // Subir foco a los botones de canal
-                            const botonesCanal = document.querySelectorAll('.botones-container a[role="button"], .botones-container button[role="button"]');
-                            if (botonesCanal.length > 0) {
-                                botonesCanal[0].focus();
-                            }
+                                                     // Subir foco a los enlaces de canal
+                         const enlacesCanal = document.querySelectorAll('.botones-container a[role="button"]');
+                         if (enlacesCanal.length > 0) {
+                             enlacesCanal[0].focus();
+                         }
                             break;
                         case 'ArrowDown':
                             e.preventDefault();
