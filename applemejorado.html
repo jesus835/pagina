@@ -1437,11 +1437,34 @@
                 return;
             }
             
+            // Detectar si es Android TV/GeckoView
+            const isAndroidTV = /Android.*TV|Android.*Fire|Android.*Stick/i.test(navigator.userAgent);
+            const isGeckoView = /GeckoView/i.test(navigator.userAgent);
+            
+            console.log('🎯 Abriendo stream:', url);
+            console.log('📱 Android TV:', isAndroidTV, 'GeckoView:', isGeckoView);
+            
             try {
-                window.open(url, '_blank');
+                if (isAndroidTV || isGeckoView) {
+                    // En Android TV/GeckoView, usar location.href en lugar de window.open
+                    console.log('📱 Usando location.href para Android TV/GeckoView');
+                    window.location.href = url;
+                } else {
+                    // En otros dispositivos, usar window.open
+                    console.log('🖥️ Usando window.open para otros dispositivos');
+                    window.open(url, '_blank');
+                }
             } catch (error) {
                 console.error('Error abriendo stream:', error);
-                alert('Error al abrir el stream');
+                
+                // Fallback: intentar con location.href
+                try {
+                    console.log('🔄 Fallback: intentando con location.href');
+                    window.location.href = url;
+                } catch (fallbackError) {
+                    console.error('Error en fallback:', fallbackError);
+                    alert('Error al abrir el stream');
+                }
             }
         }
 
@@ -2512,14 +2535,30 @@
             
             // Detectar si es Android TV
             const isAndroidTV = /Android.*TV|Android.*Fire|Android.*Stick/i.test(navigator.userAgent);
+            const isGeckoView = /GeckoView/i.test(navigator.userAgent);
             
-            if (isAndroidTV) {
-                console.log('📱 Android TV detectado, mejorando navegación');
+            if (isAndroidTV || isGeckoView) {
+                console.log('📱 Android TV/GeckoView detectado, mejorando navegación');
                 
                 // Asegurar que los eventos de teclado funcionen correctamente
                 const focusedElement = document.activeElement;
                 if (focusedElement && (focusedElement.tagName === 'BUTTON' || focusedElement.tagName === 'A')) {
                     console.log('🎯 Elemento enfocado:', focusedElement.textContent);
+                    
+                    // Manejo específico para Enter en Android TV
+                    if (e.key === 'Enter' || e.keyCode === 13) {
+                        console.log('🎯 Enter presionado en Android TV en elemento:', focusedElement.textContent);
+                        
+                        // Si es un botón de stream, activarlo manualmente
+                        if (focusedElement.hasAttribute('data-url')) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            
+                            const url = focusedElement.getAttribute('data-url');
+                            console.log('🎯 Activando stream manualmente:', url);
+                            openStream(url);
+                        }
+                    }
                 }
             }
         });
