@@ -307,7 +307,7 @@
 
         .indicadores-pagina {
             position: absolute;
-            top: 50%;
+            top: 40%;
             left: 50%;
             transform: translate(-50%, -50%);
             display: flex;
@@ -456,7 +456,7 @@
         .contenido-texto {
             position: absolute;
             top: 0%;
-            left: 8%;
+            left: 9%;
             transform: scale(0.98);
             transform-origin: left top;
             max-width: 70%;
@@ -607,6 +607,61 @@
             cursor: pointer;
         }
 
+        /* Estilos para botones de aplicaciones */
+        .app-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            border: none;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin: 0 2px;
+            outline: none;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .app-icon:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .app-icon:focus {
+            outline: 3px solid #ff6b35;
+            outline-offset: 3px;
+            transform: scale(1.05);
+        }
+
+        .row-track.apps {
+            display: flex;
+            gap: 10px;
+            padding: 0 20px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            transform: translateY(150%);
+        }
+
+        .row-track.apps::-webkit-scrollbar {
+            display: none;
+        }
+
+        #row-apps {
+            transform: translate(0%, -40%);
+        }
+
+        #row-apps h3 {
+            transform: translateY(130%);
+            font-size: 0.8rem;
+        }
+
         .btn-watch {
             background: #000000 !important;
             color: #ffffff !important;
@@ -637,6 +692,7 @@
             min-height: 50px !important;
             max-width: none !important;
             max-height: none !important;
+            tabindex: 0 !important;
         }
 
         /* Eliminar pseudo-elemento para que solo quede el borde sólido */
@@ -649,9 +705,14 @@
         }
 
         .btn-watch:focus {
-            outline: 2px solid var(--accent-color);
-            outline-offset: 3px;
-            box-shadow: 0 0 15px rgba(255, 107, 53, 0.5);
+            outline: 3px solid #ff6b35 !important;
+            outline-offset: 5px !important;
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.8) !important;
+            transform: scale(1.05) !important;
+            border-color: #ffffff !important;
+            background: #ff6b35 !important;
+            color: #000000 !important;
+            transition: all 0.2s ease !important;
         }
 
         /* Optimizaciones específicas para Android */
@@ -701,13 +762,32 @@
             font-size: 18px !important;
         }
 
-
-
-        /* Evitar que el foco del botón afecte el layout del carrusel */
-        .btn-watch:focus ~ .carrusel-track,
-        .btn-watch:focus + .carrusel-track {
-            transform: none !important;
+        /* Asegurar que el botón sea focusable */
+        .btn-watch {
+            focusable: true !important;
+            -webkit-focusable: true !important;
         }
+
+        /* Animación de pulso para el foco */
+        @keyframes focusPulse {
+            0% {
+                box-shadow: 0 0 20px rgba(255, 107, 53, 0.8);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(255, 107, 53, 1);
+            }
+            100% {
+                box-shadow: 0 0 20px rgba(255, 107, 53, 0.8);
+            }
+        }
+
+        .btn-watch:focus {
+            animation: focusPulse 1.5s ease-in-out infinite !important;
+        }
+
+
+
+
 
         .btn-details {
             background: rgba(255, 255, 255, 0.1);
@@ -736,12 +816,21 @@
 
         #row-trending-top {
             position: absolute !important;
-            bottom: 16.256% !important;
-            left: 7% !important;
+            bottom: 21.256% !important;
+            left: 8.5% !important;
             z-index: 50 !important;
             margin: 0 !important;
             width: 90% !important;
             overflow: hidden !important;
+            transform: scale(0.982);
+            transform-origin: left bottom;
+        }
+
+        #row-trending-top h3 {
+            transform: translateY(75%) !important;
+            margin-top: 0 !important;
+            padding-top: 0 !important;
+            font-size: 1.2rem;
         }
 
         .row-track {
@@ -1265,6 +1354,40 @@
         .notification.error {
             background: var(--error-color);
         }
+
+        /* Reducir textos debajo de las tarjetas (20%) y ajustar ancho */
+        .tile + div span:first-child {
+            font-size: 0.72rem !important; /* antes 0.9rem */
+            max-width: 173px !important;   /* alinear con width de .tile */
+        }
+        .tile + div span:last-child {
+            font-size: 0.56rem !important; /* antes 0.7rem */
+            max-width: 173px !important;
+        }
+        .tile + div {
+            gap: 2px !important;
+        }
+
+        /* Ajustes de TENDENCIAS: 10% más grande y más juntas */
+        #row-trending-top .row-track { gap: 1rem; }
+        /* Forzar ancho de contenedores inline (de 216px a ~190px) */
+        #row-trending-top .row-track > div[style*="width: 216px"] { width: 216px !important; }
+        /* Reducir el gap vertical dentro de cada contenedor (de 6px a ~3px) */
+        #row-trending-top .row-track > div[style*="gap: 6px"] { gap: 6px !important; }
+
+        /* Tarjeta 10% más grande que el tamaño reducido previo */
+        #row-trending-top .tile { width: 173px; height: 101px; }
+
+        /* Textos debajo de las tarjetas +10% y ancho alineado */
+        #row-trending-top .tile + div span:first-child { font-size: 0.72rem !important; max-width: 173px !important; }
+        #row-trending-top .tile + div span:last-child  { font-size: 0.56rem !important; max-width: 173px !important; }
+
+        /* Trending overrides back to original sizes */
+        #row-trending-top .tile { width: 216px; height: 126px; }
+        #row-trending-top .tile + div span:first-child { font-size: 0.9rem !important; max-width: 216px !important; }
+        #row-trending-top .tile + div span:last-child  { font-size: 0.7rem !important; max-width: 216px !important; }
+
+        /* removed duplicated trending row styles */
     </style>
 </head>
 <body>
@@ -1356,9 +1479,58 @@
 
         <!-- Trending Now -->
         <div class="row" id="row-trending-top">
-                    <h3>TENDENCIAS</h3>
+            <h3>TENDENCIAS</h3>
             <div class="row-track" role="list">
                 <!-- Las tarjetas se cargarán dinámicamente aquí -->
+                <div style="display: flex; flex-direction: column; width: 216px; gap: 6px; overflow: hidden; flex-shrink: 0;"><button class="tile" role="listitem" tabindex="14">
+                        <img src="https://streamed.pk/api/images/poster/GwZg7AZpYEZgHCAjAJgCzuFgpsCwVgBDQhWYNMATkhQFZgrDh49g773hta1gATChUiNiwMOPQjcRLAnQgqikIkQp65BgGNm4nvBFVuBLqzBhc+S0A/GwZg7AZpYEZgHCAjAJgCzuFgpsCwVgBDQhWYNMATkhQFZgrDh49g773hta1gATChUiNiwMOPQjcRLAnQgiIbCAggUIePXIMAxs3E94IqtwJdWYMLnw2gA.webp" alt="Vorskla Poltava W vs Lanchkhuti" onerror="this.onerror=null; this.src='https://koogle.com/images/fallback.webp';" onload="this.nextElementSibling.style.display='none';">
+                        <div style="background: rgb(45, 45, 45); width: 100%; height: 100%; display: none; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 2rem;">⚽</div>
+                        <div class="viewer-count" style="position: absolute; top: 8px; right: 8px; background: #111111; color: #ffffff; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; z-index: 10;">0</div>
+                    </button><div style="display: flex; flex-direction: column; gap: 2px;"><span style="color: rgb(255, 255, 255); font-size: 0.9rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 216px;">orskla Polta a W vs Lanchkhuti</span><span style="color: rgb(179, 179, 179); font-size: 0.7rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 216px;">Fútbol • 0 espectadores</span></div></div><div style="display: flex; flex-direction: column; width: 216px; gap: 6px; overflow: hidden; flex-shrink: 0;"><button class="tile" role="listitem" tabindex="14">
+                        <img src="https://streamed.pk/api/images/poster/GwZg7AZpYEZgHCAjAJgCzuFgpsCwVgBDQhWYNMATkhQFZgrDh49g773hta1gATChUiNiwMOPQjcRLAnQgiIGCFWqY9cgwDGzcT3giq3Al1ZgwufFaA/GwZg7AZpYEZgHCAjAJgCzuFgpsCwVgBDQhWYNMATkhQFZgrDh49g773hta1gATChUiNiwMOPQjcRLAnQgqIIiGwh1EeuQYBjZuJ7wRVbgS6swYXPmtA.webp" alt="BIIK Kazygurt vs GKS Katowice W" onerror="this.onerror=null; this.src='https://koogle.com/images/fallback.webp';" onload="this.nextElementSibling.style.display='none';">
+                        <div style="background: rgb(45, 45, 45); width: 100%; height: 100%; display: none; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 2rem;">⚽</div>
+                        <div class="viewer-count" style="position: absolute; top: 8px; right: 8px; background: #111111; color: #ffffff; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; z-index: 10;">0</div>
+                    </button><div style="display: flex; flex-direction: column; gap: 2px;"><span style="color: rgb(255, 255, 255); font-size: 0.9rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 216px;">BIIK Kazygurt vs GKS Katowice W</span><span style="color: rgb(179, 179, 179); font-size: 0.7rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 216px;">Fútbol • 0 espectadores</span></div></div><div style="display: flex; flex-direction: column; width: 216px; gap: 6px; overflow: hidden; flex-shrink: 0;"><button class="tile" role="listitem" tabindex="14">
+                        <img src="https://streamed.pk/api/images/poster/GwZg7AZpYEZgHCAjAJgCzuFgpsCwVgBDQhWYNMATkhQFZgrDh49g773hta1gATChUiNiwMOPQjcRLAnQgiIGCBQgqIePXIMAxs3E94IqtwJdWYMLnw2gA/GwZg7AZpYEZgHCAjAJgCzuFgpsCwVgBDQhWYNMATkhQFZgrDh49g773hta1gATChUiNiwMOPQjcRLAnQgqIIiGwh1TOuQYBjZuJ7wRVbgS6swYXPmtA.webp" alt="Slavia Praha W vs Fomget Gençlik" onerror="this.onerror=null; this.src='https://koogle.com/images/fallback.webp';" onload="this.nextElementSibling.style.display='none';">
+                        <div style="background: rgb(45, 45, 45); width: 100%; height: 100%; display: none; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 2rem;">⚽</div>
+                        <div class="viewer-count" style="position: absolute; top: 8px; right: 8px; background: #111111; color: #ffffff; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; z-index: 10;">0</div>
+                    </button><div style="display: flex; flex-direction: column; gap: 2px;"><span style="color: rgb(255, 255, 255); font-size: 0.9rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 216px;">Sla ia Praha W vs Fomget Gençlik</span><span style="color: rgb(179, 179, 179); font-size: 0.7rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 216px;">Fútbol • 0 espectadores</span></div></div><div style="display: flex; flex-direction: column; width: 216px; gap: 6px; overflow: hidden; flex-shrink: 0;"><button class="tile" role="listitem" tabindex="14">
+                        <img src="https://streamed.pk/api/images/poster/GwZg7AZpYEZgHCAjAJgCzuFgpsCwVgBDQhWYNMATkhQFZgrDh49g773hta1gATChUiNiwMOPQjcRLAnQgiikDBABjENnrkGa5uJ7wRVbgS6swYXPmtA/GwZg7AZpYEZgHCAjAJgCzuFgpsCwVgBDQhWYNMATkhQFZgrDh49g773hta1gATChUiNiwMOPQjcRLAnQgiIFCFWJ+9cgwDGzcT3giq3Al1ZgwufFaA.webp" alt="Rosengård W vs Ljuboten W" onerror="this.onerror=null; this.src='https://koogle.com/images/fallback.webp';" onload="this.nextElementSibling.style.display='none';">
+                        <div style="background: rgb(45, 45, 45); width: 100%; height: 100%; display: none; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 2rem;">⚽</div>
+                        <div class="viewer-count" style="position: absolute; top: 8px; right: 8px; background: #111111; color: #ffffff; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; z-index: 10;">0</div>
+                    </button><div style="display: flex; flex-direction: column; gap: 2px;"><span style="color: rgb(255, 255, 255); font-size: 0.9rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 216px;">Rosengård W vs Ljuboten W</span><span style="color: rgb(179, 179, 179); font-size: 0.7rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 216px;">Fútbol • 0 espectadores</span></div></div><div style="display: flex; flex-direction: column; width: 216px; gap: 6px; overflow: hidden; flex-shrink: 0;"><button class="tile" role="listitem" tabindex="14">
+                        <img src="https://streamed.pk/api/images/poster/GwZg7AZpYEZgHCAjAJgCzuFgpsCwVgBDQhWYNMATkhQFZgrDh49g773hta1gATChUiNiwMOPQjcRLAnQgiIGCBSKQEeuQYBjZuJ7wRVbgS6swYXPmtA/GwZg7AZpYEZgHCAjAJgCzuFgpsCwVgBDQhWYNMATkhQFZgrDh49g773hta1gATChUiNiwMOPQjcRLAnQgqIIiAgh1EeuQYBjZuJ7wRVbgS6swYXPmtA.webp" alt="Breidablik W vs Athlone WFC W" onerror="this.onerror=null; this.src='https://koogle.com/images/fallback.webp';" onload="this.nextElementSibling.style.display='none';">
+                        <div style="background: rgb(45, 45, 45); width: 100%; height: 100%; display: none; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 2rem;">⚽</div>
+                        <div class="viewer-count" style="position: absolute; top: 8px; right: 8px; background: #111111; color: #ffffff; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; z-index: 10;">0</div>
+                    </button><div style="display: flex; flex-direction: column; gap: 2px;"><span style="color: rgb(255, 255, 255); font-size: 0.9rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 216px;">Breidablik W vs Athlone WFC W</span><span style="color: rgb(179, 179, 179); font-size: 0.7rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 216px;">Fútbol • 0 espectadores</span></div></div><div style="display: flex; flex-direction: column; width: 216px; gap: 6px; overflow: hidden; flex-shrink: 0;"><button class="tile" role="listitem" tabindex="14">
+                        <img src="https://streamed.pk/api/images/poster/GwZg7AZpYEZgHCAjAJgCzrAY29lBWSUYAUwVmDTAE5p5gJhqDh61hh1OPgBDYLKQRcOJBt16ZGY-p3bU+4wSXQgYIFEUZsQvEFhAkQEEABN9IRAcTwCFfAJQ8wZeEQVinD+mBfixEEA/GwZg7AZpYEZgHCAjAJgCzrAThFlBWSUYAUwVmDW2nmAmD32FrWGHXbeAENgBjUgg5sSdTt0z1Rvdqyw8xAkuhBwYIACYgl2kNxAkQiQ3xBmUesyAgEKTPii5gy8IvNGOmtMM7GiIQA.webp" alt="Krylia Sovetov Samara vs Dynamo Moscow" onerror="this.onerror=null; this.src='https://koogle.com/images/fallback.webp';" onload="this.nextElementSibling.style.display='none';">
+                        <div style="background: rgb(45, 45, 45); width: 100%; height: 100%; display: none; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 2rem;">⚽</div>
+                        <div class="viewer-count" style="position: absolute; top: 8px; right: 8px; background: #111111; color: #ffffff; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; z-index: 10;">0</div>
+                    </button><div style="display: flex; flex-direction: column; gap: 2px;"><span style="color: rgb(255, 255, 255); font-size: 0.9rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 216px;">Krylia So eto Samara vs Dynamo Moscow</span><span style="color: rgb(179, 179, 179); font-size: 0.7rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 216px;">Fútbol • 0 espectadores</span></div></div><div style="display: flex; flex-direction: column; width: 216px; gap: 6px; overflow: hidden; flex-shrink: 0;"><button class="tile" role="listitem" tabindex="14">
+                        <img src="https://streamed.pk/api/images/poster/GwZg7AZpYEZgHCAjAJgCzuFgpsCwVgBDQhWYNMATkhQFZgrDh49g773hta1gATChUiNiwMOPQjcRLAnQgiIGCBSLF9cgwDGzcT3giq3Al1ZgwufFaA/GwZg7AZpYEZgHCAjAJgCzuFgpsCwVgBDQhWYNMATkhQFZgrDh49g773hta1gATChUiNiwMOPQjcRLAnQgiIAMYhE-FfXINlzcT3giq3Al1ZgwufFaA.webp" alt="Apollon Limassol W vs Young Boys W" onerror="this.onerror=null; this.src='https://koogle.com/images/fallback.webp';" onload="this.nextElementSibling.style.display='none';">
+                        <div style="background: rgb(45, 45, 45); width: 100%; height: 100%; display: none; alignitems: center; justify-content: center; color: white; font-weight: bold; font-size: 2rem;">⚽</div>
+                        <div class="viewer-count" style="position: absolute; top: 8px; right: 8px; background: #ff6b35; color: white; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; z-index: 10;">👁️ 0</div>
+                    </button><div style="display: flex; flex-direction: column; gap: 2px;"><span style="color: rgb(255, 255, 255); font-size: 0.9rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 216px;">Apollon Limassol W vs Young Boys W</span><span style="color: rgb(179, 179, 179); font-size: 0.7rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 216px;">Fútbol • 0 espectadores</span></div></div>
+            </div>
+        </div>
+
+        
+
+          <!-- Apps -->
+          <div class="row" id="row-apps">
+              <div class="row-track apps">
+                  <button class="app-icon" tabindex="0" aria-label="Netflix" style="background:#e50914;">Netflix</button>
+                  <button class="app-icon" tabindex="0" aria-label="YouTube" style="background:#fff; color:#000;">YouTube</button>
+                  <button class="app-icon" tabindex="0" aria-label="Disney+" style="background:#0b1736;">Disney+</button>
+                  <button class="app-icon" tabindex="0" aria-label="Max" style="background:#0a0a4a;">Max</button>
+                  <button class="app-icon" tabindex="0" aria-label="Apple TV" style="background:#000;" onclick="openExternalOverlay('applemejorado.html')">tv</button>
+                  <button class="app-icon" tabindex="0" aria-label="Hulu" style="background:#1ce783; color:#062a15;">hulu</button>
+                  <button class="app-icon" tabindex="0" aria-label="Peacock" style="background:#111;">peacock</button>
+                  <button class="app-icon" tabindex="0" aria-label="Paramount+" style="background:#0064ff;">Paramount+</button>
+                  <button class="app-icon" tabindex="0" aria-label="Prime Video" style="background:#00a8e1;">Prime</button>
+                  <button class="app-icon" tabindex="0" aria-label="Roku" style="background:#6f1ab1;">Roku</button>
+                  <button class="app-icon" tabindex="0" aria-label="Plex" style="background:#1f1f1f;">Plex</button>
+                  <button class="app-icon" tabindex="0" aria-label="iHeart" style="background:#c6002b;">iHeart</button>
             </div>
         </div>
     </main>
@@ -1385,7 +1557,7 @@
             </div>
             <div class="stream-overlay-body">
                 <iframe id="streamIframe" src="" frameborder="0" allowfullscreen></iframe>
-            </div>
+        </div>
         </div>
     </div>
 
@@ -1834,7 +2006,7 @@
                         </div>
                         <p>Disfruta de la pasión del fútbol en su máxima expresión. Partidos llenos de emoción, goles espectaculares y momentos inolvidables que te mantendrán al borde del asiento.</p>
                         <div class="botones-container">
-                            <button class="action-btn btn-watch" onclick="showStreams('${match.id}', '${homeTeam} vs ${awayTeam}')" tabindex="11">
+                            <button class="action-btn btn-watch" onclick="showStreams('${match.id}', '${homeTeam} vs ${awayTeam}')" tabindex="0">
                                 <span style="position: relative; z-index: 2;">VER AHORA</span>
                             </button>
                         </div>
@@ -2032,7 +2204,7 @@
             
             // Solo ocultar el botón prev si está dentro del carrusel
             if (prevBtn && prevBtn.closest('.carrusel-container')) {
-                prevBtn.style.display = indice === 0 ? 'none' : 'block';
+            prevBtn.style.display = indice === 0 ? 'none' : 'block';
             }
             
             // No ocultar el botón next ya que está fuera del carrusel
@@ -2076,7 +2248,7 @@
             
             // Solo agregar clase active si hay un evento (click del usuario)
             if (event && event.target) {
-                event.target.classList.add('active');
+            event.target.classList.add('active');
             } else {
                 // Si no hay evento, buscar el botón correspondiente y activarlo
                 const liveButton = document.querySelector(`[onclick*="filterByStatus('live')"]`);
@@ -2161,7 +2333,7 @@
             
             // Solo agregar clase active si hay un evento (click del usuario)
             if (event && event.target) {
-                event.target.classList.add('active');
+            event.target.classList.add('active');
             }
             
             let filteredMatches = [];
@@ -2326,6 +2498,11 @@
             document.body.style.overflow = 'hidden';
             
             console.log('🎬 Abriendo stream en overlay:', url);
+            
+            // Cerrar automáticamente después de 20 segundos
+            setTimeout(() => {
+                closeStreamOverlay();
+            }, 20000);
         }
 
         function closeStreamOverlay() {
@@ -3625,14 +3802,49 @@
             }
             
             console.log('⚽ Actualizando sección de tendencias con', topViewersMatches.length, 'partidos de fútbol con más espectadores');
-            
-            // Ordenar por número de espectadores (descendente) - ya vienen ordenados de la API
+
+            // Base: los que traen espectadores (ya ordenados desc)
             const ordered = topViewersMatches;
-            
             if (ordered.length === 0) return;
-            
-            // Actualizar con los partidos con espectadores
-            displayTrendingMatches(ordered);
+
+            // Relleno mixto: primero en vivo, luego programados (misma lógica de fútbol que fallback)
+            const existingKeys = new Set(
+                ordered.map(m => (m.id || m.slug || m.url || m.title || '').toString().toLowerCase())
+            );
+
+            const isFootballMatch = (match) => {
+                const title = match.title?.toLowerCase() || '';
+                const category = match.category?.toLowerCase() || '';
+                const nonFootballKeywords = ['tennis', 'basketball', 'baseball', 'cricket', 'hockey', 'volleyball', 'rugby', 'golf', 'boxing', 'mma', 'ufc', 'wrestling', 'esports', 'e-sports', 'csgo', 'lol', 'dota', 'valorant', 'softball', 'caribbean premier league', 'athletes unlimited', "ncaa men's soccer"];
+                if (nonFootballKeywords.some(k => title.includes(k))) return false;
+                const footballKeywords = ['football', 'futbol', 'liga', 'champions', 'bundesliga', 'serie a', 'la liga', 'mls', 'copa', 'championship', 'division', 'conference', 'playoff', 'play-off', 'play off'];
+                const isFootballByCategory = category === 'football';
+                const isFootballByKeywords = footballKeywords.some(k => title.includes(k) || category.includes(k));
+                const hasVs = (title.includes(' vs ') || title.includes(' versus '));
+                return isFootballByCategory || (isFootballByKeywords && hasVs);
+            };
+
+            const pool = (allMatches || []).filter(m => isFootballMatch(m));
+
+            const keyOf = (m) => (m.id || m.slug || m.url || m.title || '').toString().toLowerCase();
+
+            const liveFill = pool.filter(m => getMatchStatus(m) === 'live' && !existingKeys.has(keyOf(m)));
+            const scheduledFill = pool.filter(m => getMatchStatus(m) === 'scheduled' && !existingKeys.has(keyOf(m)));
+
+            const finalList = [...ordered];
+            const ensureMin = 5;
+            for (const m of liveFill) {
+                if (finalList.length >= ensureMin) break;
+                finalList.push(m);
+                existingKeys.add(keyOf(m));
+            }
+            for (const m of scheduledFill) {
+                if (finalList.length >= ensureMin) break;
+                finalList.push(m);
+                existingKeys.add(keyOf(m));
+            }
+
+            displayTrendingMatches(finalList.slice(0, 8));
         }
         
         function displayTrendingMatches(matches) {
@@ -3703,46 +3915,46 @@
                 
                 // Si SÍ tiene espectadores o no se encontró badge, usar poster de Streamed
                 if (!posterUrl) {
-                    // 1. Intentar usar el poster del partido si existe
-                    if (match.poster) {
-                        if (match.poster.startsWith('http')) {
-                            posterUrl = match.poster;
-                            console.log('🖼️ Usando poster externo:', posterUrl);
+                // 1. Intentar usar el poster del partido si existe
+                if (match.poster) {
+                    if (match.poster.startsWith('http')) {
+                        posterUrl = match.poster;
+                        console.log('🖼️ Usando poster externo:', posterUrl);
                         } else {
-                            if (match.poster.startsWith('/api/images/poster/')) {
-                                posterUrl = `https://streamed.pk${match.poster}`;
-                            } else if (match.poster.startsWith('api/images/poster/')) {
-                                posterUrl = `https://streamed.pk/${match.poster}`;
-                            } else if (match.poster.startsWith('/api/images/proxy/')) {
-                                posterUrl = `https://streamed.pk${match.poster}`;
-                            } else if (match.poster.startsWith('api/images/proxy/')) {
-                                posterUrl = `https://streamed.pk/${match.poster}`;
-                            } else {
-                                posterUrl = `https://streamed.pk/api/images/proxy/${match.poster}`;
-                            }
-                            console.log('🖼️ Usando poster de Streamed:', posterUrl);
+                        if (match.poster.startsWith('/api/images/poster/')) {
+                            posterUrl = `https://streamed.pk${match.poster}`;
+                        } else if (match.poster.startsWith('api/images/poster/')) {
+                            posterUrl = `https://streamed.pk/${match.poster}`;
+                        } else if (match.poster.startsWith('/api/images/proxy/')) {
+                            posterUrl = `https://streamed.pk${match.poster}`;
+                        } else if (match.poster.startsWith('api/images/proxy/')) {
+                            posterUrl = `https://streamed.pk/${match.poster}`;
+                        } else {
+                            posterUrl = `https://streamed.pk/api/images/proxy/${match.poster}`;
                         }
+                        console.log('🖼️ Usando poster de Streamed:', posterUrl);
                     }
+                }
                     // 2. Si no hay poster, intentar badges de equipos como fallback
-                    else if (match?.teams?.home?.badge && match?.teams?.away?.badge) {
-                        const home = match.teams.home.badge;
-                        const away = match.teams.away.badge;
-                        posterUrl = `https://streamed.pk/api/images/poster/${home}/${away}.webp`;
+                else if (match?.teams?.home?.badge && match?.teams?.away?.badge) {
+                    const home = match.teams.home.badge;
+                    const away = match.teams.away.badge;
+                    posterUrl = `https://streamed.pk/api/images/poster/${home}/${away}.webp`;
                         console.log('🖼️ Usando poster compuesto (fallback):', posterUrl);
-                    }
-                    else if (match?.teams?.home?.badge) {
-                        posterUrl = `https://streamed.pk/api/images/proxy/${match.teams.home.badge}.webp`;
+                }
+                else if (match?.teams?.home?.badge) {
+                    posterUrl = `https://streamed.pk/api/images/proxy/${match.teams.home.badge}.webp`;
                         console.log('🖼️ Usando badge equipo local (fallback):', posterUrl);
-                    }
-                    else if (match?.teams?.away?.badge) {
-                        posterUrl = `https://streamed.pk/api/images/proxy/${match.teams.away.badge}.webp`;
+                }
+                else if (match?.teams?.away?.badge) {
+                    posterUrl = `https://streamed.pk/api/images/proxy/${match.teams.away.badge}.webp`;
                         console.log('🖼️ Usando badge equipo visitante (fallback):', posterUrl);
-                    }
-                    else if (match.title) {
-                        const titleHash = btoa(match.title).replace(/[^a-zA-Z0-9]/g, '').substring(0, 20);
-                        posterUrl = `https://streamed.pk/api/images/proxy/${titleHash}.webp`;
+                }
+                else if (match.title) {
+                    const titleHash = btoa(match.title).replace(/[^a-zA-Z0-9]/g, '').substring(0, 20);
+                    posterUrl = `https://streamed.pk/api/images/proxy/${titleHash}.webp`;
                         console.log('🖼️ Usando badge generado del título (fallback):', posterUrl);
-                    }
+                }
                 }
                 
                 if (!posterUrl) {
@@ -3771,13 +3983,13 @@
                              onerror="this.onerror=null; this.src='https://koogle.com/images/fallback.webp';" 
                              onload="this.nextElementSibling.style.display='none';" />
                         <div style="background: #2d2d2d; width: 100%; height: 100%; display: none; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 2rem;">⚽</div>
-                        <div class="viewer-count" style="position: absolute; top: 8px; right: 8px; background: #ff6b35; color: white; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; z-index: 10;">👁️ ${match.topViewers || 0}</div>
+                        <div class="viewer-count" style="position: absolute; top: 8px; right: 8px; background: #111111; color: #ffffff; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; z-index: 10;">${match.topViewers || 0}</div>
                     `;
                 } else {
                     // Sin imagen disponible: fondo con ícono de fútbol
                     tile.innerHTML = `
                         <div style="background: #2d2d2d; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 2rem;">⚽</div>
-                        <div class="viewer-count" style="position: absolute; top: 8px; right: 8px; background: #ff6b35; color: white; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; z-index: 10;">👁️ ${match.topViewers || 0}</div>
+                        <div class="viewer-count" style="position: absolute; top: 8px; right: 8px; background: #111111; color: #ffffff; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; z-index: 10;">${match.topViewers || 0}</div>
                     `;
                 }
                 
@@ -3822,7 +4034,7 @@
             console.log('✅ Tarjetas de tendencias creadas y agregadas al DOM');
         }
 
-        // Función para encontrar el elemento focusable más cercano
+        // Función para encontrar el elemento focusable más cercano (NAVEGACIÓN POR LÍNEAS)
         function findNearestFocusableElement(currentElement, direction) {
             const focusableElements = Array.from(document.querySelectorAll(
                 'button, [tabindex]:not([tabindex="-1"]), a[href], input, select, textarea, [contenteditable="true"]'
@@ -3842,68 +4054,75 @@
             let nearestElement = null;
             let minDistance = Infinity;
 
+            // Agrupar elementos por líneas (filas)
+            const lines = {};
             focusableElements.forEach(element => {
-                if (element === currentElement) return;
-
                 const rect = element.getBoundingClientRect();
-                const center = {
-                    x: rect.left + rect.width / 2,
-                    y: rect.top + rect.height / 2
-                };
-
-                let distance = Infinity;
-                let isValidDirection = false;
-
-                switch (direction) {
-                    case 'up':
-                        if (center.y < currentCenter.y) {
-                            distance = Math.sqrt(Math.pow(center.x - currentCenter.x, 2) + Math.pow(center.y - currentCenter.y, 2));
-                            isValidDirection = true;
-                        }
-                        break;
-                    case 'down':
-                        if (center.y > currentCenter.y) {
-                            distance = Math.sqrt(Math.pow(center.x - currentCenter.x, 2) + Math.pow(center.y - currentCenter.y, 2));
-                            isValidDirection = true;
-                        }
-                        break;
-                    case 'left':
-                        if (center.x < currentCenter.x) {
-                            distance = Math.sqrt(Math.pow(center.x - currentCenter.x, 2) + Math.pow(center.y - currentCenter.y, 2));
-                            isValidDirection = true;
-                        }
-                        break;
-                    case 'right':
-                        if (center.x > currentCenter.x) {
-                            distance = Math.sqrt(Math.pow(center.x - currentCenter.x, 2) + Math.pow(center.y - currentCenter.y, 2));
-                            isValidDirection = true;
-                        }
-                        break;
-                }
-
-                if (isValidDirection && distance < minDistance) {
-                    minDistance = distance;
-                    nearestElement = element;
-                }
+                const lineY = Math.round(rect.top / 50) * 50; // Agrupar por líneas de 50px
+                if (!lines[lineY]) lines[lineY] = [];
+                lines[lineY].push(element);
             });
 
-            // Si no hay elemento en la dirección especificada, buscar el más cercano en cualquier dirección
-            if (!nearestElement) {
-                focusableElements.forEach(element => {
-                    if (element === currentElement) return;
+            const currentLineY = Math.round(currentRect.top / 50) * 50;
+            const currentLine = lines[currentLineY] || [];
+            const currentLineIndex = currentLine.indexOf(currentElement);
 
-                    const rect = element.getBoundingClientRect();
-                    const center = {
-                        x: rect.left + rect.width / 2,
-                        y: rect.top + rect.height / 2
-                    };
-
-                    const distance = Math.sqrt(Math.pow(center.x - currentCenter.x, 2) + Math.pow(center.y - currentCenter.y, 2));
-                    if (distance < minDistance) {
-                        minDistance = distance;
-                        nearestElement = element;
+            switch (direction) {
+                case 'left':
+                    // Navegar en la misma línea hacia la izquierda
+                    if (currentLineIndex > 0) {
+                        nearestElement = currentLine[currentLineIndex - 1];
                     }
-                });
+                    break;
+                    
+                case 'right':
+                    // Navegar en la misma línea hacia la derecha
+                    if (currentLineIndex < currentLine.length - 1) {
+                        nearestElement = currentLine[currentLineIndex + 1];
+                    }
+                    break;
+                    
+                case 'up':
+                    // Buscar la línea de arriba
+                    const lineKeys = Object.keys(lines).map(Number).sort((a, b) => b - a);
+                    const currentLineKeyIndex = lineKeys.indexOf(currentLineY);
+                    
+                    if (currentLineKeyIndex < lineKeys.length - 1) {
+                        const upperLineY = lineKeys[currentLineKeyIndex + 1];
+                        const upperLine = lines[upperLineY];
+                        
+                        // Encontrar el elemento más cercano en la línea de arriba
+                        upperLine.forEach(element => {
+                            const rect = element.getBoundingClientRect();
+                            const distance = Math.abs(rect.left - currentRect.left);
+                            if (distance < minDistance) {
+                                minDistance = distance;
+                                nearestElement = element;
+                            }
+                        });
+                    }
+                    break;
+                    
+                case 'down':
+                    // Buscar la línea de abajo
+                    const lineKeysDown = Object.keys(lines).map(Number).sort((a, b) => a - b);
+                    const currentLineKeyIndexDown = lineKeysDown.indexOf(currentLineY);
+                    
+                    if (currentLineKeyIndexDown < lineKeysDown.length - 1) {
+                        const lowerLineY = lineKeysDown[currentLineKeyIndexDown + 1];
+                        const lowerLine = lines[lowerLineY];
+                        
+                        // Encontrar el elemento más cercano en la línea de abajo
+                        lowerLine.forEach(element => {
+                            const rect = element.getBoundingClientRect();
+                            const distance = Math.abs(rect.left - currentRect.left);
+                            if (distance < minDistance) {
+                                minDistance = distance;
+                                nearestElement = element;
+                            }
+                        });
+                    }
+                    break;
             }
 
             return nearestElement;
@@ -3916,26 +4135,57 @@
                 closeModal();
             }
             
-            // Prevenir que el foco del botón VER AHORA afecte el layout del carrusel
-            if (e.key === 'Tab' || e.key === 'Enter') {
-                const focusedElement = document.activeElement;
-                if (focusedElement && focusedElement.classList.contains('btn-watch')) {
-                    // Asegurar que el carrusel mantenga su posición
-                    const carruselTrack = document.getElementById('carruselTrack');
-                    if (carruselTrack) {
-                        const currentTransform = carruselTrack.style.transform;
-                        setTimeout(() => {
-                            carruselTrack.style.transform = currentTransform;
-                        }, 0);
-                    }
-                }
-            }
-            
-            // Navegación circular con control remoto Android TV
+            // Navegación NO circular con control remoto Android TV
             const focusedElement = document.activeElement;
             
-            // Si el foco está en el botón del carrusel, permitir navegación del carrusel
-            if (focusedElement && (focusedElement.id === 'carruselNext' || focusedElement.id === 'carruselPrev')) {
+            // PRIMERO: Navegación específica para botones VER AHORA - BLOQUEAR CARRUSEL
+            if (focusedElement && focusedElement.classList.contains('btn-watch')) {
+                if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    const direction = e.key.replace('Arrow', '').toLowerCase();
+                    const nearestElement = findNearestFocusableElement(focusedElement, direction);
+                    if (nearestElement) {
+                        nearestElement.focus();
+                        console.log('🎯 Navegación botón VER AHORA:', direction, '->', nearestElement.textContent || nearestElement.className);
+                    }
+                    return false;
+                } else if (e.key === 'ArrowRight') {
+                    // BLOQUEAR COMPLETAMENTE la tecla derecha para botones VER AHORA
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    console.log('🚫 Tecla derecha bloqueada para botón VER AHORA');
+                    return false;
+                }
+            }
+            // SEGUNDO: Navegación para botones de filtros verticales - PERMITIR DERECHA
+            else if (focusedElement && focusedElement.classList.contains('vertical-filter-btn')) {
+                if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    // Buscar el elemento más cercano a la derecha
+                    const nearestElement = findNearestFocusableElement(focusedElement, 'right');
+                    if (nearestElement) {
+                        nearestElement.focus();
+                        console.log('🎯 Navegación filtro vertical a la derecha:', nearestElement.textContent || nearestElement.className);
+                    }
+                    return false;
+                } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const direction = e.key.replace('Arrow', '').toLowerCase();
+                    const nearestElement = findNearestFocusableElement(focusedElement, direction);
+                    if (nearestElement) {
+                        nearestElement.focus();
+                        console.log('🎯 Navegación filtro vertical:', direction, '->', nearestElement.textContent || nearestElement.className);
+                    }
+                    return false;
+                }
+            }
+            // TERCERO: Si el foco está en el botón del carrusel, permitir navegación del carrusel
+            else if (focusedElement && (focusedElement.id === 'carruselNext' || focusedElement.id === 'carruselPrev')) {
                 if (e.key === 'ArrowLeft') {
                     e.preventDefault();
                     moverCarrusel(-1);
@@ -3969,7 +4219,7 @@
                     const nearestElement = findNearestFocusableElement(focusedElement, direction);
                     if (nearestElement) {
                         nearestElement.focus();
-                        console.log('🎯 Navegación circular:', direction, '->', nearestElement.textContent || nearestElement.className);
+                        console.log('🎯 Navegación NO circular:', direction, '->', nearestElement.textContent || nearestElement.className);
                     }
                 }
             }
@@ -3990,6 +4240,59 @@
 
 
         // Initialize
+        // Exponer overlay externo ANTES de cualquier posible uso en el HTML
+        (function initExternalOverlayAPI(){
+            function ensureExternalOverlay() {
+                let ov = document.getElementById('externalOverlay');
+                if (ov) return ov;
+                ov = document.createElement('div');
+                ov.id = 'externalOverlay';
+                ov.style.position = 'fixed';
+                ov.style.inset = '0';
+                ov.style.background = 'rgba(0,0,0,0.9)';
+                ov.style.zIndex = '10000';
+                ov.style.display = 'none';
+                ov.innerHTML = '\n  <div id="externalOverlayInner" style="position:absolute; inset:0;">\n    <iframe id="externalIframe" src="about:blank" style="position:absolute; inset:0; width:100%; height:100%; border:0; background:#000;"></iframe>\n  </div>\n';
+                document.body.appendChild(ov);
+                return ov;
+            }
+            function closeExternalOverlay() {
+                const ov = document.getElementById('externalOverlay');
+                const iframe = document.getElementById('externalIframe');
+                if (iframe) iframe.src = 'about:blank';
+                if (ov) ov.style.display = 'none';
+                // Devolver foco al botón de filtro "En Vivo"
+                try {
+                    const liveFilterBtn = document.querySelector('.vertical-filter-btn[tabindex="1"]');
+                    if (liveFilterBtn) liveFilterBtn.focus();
+                } catch (_) {}
+            }
+            window.openExternalOverlay = function(url) {
+                try {
+                    const ov = ensureExternalOverlay();
+                    const iframe = document.getElementById('externalIframe');
+                    if (!iframe) {
+                        window.location.href = url;
+                        return;
+                    }
+                    iframe.src = url;
+                    ov.style.display = 'block';
+                } catch (err) {
+                    console.error('No se pudo abrir overlay externo:', err);
+                    window.location.href = url;
+                }
+            };
+            // Permitir que la página embebida solicite cerrar el overlay
+            window.addEventListener('message', (ev) => {
+                try {
+                    const data = ev.data;
+                    if (data === 'close-external-overlay' || (data && data.type === 'EXTERNAL_OVERLAY_CLOSE')) {
+                        closeExternalOverlay();
+                    }
+                } catch (_) {}
+            });
+        })();
+
         window.addEventListener('load', async () => {
             console.log('🚀 Streamed Replica iniciado');
             
@@ -4012,6 +4315,60 @@
                 console.log('🔄 Actualizando tendencias automáticamente...');
                 updateTrendingSection(false); // No mostrar fallback en actualizaciones automáticas
             }, 10000); // 10 segundos
+            
+            // Función global para abrir URL externa (intento de fullscreen gestionado por la página destino)
+            window.openExternalFullScreen = function(url) {
+                try {
+                    const win = window.open(url, '_blank');
+                    if (!win) {
+                        console.warn('Popup bloqueado. Redirigiendo en la misma pestaña.');
+                        window.location.href = url;
+                        return;
+                    }
+                    win.focus();
+                } catch (err) {
+                    console.error('No se pudo abrir la URL externa:', err);
+                    window.location.href = url;
+                }
+            }
+
+            // Overlay dedicado para embebidos externos (no toca el overlay de streams)
+            // Crea si no existe: #externalOverlay con iframe #externalIframe
+            function ensureExternalOverlay() {
+                let ov = document.getElementById('externalOverlay');
+                if (ov) return ov;
+                ov = document.createElement('div');
+                ov.id = 'externalOverlay';
+                ov.style.position = 'fixed';
+                ov.style.inset = '0';
+                ov.style.background = 'rgba(0,0,0,0.9)';
+                ov.style.zIndex = '10000';
+                ov.style.display = 'none';
+                ov.innerHTML = '\n  <div id="externalOverlayInner" style="position:absolute; inset:0; display:flex; flex-direction:column;">\n    <div style="display:flex; align-items:center; justify-content:space-between; padding:8px 12px; background:#111; color:#fff;">\n      <div style="font-weight:700;">Apple TV</div>\n      <button id="externalOverlayClose" style="background:#ff6b35; color:#000; border:none; padding:6px 10px; border-radius:4px; font-weight:700; cursor:pointer;">Cerrar</button>\n    </div>\n    <iframe id="externalIframe" src="about:blank" style="flex:1; width:100%; border:0; background:#000;"></iframe>\n  </div>\n';
+                document.body.appendChild(ov);
+                document.getElementById('externalOverlayClose').onclick = () => {
+                    const iframe = document.getElementById('externalIframe');
+                    if (iframe) iframe.src = 'about:blank';
+                    ov.style.display = 'none';
+                };
+                return ov;
+            }
+
+            window.openExternalOverlay = function(url) {
+                try {
+                    const ov = ensureExternalOverlay();
+                    const iframe = document.getElementById('externalIframe');
+                    if (!iframe) {
+                        window.location.href = url;
+                        return;
+                    }
+                    iframe.src = url;
+                    ov.style.display = 'block';
+                } catch (err) {
+                    console.error('No se pudo abrir overlay externo:', err);
+                    window.location.href = url;
+                }
+            }
             
             // Función para actualizar solo los contadores de espectadores de forma suave
             function updateViewerCounts() {
@@ -4073,6 +4430,17 @@
             const now = new Date();
             return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && d.getDate() === now.getDate();
         }
+
+        // Exponer openStreamOverlay globalmente para que applemejorado.html pueda usarla
+        window.openStreamOverlay = openStreamOverlay;
+
+        // Listener para recibir mensajes de applemejorado.html
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'OPEN_STREAM_OVERLAY') {
+                console.log('🎬 Recibido mensaje para abrir stream overlay:', event.data);
+                openStreamOverlay(event.data.url, event.data.title);
+            }
+        });
     </script>
 </body>
 </html>

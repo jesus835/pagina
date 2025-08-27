@@ -840,6 +840,78 @@
             letter-spacing: -0.01em;
         }
 
+        /* Stream Overlay Styles */
+        .stream-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            display: none;
+            backdrop-filter: blur(10px);
+        }
+
+        .stream-overlay-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            height: 90%;
+            background: #1a1a1a;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .stream-overlay-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: #2d2d2d;
+            border-bottom: 1px solid #404040;
+        }
+
+        .stream-overlay-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin: 0;
+        }
+
+        .stream-overlay-close {
+            background: #ff6b35;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+        }
+
+        .stream-overlay-close:hover {
+            background: #e55a2b;
+        }
+
+        .stream-overlay-body {
+            height: calc(100% - 65px);
+            padding: 0;
+        }
+
+        .stream-overlay-body iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #000;
+        }
 
     </style>
 </head>
@@ -847,13 +919,13 @@
     <!-- Menú superior Google TV -->
     <div class="google-tv-menu">
         <div class="menu-container">
-            <button class="menu-button" tabindex="0">Buscar</button>
-            <button class="menu-button" tabindex="0">Para ti</button>
-            <button class="menu-button" tabindex="0">En vivo</button>
+            <button class="menu-button" tabindex="0" style="visibility:hidden;">Buscar</button>
+            <button class="menu-button" tabindex="0" style="visibility:hidden;">Para ti</button>
+            <button class="menu-button" tabindex="0" title="Koogle Tv" onclick="try{ window.parent.postMessage('close-external-overlay','*'); }catch(e){}">Koogle Tv</button>
             <button class="menu-button" tabindex="0">MLS PASS</button>
-            <button class="menu-button" tabindex="0">Series</button>
-            <button class="menu-button" tabindex="0">Aplicaciones</button>
-            <button class="menu-button" tabindex="0">Biblioteca</button>
+            <button class="menu-button" tabindex="0" title="Apple Tv">Apple Tv</button>
+            <button class="menu-button" tabindex="0" style="visibility:hidden;">Aplicaciones</button>
+            <button class="menu-button" tabindex="0" style="visibility:hidden;">Biblioteca</button>
         </div>
     </div>
 
@@ -1297,14 +1369,12 @@
             }
             
             try {
-                // Siempre abrir en nueva pestaña/ventana
-                const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
-                if (!newWindow) {
-                    // Si falla (popup bloqueado), mostrar mensaje
-                    alert('Por favor, permite popups para este sitio o usa Ctrl+Click para abrir en nueva pestaña');
-                }
+                // Abrir en el overlay local
+                console.log('🎬 Abriendo stream en overlay local:', url);
+                openStreamOverlay(url, 'Stream desde Apple TV');
             } catch (error) {
                 console.error('Error abriendo stream:', error);
+                console.error('Error details:', error.message);
                 alert('Error al abrir el stream');
             }
         }
@@ -2339,6 +2409,14 @@
              if (paginaActual < totalTarjetas - 1) {
                  irAPagina(paginaActual + 1);
              }
+             
+             // Mover el foco al botón MLS PASS después de cambiar de página
+             setTimeout(() => {
+                 const botonMLSPass = Array.from(document.querySelectorAll('.menu-button')).find(btn => btn.textContent === 'MLS PASS');
+                 if (botonMLSPass) {
+                     botonMLSPass.focus();
+                 }
+             }, 100);
          }
 
          // Función para ir a la página anterior
@@ -2567,8 +2645,8 @@
                      
                      if (e.key === 'ArrowUp') {
                          e.preventDefault();
-                         const primerBotonMenu = document.querySelector('.menu-button');
-                         if (primerBotonMenu) primerBotonMenu.focus();
+                         const botonMLSPass = Array.from(document.querySelectorAll('.menu-button')).find(btn => btn.textContent === 'MLS PASS');
+                         if (botonMLSPass) botonMLSPass.focus();
                      }
                      
                      if (e.key === 'ArrowDown') {
@@ -2949,6 +3027,64 @@
                 matchCards[0].focus();
             }
         }
+
+        // Stream Overlay
+        function openStreamOverlay(url, title = 'Stream') {
+            if (!url || url === 'undefined') {
+                alert('URL de stream no válida');
+                return;
+            }
+            
+            const overlay = document.getElementById('streamOverlay');
+            const iframe = document.getElementById('streamIframe');
+            const overlayTitle = document.getElementById('streamOverlayTitle');
+            
+            // Configurar el overlay
+            overlayTitle.textContent = title;
+            iframe.src = url;
+            
+            // Mostrar el overlay
+            overlay.style.display = 'block';
+            
+            // Bloquear scroll del body
+            document.body.style.overflow = 'hidden';
+            
+            console.log('🎬 Abriendo stream en overlay:', url);
+            
+            // Cerrar automáticamente después de 20 segundos
+            setTimeout(() => {
+                closeStreamOverlay();
+            }, 20000);
+        }
+
+        function closeStreamOverlay() {
+            const overlay = document.getElementById('streamOverlay');
+            const iframe = document.getElementById('streamIframe');
+            
+            // Ocultar el overlay
+            overlay.style.display = 'none';
+            
+            // Limpiar el iframe
+            iframe.src = '';
+            
+            // Restaurar scroll del body
+            document.body.style.overflow = 'auto';
+            
+            console.log('🔒 Cerrando stream overlay');
+        }
     </script>
+
+    <!-- Stream Overlay -->
+    <div class="stream-overlay" id="streamOverlay">
+        <div class="stream-overlay-content">
+            <div class="stream-overlay-header">
+                <h3 class="stream-overlay-title" id="streamOverlayTitle">Stream</h3>
+                <button class="stream-overlay-close" onclick="closeStreamOverlay()">&times;</button>
+            </div>
+            <div class="stream-overlay-body">
+                <iframe id="streamIframe" src="" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
