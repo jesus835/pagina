@@ -610,15 +610,15 @@
         .btn-watch {
             background: #000000 !important;
             color: #ffffff !important;
-            width: 199px !important;
-            height: 58px !important;
+            width: 220px !important;
+            height: 50px !important;
             padding: 0 !important;
-            border-radius: 25px !important;
+            border-radius: 28px !important;
             text-decoration: none !important;
             font-size: 18px !important;
             font-weight: 600 !important;
             transition: all 0.3s ease !important;
-            border: 2px solid transparent !important;
+            border: 4px solid #ff6b35 !important;
             cursor: pointer !important;
             display: flex !important;
             align-items: center !important;
@@ -627,22 +627,21 @@
             outline: none !important;
             position: relative !important;
             overflow: hidden !important;
+            box-shadow: 0 0 10px rgba(255, 107, 53, 0.3) !important;
+            -webkit-appearance: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            margin: 2px !important;
+            min-width: 220px !important;
+            min-height: 50px !important;
+            max-width: none !important;
+            max-height: none !important;
         }
 
+        /* Eliminar pseudo-elemento para que solo quede el borde sólido */
         .btn-watch::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border-radius: 25px;
-            padding: 2px;
-            background: linear-gradient(90deg, #ff6b35, #f7931e);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask-composite: exclude;
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
+            display: none !important;
         }
 
         .btn-watch:hover {
@@ -653,6 +652,53 @@
             outline: 2px solid var(--accent-color);
             outline-offset: 3px;
             box-shadow: 0 0 15px rgba(255, 107, 53, 0.5);
+        }
+
+        /* Optimizaciones específicas para Android */
+        @media screen and (max-width: 1920px) {
+            .btn-watch {
+                font-size: 16px !important;
+                width: 180px !important;
+                height: 52px !important;
+            }
+        }
+
+        /* Para Android TV específicamente */
+        @media screen and (max-width: 1280px) {
+            .btn-watch {
+                font-size: 14px !important;
+                width: 160px !important;
+                height: 48px !important;
+                border-width: 3px !important;
+            }
+        }
+
+        /* Asegurar que el texto sea visible en todos los dispositivos */
+        .btn-watch span,
+        .btn-watch {
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8) !important;
+            font-family: 'Arial', sans-serif !important;
+            letter-spacing: 0.5px !important;
+            font-size: 18px !important;
+        }
+
+        /* Optimización específica para Android TV */
+        .btn-watch {
+            -webkit-transform: translateZ(0) !important;
+            transform: translateZ(0) !important;
+            backface-visibility: hidden !important;
+            -webkit-backface-visibility: hidden !important;
+        }
+
+
+
+        /* Asegurar que el texto esté siempre visible */
+        .btn-watch span {
+            position: relative !important;
+            z-index: 10 !important;
+            color: #ffffff !important;
+            font-weight: bold !important;
+            font-size: 18px !important;
         }
 
 
@@ -1789,7 +1835,7 @@
                         <p>Disfruta de la pasión del fútbol en su máxima expresión. Partidos llenos de emoción, goles espectaculares y momentos inolvidables que te mantendrán al borde del asiento.</p>
                         <div class="botones-container">
                             <button class="action-btn btn-watch" onclick="showStreams('${match.id}', '${homeTeam} vs ${awayTeam}')" tabindex="11">
-                                VER AHORA
+                                <span style="position: relative; z-index: 2;">VER AHORA</span>
                             </button>
                         </div>
                     </div>
@@ -3438,6 +3484,20 @@
                 if (uniqueFinalMatches.length < 5) {
                     console.log(`🔄 Solo ${uniqueFinalMatches.length} partidos, llenando con partidos programados...`);
                     
+                    // Debug: contar partidos de fútbol totales
+                    const totalFootballMatches = allMatches.filter(match => {
+                        const title = match.title?.toLowerCase() || '';
+                        const category = match.category?.toLowerCase() || '';
+                        const footballKeywords = ['football', 'futbol', 'liga', 'champions', 'bundesliga', 'serie a', 'la liga', 'mls', 'copa', 'championship', 'division', 'conference', 'playoff', 'play-off', 'play off'];
+                        const isFootballByCategory = category === 'football';
+                        const isFootballByKeywords = footballKeywords.some(keyword => 
+                            title.includes(keyword) || category.includes(keyword)
+                        );
+                        const hasVs = (title.includes(' vs ') || title.includes(' versus '));
+                        return isFootballByCategory || (isFootballByKeywords && hasVs);
+                    });
+                    console.log(`🔍 Total partidos de fútbol disponibles: ${totalFootballMatches.length}`);
+                    
                     // Obtener partidos programados como fallback
                     const scheduledMatches = allMatches.filter(match => {
                         // Excluir si ya está en la lista principal
@@ -3468,7 +3528,7 @@
                         // Debug: ver qué partidos están siendo evaluados
                         if (isFootball) {
                             const status = getMatchStatus(match);
-                            console.log(`🔍 Evaluando en vivo/programado: ${match.title} - Status: ${status}`);
+                            console.log(`🔍 Evaluando en vivo/programado: ${match.title} - Status: ${status} - Time: ${match.time}`);
                         }
                         
                         // Usar exactamente la misma lógica que el filtro de programados
