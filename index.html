@@ -2614,6 +2614,32 @@
                 closeStreamOverlay();
             }
         });
+        
+        // Listener adicional para Android - detectar cuando el iframe pierde foco
+        window.addEventListener('blur', function(event) {
+            const overlay = document.getElementById('streamOverlay');
+            if (overlay && overlay.style.display === 'block') {
+                setTimeout(() => {
+                    closeStreamOverlay();
+                }, 100);
+            }
+        });
+        
+        // Listener para beforeunload (útil en Android)
+        window.addEventListener('beforeunload', function(event) {
+            const overlay = document.getElementById('streamOverlay');
+            if (overlay && overlay.style.display === 'block') {
+                closeStreamOverlay();
+            }
+        });
+        
+        // Listener específico para el botón atrás de Android WebView
+        document.addEventListener('visibilitychange', function() {
+            const overlay = document.getElementById('streamOverlay');
+            if (overlay && overlay.style.display === 'block' && document.hidden) {
+                closeStreamOverlay();
+            }
+        });
 
 
 
