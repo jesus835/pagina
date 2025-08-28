@@ -2597,47 +2597,13 @@
             console.log('🔒 Cerrando stream overlay');
         }
 
-        // Event listener para cerrar overlay con Escape y botón atrás de Android
+        // Event listener para cerrar overlay con Escape
         document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape' || event.key === 'Backspace' || event.keyCode === 4) {
+            if (event.key === 'Escape') {
                 const overlay = document.getElementById('streamOverlay');
                 if (overlay && overlay.style.display === 'block') {
                     closeStreamOverlay();
                 }
-            }
-        });
-        
-        // Listener específico para el botón atrás de Android
-        window.addEventListener('popstate', function(event) {
-            const overlay = document.getElementById('streamOverlay');
-            if (overlay && overlay.style.display === 'block') {
-                closeStreamOverlay();
-            }
-        });
-        
-        // Listener adicional para Android - detectar cuando el iframe pierde foco
-        window.addEventListener('blur', function(event) {
-            const overlay = document.getElementById('streamOverlay');
-            if (overlay && overlay.style.display === 'block') {
-                setTimeout(() => {
-                    closeStreamOverlay();
-                }, 100);
-            }
-        });
-        
-        // Listener para beforeunload (útil en Android)
-        window.addEventListener('beforeunload', function(event) {
-            const overlay = document.getElementById('streamOverlay');
-            if (overlay && overlay.style.display === 'block') {
-                closeStreamOverlay();
-            }
-        });
-        
-        // Listener específico para el botón atrás de Android WebView
-        document.addEventListener('visibilitychange', function() {
-            const overlay = document.getElementById('streamOverlay');
-            if (overlay && overlay.style.display === 'block' && document.hidden) {
-                closeStreamOverlay();
             }
         });
 
