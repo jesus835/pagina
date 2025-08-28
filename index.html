@@ -2594,13 +2594,21 @@
             console.log('🔒 Cerrando stream overlay');
         }
 
-        // Event listener para cerrar overlay con Escape
+        // Event listener para cerrar overlay con Escape y botón atrás de Android
         document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
+            if (event.key === 'Escape' || event.key === 'Backspace' || event.keyCode === 4) {
                 const overlay = document.getElementById('streamOverlay');
                 if (overlay && overlay.style.display === 'block') {
                     closeStreamOverlay();
                 }
+            }
+        });
+        
+        // Listener específico para el botón atrás de Android
+        window.addEventListener('popstate', function(event) {
+            const overlay = document.getElementById('streamOverlay');
+            if (overlay && overlay.style.display === 'block') {
+                closeStreamOverlay();
             }
         });
 
