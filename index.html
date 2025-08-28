@@ -1534,6 +1534,9 @@
     <!-- Universal Stream Overlay -->
     <div class="stream-overlay" id="streamOverlay">
         <div class="stream-overlay-content">
+            <!-- Botón de cerrar -->
+            <button id="closeStreamBtn" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; border: 2px solid white; border-radius: 50%; width: 40px; height: 40px; font-size: 20px; font-weight: bold; cursor: pointer; z-index: 10001; display: flex; align-items: center; justify-content: center;" onclick="closeStreamOverlay()">×</button>
+            
             <div class="stream-overlay-body">
                 <iframe id="streamIframe" src="" frameborder="0" allowfullscreen></iframe>
             </div>
