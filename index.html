@@ -1478,32 +1478,8 @@
 
              const embeds = match.attributes.embeds?.data || [];
              
-             // Agregar 20 streams de prueba
-             const testStreams = [
-                 { attributes: { embed_iframe: '/embed/test1.html?r=dGVzdA==', embed_name: 'Test Stream 1 - HD' } },
-                 { attributes: { embed_iframe: '/embed/test2.html?r=dGVzdA==', embed_name: 'Test Stream 2 - 4K' } },
-                 { attributes: { embed_iframe: '/embed/test3.html?r=dGVzdA==', embed_name: 'Test Stream 3 - Premium' } },
-                 { attributes: { embed_iframe: '/embed/test4.html?r=dGVzdA==', embed_name: 'Test Stream 4 - Ultra HD' } },
-                 { attributes: { embed_iframe: '/embed/test5.html?r=dGVzdA==', embed_name: 'Test Stream 5 - VIP' } },
-                 { attributes: { embed_iframe: '/embed/test6.html?r=dGVzdA==', embed_name: 'Test Stream 6 - Master' } },
-                 { attributes: { embed_iframe: '/embed/test7.html?r=dGVzdA==', embed_name: 'Test Stream 7 - Elite' } },
-                 { attributes: { embed_iframe: '/embed/test8.html?r=dGVzdA==', embed_name: 'Test Stream 8 - Pro' } },
-                 { attributes: { embed_iframe: '/embed/test9.html?r=dGVzdA==', embed_name: 'Test Stream 9 - Gold' } },
-                 { attributes: { embed_iframe: '/embed/test10.html?r=dGVzdA==', embed_name: 'Test Stream 10 - Platinum' } },
-                 { attributes: { embed_iframe: '/embed/test11.html?r=dGVzdA==', embed_name: 'Test Stream 11 - Diamond' } },
-                 { attributes: { embed_iframe: '/embed/test12.html?r=dGVzdA==', embed_name: 'Test Stream 12 - Ruby' } },
-                 { attributes: { embed_iframe: '/embed/test13.html?r=dGVzdA==', embed_name: 'Test Stream 13 - Emerald' } },
-                 { attributes: { embed_iframe: '/embed/test14.html?r=dGVzdA==', embed_name: 'Test Stream 14 - Sapphire' } },
-                 { attributes: { embed_iframe: '/embed/test15.html?r=dGVzdA==', embed_name: 'Test Stream 15 - Crystal' } },
-                 { attributes: { embed_iframe: '/embed/test16.html?r=dGVzdA==', embed_name: 'Test Stream 16 - Obsidian' } },
-                 { attributes: { embed_iframe: '/embed/test17.html?r=dGVzdA==', embed_name: 'Test Stream 17 - Onyx' } },
-                 { attributes: { embed_iframe: '/embed/test18.html?r=dGVzdA==', embed_name: 'Test Stream 18 - Pearl' } },
-                 { attributes: { embed_iframe: '/embed/test19.html?r=dGVzdA==', embed_name: 'Test Stream 19 - Amethyst' } },
-                 { attributes: { embed_iframe: '/embed/test20.html?r=dGVzdA==', embed_name: 'Test Stream 20 - Topaz' } }
-             ];
-             
-             // Combinar streams reales con streams de prueba
-             const allStreams = [...embeds, ...testStreams];
+             // Usar solo los streams reales
+             const allStreams = embeds;
              currentStreams = allStreams;
              currentMatchTitle = matchTitle;
              
