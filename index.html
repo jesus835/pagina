@@ -54,10 +54,31 @@
             transform: translateY(-2px);
         }
 
-        .filter-btn.active {
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
-        }
+                 .filter-btn.active {
+             background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+             box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+         }
+         
+         .filter-btn.focused {
+             border: 3px solid #ffffff;
+             transform: scale(1.05);
+             box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+             position: relative;
+             z-index: 10;
+         }
+         
+         .btn-primary.focused {
+             border: 3px solid #ffffff;
+             transform: scale(1.05);
+             box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+         }
+         
+         .carousel-btn.focused {
+             border: 3px solid #ffffff;
+             transform: scale(1.1);
+             box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+             background: #ff6b6b;
+         }
 
                  .carousel-container {
              position: relative;
@@ -747,8 +768,7 @@
              left: 0;
              width: 100vw;
              height: 100vh;
-             background: rgba(0, 0, 0, 0.95);
-             backdrop-filter: blur(10px);
+             background: #000000;
              z-index: 2147483647;
          }
          
@@ -819,6 +839,13 @@
              color: white;
          }
          
+         .fixed-stream-btn.focused {
+             background: #ff6b6b;
+             color: white;
+             border: 3px solid #ffffff;
+             transform: scale(1.05);
+         }
+         
          .fixed-stream-close {
              position: absolute;
              top: 15px;
@@ -840,6 +867,32 @@
          .fixed-stream-close:hover {
              background: rgba(255, 255, 255, 0.2);
              transform: scale(1.1);
+         }
+         
+         .fixed-stream-back-btn {
+             background: #ff6b6b;
+             color: white;
+             border: none;
+             border-radius: 8px;
+             padding: 15px 20px;
+             font-size: 1.1rem;
+             font-weight: 600;
+             cursor: pointer;
+             transition: all 0.3s ease;
+             margin: 20px;
+             width: calc(100% - 40px);
+             text-align: center;
+         }
+         
+         .fixed-stream-back-btn:hover {
+             background: #ff5252;
+             transform: translateY(-2px);
+         }
+         
+         .fixed-stream-back-btn.focused {
+             background: #ff5252;
+             border: 3px solid #ffffff;
+             transform: scale(1.05);
          }
          
          .fixed-stream-player {
@@ -1172,10 +1225,7 @@
         <!-- Indicadores del carrusel -->
         <div class="carousel-indicators" id="carouselIndicators" style="display: none;"></div>
 
-        <!-- Contador del carrusel -->
-        <div class="carousel-counter" id="carouselCounter" style="display: none;">
-            <span id="currentSlide">1</span> de <span id="totalSlides">0</span>
-        </div>
+
     </div>
 
     <!-- Modal para streams -->
@@ -1194,6 +1244,10 @@
         let currentFilter = 'all';
         let currentSlide = 0;
         let filteredMatches = [];
+        
+        // Variables para navegación
+        let currentFilterIndex = 0;
+        let currentMatchIndex = 0;
 
         // Configuración de la API
         const API_URL = 'https://ftvhd.com/diaries.json';
@@ -1208,27 +1262,13 @@
         // Función para formatear fecha y hora
         function formatDateTime(dateStr, timeStr) {
             const date = new Date(dateStr + 'T' + timeStr);
-            const now = new Date();
-            const diffMs = date - now;
-            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-            const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-
-            if (diffMs < 0) {
-                // Partido ya terminó
-                return 'Finalizado';
-            } else if (diffMs < 2 * 60 * 60 * 1000 && diffMs > -2 * 60 * 60 * 1000) {
-                // Partido en vivo (2 horas antes o después)
-                return 'En Vivo';
-            } else {
-                // Partido programado
-                return date.toLocaleDateString('es-ES', {
-                    weekday: 'short',
-                    month: 'short',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-            }
+            return date.toLocaleDateString('es-ES', {
+                weekday: 'short',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
         }
 
         // Función para determinar el estado del partido
@@ -1351,6 +1391,44 @@
             // Inicializar carrusel
             currentSlide = 0;
             setupCarousel();
+            
+            // Reinicializar navegación después de cargar partidos
+            setTimeout(() => {
+                currentMatchIndex = 0;
+                const matchButtons = document.querySelectorAll('.btn-primary');
+                matchButtons.forEach(btn => btn.classList.remove('focused'));
+                if (matchButtons[0]) {
+                    matchButtons[0].classList.add('focused');
+                }
+            }, 100);
+        }
+        
+        // Función para actualizar estadísticas
+        function updateStats() {
+            const totalMatches = allMatches.length;
+            const liveMatches = allMatches.filter(match => {
+                const status = getMatchStatus(match.attributes.date_diary, match.attributes.diary_hour);
+                return status === 'live';
+            }).length;
+            const scheduledMatches = allMatches.filter(match => {
+                const status = getMatchStatus(match.attributes.date_diary, match.attributes.diary_hour);
+                return status === 'scheduled';
+            }).length;
+            const finishedMatches = allMatches.filter(match => {
+                const status = getMatchStatus(match.attributes.date_diary, match.attributes.diary_hour);
+                return status === 'finished';
+            }).length;
+            
+            // Actualizar contadores si existen
+            const totalElement = document.getElementById('totalMatches');
+            const liveElement = document.getElementById('liveMatches');
+            const scheduledElement = document.getElementById('scheduledMatches');
+            const finishedElement = document.getElementById('finishedMatches');
+            
+            if (totalElement) totalElement.textContent = totalMatches;
+            if (liveElement) liveElement.textContent = liveMatches;
+            if (scheduledElement) scheduledElement.textContent = scheduledMatches;
+            if (finishedElement) finishedElement.textContent = finishedMatches;
         }
 
         // Función para configurar el carrusel
@@ -1372,16 +1450,20 @@
 
         // Función para mostrar controles del carrusel
         function showCarouselControls() {
-            document.getElementById('carouselNav').style.display = 'flex';
-            document.getElementById('carouselIndicators').style.display = 'flex';
-            document.getElementById('carouselCounter').style.display = 'block';
+            const carouselNav = document.getElementById('carouselNav');
+            const carouselIndicators = document.getElementById('carouselIndicators');
+            
+            if (carouselNav) carouselNav.style.display = 'flex';
+            if (carouselIndicators) carouselIndicators.style.display = 'flex';
         }
 
         // Función para ocultar controles del carrusel
         function hideCarouselControls() {
-            document.getElementById('carouselNav').style.display = 'none';
-            document.getElementById('carouselIndicators').style.display = 'none';
-            document.getElementById('carouselCounter').style.display = 'none';
+            const carouselNav = document.getElementById('carouselNav');
+            const carouselIndicators = document.getElementById('carouselIndicators');
+            
+            if (carouselNav) carouselNav.style.display = 'none';
+            if (carouselIndicators) carouselIndicators.style.display = 'none';
         }
 
         // Función para actualizar posición del carrusel
@@ -1403,8 +1485,7 @@
 
         // Función para actualizar contador del carrusel
         function updateCarouselCounter() {
-            document.getElementById('currentSlide').textContent = currentSlide + 1;
-            document.getElementById('totalSlides').textContent = filteredMatches.length;
+            // Función vacía para evitar errores
         }
 
         // Función para actualizar indicadores del carrusel
@@ -1544,6 +1625,7 @@
                                  </button>
                              `).join('')}
                          </div>
+                         <button class="fixed-stream-back-btn" onclick="closeFixedStreamContainer()">← Atrás</button>
                          <button class="fixed-stream-close" onclick="closeFixedStreamContainer()">×</button>
                      </div>
                      <div class="fixed-stream-player">
@@ -1599,6 +1681,15 @@
              fixedContainer.innerHTML = containerHTML;
              fixedContainer.style.display = 'block';
              
+             // Inicializar navegación D-pad
+             setTimeout(() => {
+                 const firstButton = document.querySelector('.fixed-stream-btn');
+                 if (firstButton) {
+                     firstButton.classList.add('focused');
+                     currentStreamIndex = 0;
+                 }
+             }, 100);
+             
              // Configurar el iframe
              const iframe = document.getElementById('fixedStreamIframe');
              const loading = document.getElementById('fixedStreamLoading');
@@ -1652,6 +1743,177 @@
              };
          }
          
+         // Variables para navegación D-pad
+         let currentStreamIndex = 0;
+         let totalStreamButtons = 0;
+         
+         // Función para navegar entre botones de streams
+         function navigateStreamButtons(direction) {
+             const buttons = document.querySelectorAll('.fixed-stream-btn');
+             const backButton = document.querySelector('.fixed-stream-back-btn');
+             if (buttons.length === 0) return;
+             
+             totalStreamButtons = buttons.length;
+             
+             // Remover selección anterior
+             buttons.forEach(btn => btn.classList.remove('focused'));
+             if (backButton) backButton.classList.remove('focused');
+             
+             // Calcular nuevo índice
+             switch(direction) {
+                 case 'up':
+                     if (currentStreamIndex === -1) {
+                         // Si estamos en el botón atrás, ir al último stream
+                         currentStreamIndex = totalStreamButtons - 1;
+                     } else {
+                         currentStreamIndex = currentStreamIndex > 0 ? currentStreamIndex - 1 : -1;
+                     }
+                     break;
+                 case 'down':
+                     if (currentStreamIndex === -1) {
+                         // Si estamos en el botón atrás, ir al primer stream
+                         currentStreamIndex = 0;
+                     } else {
+                         currentStreamIndex = currentStreamIndex < totalStreamButtons - 1 ? currentStreamIndex + 1 : -1;
+                     }
+                     break;
+                 case 'prev':
+                     if (currentStreamIndex === -1) {
+                         currentStreamIndex = totalStreamButtons - 1;
+                     } else {
+                         currentStreamIndex = currentStreamIndex > 0 ? currentStreamIndex - 1 : -1;
+                     }
+                     break;
+                 case 'next':
+                     if (currentStreamIndex === -1) {
+                         currentStreamIndex = 0;
+                     } else {
+                         currentStreamIndex = currentStreamIndex < totalStreamButtons - 1 ? currentStreamIndex + 1 : -1;
+                     }
+                     break;
+             }
+             
+             // Aplicar selección
+             if (currentStreamIndex === -1 && backButton) {
+                 backButton.classList.add('focused');
+                 backButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
+             } else if (buttons[currentStreamIndex]) {
+                 buttons[currentStreamIndex].classList.add('focused');
+                 buttons[currentStreamIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+             }
+         }
+         
+         // Función para activar el stream seleccionado
+         function activateSelectedStream() {
+             const buttons = document.querySelectorAll('.fixed-stream-btn');
+             const backButton = document.querySelector('.fixed-stream-back-btn');
+             
+             if (currentStreamIndex === -1 && backButton) {
+                 // Activar botón atrás
+                 closeFixedStreamContainer();
+             } else if (buttons[currentStreamIndex]) {
+                 // Activar stream seleccionado
+                 buttons[currentStreamIndex].click();
+             }
+         }
+         
+         // Función para navegar en la página principal
+         function navigateMainPage(direction) {
+             const filterButtons = document.querySelectorAll('.filter-btn');
+             const matchButtons = document.querySelectorAll('.btn-primary');
+             
+             // Remover selección anterior
+             filterButtons.forEach(btn => btn.classList.remove('focused'));
+             matchButtons.forEach(btn => btn.classList.remove('focused'));
+             
+             if (direction === 'left' || direction === 'right') {
+                 // Navegación horizontal en filtros
+                 if (direction === 'left') {
+                     if (currentFilterIndex > 0) {
+                         currentFilterIndex--;
+                     }
+                 } else {
+                     if (currentFilterIndex < filterButtons.length - 1) {
+                         currentFilterIndex++;
+                     }
+                 }
+                 
+                 if (filterButtons[currentFilterIndex]) {
+                     filterButtons[currentFilterIndex].classList.add('focused');
+                 }
+             } else if (direction === 'down') {
+                 // Flecha abajo: ir al primer botón de streams
+                 currentMatchIndex = 0;
+                 if (matchButtons[0]) {
+                     matchButtons[0].classList.add('focused');
+                     matchButtons[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                     console.log('Enfocado primer botón de stream:', matchButtons[0].textContent.trim());
+                 }
+             } else if (direction === 'up') {
+                 // Flecha arriba: volver a los filtros
+                 currentFilterIndex = 0;
+                 if (filterButtons[0]) {
+                     filterButtons[0].classList.add('focused');
+                 }
+             }
+         }
+         
+         // Función para activar selección en página principal
+         function activateMainPageSelection() {
+             const filterButtons = document.querySelectorAll('.filter-btn');
+             const matchButtons = document.querySelectorAll('.btn-primary');
+             
+             // Activar filtro si está enfocado
+             if (filterButtons[currentFilterIndex] && filterButtons[currentFilterIndex].classList.contains('focused')) {
+                 filterButtons[currentFilterIndex].click();
+                 // Después de cambiar filtro, enfocar el primer partido
+                 setTimeout(() => {
+                     currentMatchIndex = 0;
+                     const newMatchButtons = document.querySelectorAll('.btn-primary');
+                     newMatchButtons.forEach(btn => btn.classList.remove('focused'));
+                     if (newMatchButtons[0]) {
+                         newMatchButtons[0].classList.add('focused');
+                     }
+                 }, 100);
+                 return;
+             }
+             
+             // Activar partido si está enfocado
+             if (matchButtons[currentMatchIndex] && matchButtons[currentMatchIndex].classList.contains('focused')) {
+                 matchButtons[currentMatchIndex].click();
+             }
+         }
+         
+
+         
+         // Función para navegar al siguiente stream
+         function navigateToNextStream() {
+             const matchButtons = document.querySelectorAll('.btn-primary');
+             
+             console.log('Navegando al siguiente stream. Total botones:', matchButtons.length, 'Índice actual:', currentMatchIndex);
+             
+             // Remover selección anterior
+             matchButtons.forEach(btn => btn.classList.remove('focused'));
+             
+             // Ir al siguiente botón de stream
+             if (currentMatchIndex < matchButtons.length - 1) {
+                 currentMatchIndex++;
+             } else {
+                 // Si llegamos al final, volver al primer botón
+                 currentMatchIndex = 0;
+             }
+             
+             console.log('Nuevo índice:', currentMatchIndex);
+             
+             if (matchButtons[currentMatchIndex]) {
+                 matchButtons[currentMatchIndex].classList.add('focused');
+                 matchButtons[currentMatchIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                 console.log('Botón enfocado:', matchButtons[currentMatchIndex].textContent.trim());
+             } else {
+                 console.log('No se encontró el botón en el índice:', currentMatchIndex);
+             }
+         }
+         
          // Función para cerrar el contenedor fijo
          function closeFixedStreamContainer() {
              const fixedContainer = document.getElementById('fixedStreamContainer');
@@ -1663,6 +1925,9 @@
                  if (iframe) {
                      iframe.src = '';
                  }
+                 
+                 // Resetear navegación
+                 currentStreamIndex = 0;
              }
          }
          
@@ -2001,6 +2266,15 @@
          // Event listeners
          document.addEventListener('DOMContentLoaded', () => {
             loadMatches();
+            
+                         // Inicializar navegación de la página principal
+             setTimeout(() => {
+                 const firstFilter = document.querySelector('.filter-btn');
+                 if (firstFilter) {
+                     firstFilter.classList.add('focused');
+                     currentFilterIndex = 0;
+                 }
+             }, 1000);
 
             // Filtros
             document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -2010,7 +2284,18 @@
                     currentFilter = e.target.dataset.filter;
                     currentSlide = 0; // Resetear a la primera slide al cambiar filtro
                     displayMatches();
-                             });
+                    
+                    // Reinicializar navegación después de cambiar filtros
+                    setTimeout(() => {
+                        currentMatchIndex = 0;
+                        const matchButtons = document.querySelectorAll('.btn-primary');
+                        matchButtons.forEach(btn => btn.classList.remove('focused'));
+                        if (matchButtons[0]) {
+                            matchButtons[0].classList.add('focused');
+                        }
+                    }, 100);
+                });
+            });
              
              // Detectar navegación hacia atrás (Android TV, navegador)
              window.addEventListener('popstate', () => {
@@ -2037,39 +2322,90 @@
                 }
             });
 
-                         // Navegación con teclado
-             document.addEventListener('keydown', (e) => {
-                 if (e.key === 'ArrowLeft') {
-                     previousSlide();
-                 } else if (e.key === 'ArrowRight') {
-                     nextSlide();
-                 } else if (e.key === 'Escape') {
-                     // Cerrar overlay del reproductor con Escape
-                     const playerOverlay = document.getElementById('playerOverlay');
-                     if (playerOverlay && playerOverlay.style.display === 'flex') {
-                         closePlayerOverlay();
-                     }
-                     
-                     // Cerrar contenedor fijo con Escape
-                     const fixedContainer = document.getElementById('fixedStreamContainer');
-                     if (fixedContainer && fixedContainer.style.display === 'block') {
-                         closeFixedStreamContainer();
-                     }
-                 }
-             });
+
              
-             // Detectar botón atrás de Android TV
+             // Navegación con teclado
              document.addEventListener('keydown', (e) => {
-                 // Código 8 = Backspace, Código 27 = Escape, Código 10009 = Back button (Android TV)
-                 if (e.keyCode === 8 || e.keyCode === 27 || e.keyCode === 10009) {
-                     const fixedContainer = document.getElementById('fixedStreamContainer');
-                     if (fixedContainer && fixedContainer.style.display === 'block') {
+                 console.log('Tecla presionada:', e.keyCode, 'Tecla:', e.key);
+                 
+                 const fixedContainer = document.getElementById('fixedStreamContainer');
+                 
+                 // Si el overlay de streams está abierto
+                 if (fixedContainer && fixedContainer.style.display === 'block') {
+                     // Navegación en overlay de streams
+                     if (e.keyCode === 37 || e.keyCode === 39) { // Arrow Left/Right
+                         navigateStreamButtons(e.keyCode === 37 ? 'prev' : 'next');
+                         e.preventDefault();
+                     } else if (e.keyCode === 38 || e.keyCode === 40) { // Arrow Up/Down
+                         navigateStreamButtons(e.keyCode === 38 ? 'up' : 'down');
+                         e.preventDefault();
+                     } else if (e.keyCode === 13) { // Enter
+                         activateSelectedStream();
+                         e.preventDefault();
+                     } else if (e.keyCode === 8 || e.keyCode === 27 || e.keyCode === 10009) { // Back/Escape
                          closeFixedStreamContainer();
                          e.preventDefault();
                      }
+                 } else {
+                     // Navegación en página principal
+                     const focusedFilter = document.querySelector('.filter-btn.focused');
+                     const focusedMatch = document.querySelector('.btn-primary.focused');
+                     const focusedCarousel = document.querySelector('.carousel-btn.focused');
+                     
+                     console.log('Elementos enfocados:', {
+                         filter: focusedFilter ? focusedFilter.textContent.trim() : 'ninguno',
+                         match: focusedMatch ? focusedMatch.textContent.trim() : 'ninguno',
+                         carousel: focusedCarousel ? focusedCarousel.textContent.trim() : 'ninguno'
+                     });
+                     
+                     if (focusedFilter) {
+                         // Si estamos en filtros, navegación horizontal y vertical
+                         if (e.keyCode === 37 || e.keyCode === 39) { // Arrow Left/Right
+                             navigateMainPage(e.keyCode === 37 ? 'left' : 'right');
+                             e.preventDefault();
+                         } else if (e.keyCode === 40) { // Arrow Down - ir a streams
+                             navigateMainPage('down');
+                             e.preventDefault();
+                         } else if (e.keyCode === 13) { // Enter
+                             activateMainPageSelection();
+                             e.preventDefault();
+                         }
+                     } else if (focusedMatch) {
+                         console.log('Botón de stream enfocado detectado');
+                         // Si estamos en partidos, navegación entre streams y carrusel
+                         if (e.keyCode === 38) { // Arrow Up - volver a filtros
+                             console.log('Flecha arriba - volviendo a filtros');
+                             navigateMainPage('up');
+                             e.preventDefault();
+                         } else if (e.keyCode === 40) { // Arrow Down - siguiente stream
+                             console.log('Flecha abajo - siguiente stream');
+                             navigateToNextStream();
+                             e.preventDefault();
+                         } else if (e.keyCode === 37 || e.keyCode === 39) { // Arrow Left/Right - mover carrusel
+                             if (e.keyCode === 37) {
+                                 previousSlide();
+                             } else {
+                                 nextSlide();
+                             }
+                             e.preventDefault();
+                         } else if (e.keyCode === 13) { // Enter
+                             activateMainPageSelection();
+                             e.preventDefault();
+                         }
+                     } else if (focusedCarousel) {
+                         // Si estamos en botones del carrusel, solo navegación horizontal
+                         if (e.keyCode === 37 || e.keyCode === 39) { // Arrow Left/Right
+                             navigateCarouselButtons(e.keyCode === 37 ? 'left' : 'right');
+                             e.preventDefault();
+                         } else if (e.keyCode === 13) { // Enter
+                             activateMainPageSelection();
+                             e.preventDefault();
+                         }
+                     }
+                     
+
                  }
              });
-        });
 
         // Actualizar cada 5 minutos
         setInterval(loadMatches, 5 * 60 * 1000);
