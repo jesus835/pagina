@@ -1369,6 +1369,55 @@
             scrollbar-width: none;  /* Firefox */
         }
 
+        /* Overlay de Stream */
+        .stream-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .stream-modal {
+            width: 90vw;
+            height: 80vh;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stream-title {
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stream-container {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stream-container iframe {
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+        }
+
         .video-duration {
             position: absolute;
             bottom: 10px;
@@ -1562,6 +1611,26 @@
         
         <!-- Footer independiente -->
         <button class="btn-footer">How to Watch</button>
+    </div>
+
+    <!-- Overlay de Stream -->
+    <div id="streamOverlay" class="stream-overlay" style="display: none;">
+        <div class="stream-modal">
+            <!-- Botón cerrar -->
+            <button class="close-btn" onclick="closeStreamOverlay()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+            </button>
+            
+            <!-- Título del stream -->
+            <div class="stream-title" id="streamTitle">Cargando...</div>
+            
+            <!-- Contenedor del iframe -->
+            <div class="stream-container">
+                <iframe id="streamIframe" src="" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -2913,8 +2982,63 @@
                 streamUrl = `${domainParam}${embedPath}`;
             }
             
-            // Abrir en nueva pestaña
-            window.open(streamUrl, '_blank');
+            // Abrir overlay de stream
+            openStreamOverlay(streamUrl, streamName);
+        }
+
+        // Función para abrir el overlay de stream
+        function openStreamOverlay(streamUrl, streamName) {
+            const streamOverlay = document.getElementById('streamOverlay');
+            const streamTitle = document.getElementById('streamTitle');
+            const streamIframe = document.getElementById('streamIframe');
+            
+            if (streamOverlay && streamTitle && streamIframe) {
+                // Configurar título
+                streamTitle.textContent = streamName || 'Stream en Vivo';
+                
+                // Configurar iframe
+                streamIframe.src = streamUrl;
+                
+                // Mostrar overlay
+                streamOverlay.style.display = 'flex';
+                
+                // Establecer foco en el botón cerrar
+                setTimeout(() => {
+                    const closeBtn = streamOverlay.querySelector('.close-btn');
+                    if (closeBtn) {
+                        closeBtn.focus();
+                    }
+                }, 100);
+                
+                // Cerrar automáticamente después de 20 segundos
+                setTimeout(() => {
+                    if (streamOverlay.style.display === 'flex') {
+                        closeStreamOverlay();
+                    }
+                }, 20000);
+            }
+        }
+
+        // Función para cerrar el overlay de stream
+        function closeStreamOverlay() {
+            const streamOverlay = document.getElementById('streamOverlay');
+            const streamIframe = document.getElementById('streamIframe');
+            
+            if (streamOverlay) {
+                // Ocultar overlay
+                streamOverlay.style.display = 'none';
+                
+                // Limpiar iframe para detener el stream
+                if (streamIframe) {
+                    streamIframe.src = '';
+                }
+                
+                // Regresar foco al video que estaba enfocado
+                const lastFocusedVideo = document.querySelector('#matchDetailOverlay .video-placeholder:focus');
+                if (lastFocusedVideo) {
+                    lastFocusedVideo.focus();
+                }
+            }
         }
 
         // Función para configurar scroll horizontal
@@ -3142,6 +3266,15 @@
                         break;
                 }
             }
+            // Navegación en el overlay de stream
+            else if (focusedElement.closest('#streamOverlay')) {
+                switch(event.key) {
+                    case 'Escape':
+                        event.preventDefault();
+                        closeStreamOverlay();
+                        break;
+                }
+            }
         }
 
         // Función para manejar el foco visual
@@ -3209,7 +3342,10 @@
         function overlayVisible() {
             const matchDetailOverlay = document.getElementById('matchDetailOverlay');
             const calendarOverlay = document.getElementById('calendarOverlay');
-            return (matchDetailOverlay?.style.display === "block") || (calendarOverlay?.style.display === "block");
+            const streamOverlay = document.getElementById('streamOverlay');
+            return (matchDetailOverlay?.style.display === "block") || 
+                   (calendarOverlay?.style.display === "block") || 
+                   (streamOverlay?.style.display === "flex");
         }
 
         // Inicialización cuando se carga la página
@@ -3231,6 +3367,12 @@
             matchDetailElements.forEach(element => {
                 element.setAttribute('tabindex', '0');
             });
+            
+            // Hacer botón cerrar del overlay de stream enfocable
+            const streamCloseBtn = document.querySelector('#streamOverlay .close-btn');
+            if (streamCloseBtn) {
+                streamCloseBtn.setAttribute('tabindex', '0');
+            }
             
             // Configurar manejo visual del foco
             handleFocusVisual();
