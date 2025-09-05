@@ -1316,8 +1316,8 @@
             overflow-x: auto;
             overflow-y: hidden;
             width: 100%;
-            max-height: 500px;
-            padding: 0;
+            max-height: 520px;
+            padding: 10px 0 0 0;
             margin: 0;
             margin-top: 2%;
         }
@@ -1345,6 +1345,18 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             margin: 0;
             cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .video-placeholder:hover {
+            background: linear-gradient(135deg, #3a3a3a, #2a2a2a);
+            transform: translateY(-2px);
+        }
+
+        .video-placeholder:focus {
+            outline: none;
+            transform: translateY(-2px);
+            border: 2px solid rgba(200, 200, 200, 0.6);
         }
 
         /* Scrollbar oculto */
@@ -1398,7 +1410,7 @@
                 NFL<span class="plus">+</span>
             </div>
             
-            <div class="nav-item active">
+            <div class="nav-item">
                 <div class="icon">🏠</div>
             </div>
             
@@ -2062,6 +2074,9 @@
             
             if (calendarItem && mainContent) {
                 calendarItem.addEventListener('click', () => {
+                    // Cerrar todos los overlays primero
+                    cerrarOverlay();
+                    
                     // Ocultar contenido principal
                     mainContent.style.display = 'none';
                     
@@ -2072,6 +2087,11 @@
                         currentDayOffset = 0;
                         updateDateDisplay();
                         loadCalendarData();
+                        
+                        // Establecer foco en la primera tarjeta del calendario
+                        setTimeout(() => {
+                            setCalendarFocus();
+                        }, 100);
                     }
                 });
             }
@@ -2668,6 +2688,14 @@
             if (matchDetailOverlay) {
                 matchDetailOverlay.style.display = 'block';
                 
+                // Establecer foco en el primer video del match-content
+                setTimeout(() => {
+                    const firstVideoPlaceholder = document.querySelector('#matchDetailOverlay .match-content .video-placeholder');
+                    if (firstVideoPlaceholder) {
+                        firstVideoPlaceholder.focus();
+                    }
+                }, 100);
+                
                 // Actualizar el contenido del overlay
                 updateMatchDetailContent(teamA, teamB, eventTitle, matchTime, status, country, matchData);
             }
@@ -2812,7 +2840,7 @@
                     const videoThumbnail = document.createElement('div');
                     videoThumbnail.className = 'video-thumbnail';
                     videoThumbnail.innerHTML = `
-                        <div class="video-placeholder" style="cursor: pointer;">
+                        <div class="video-placeholder" style="cursor: pointer;" tabindex="0">
                             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: white;">
                                 <div style="font-size: 18px; font-weight: bold; margin-bottom: 8px;">📺</div>
                                 <div style="font-size: 14px; text-align: center;">${streamName}</div>
@@ -2820,7 +2848,7 @@
                         </div>
                     `;
                     
-                    // Hacer clickeable
+                    // Hacer clickeable y enfocable
                     const placeholder = videoThumbnail.querySelector('.video-placeholder');
                     placeholder.onclick = () => {
                         if (iframeUrl) {
@@ -2834,7 +2862,7 @@
                 // Si no hay streams, mostrar mensaje
                 previewVideosContainer.innerHTML = `
                     <div class="video-thumbnail">
-                        <div class="video-placeholder">
+                        <div class="video-placeholder" tabindex="0">
                             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: white;">
                                 <div style="font-size: 18px; font-weight: bold; margin-bottom: 8px;">📺</div>
                                 <div style="font-size: 14px; text-align: center;">Sin Streams</div>
@@ -2928,6 +2956,234 @@
             }
         }
 
+        // Función para establecer foco inicial
+        function setInitialFocus() {
+            const homeNavItem = document.querySelector('.nav-item:first-child');
+            if (homeNavItem) {
+                homeNavItem.focus();
+                homeNavItem.setAttribute('tabindex', '0');
+            }
+        }
+
+        // Función para establecer foco en el calendario
+        function setCalendarFocus() {
+            const firstCalendarCard = document.querySelector('.calendar-card');
+            if (firstCalendarCard) {
+                firstCalendarCard.focus();
+                firstCalendarCard.setAttribute('tabindex', '0');
+            }
+        }
+
+        // Función para manejar navegación con teclado
+        function handleKeyboardNavigation(event) {
+            const focusedElement = document.activeElement;
+            const navItems = document.querySelectorAll('.nav-item');
+            const calendarCards = document.querySelectorAll('.calendar-card');
+            const currentIndex = Array.from(navItems).indexOf(focusedElement);
+            const calendarIndex = Array.from(calendarCards).indexOf(focusedElement);
+            
+            // Navegación en el menú lateral
+            if (focusedElement.classList.contains('nav-item')) {
+                switch(event.key) {
+                    case 'ArrowDown':
+                        event.preventDefault();
+                        const nextIndex = (currentIndex + 1) % navItems.length;
+                        navItems[nextIndex].focus();
+                        break;
+                    case 'ArrowUp':
+                        event.preventDefault();
+                        const prevIndex = currentIndex === 0 ? navItems.length - 1 : currentIndex - 1;
+                        navItems[prevIndex].focus();
+                        break;
+                    case 'ArrowRight':
+                        event.preventDefault();
+                        // Si estamos en el icono del calendario
+                        if (focusedElement.classList.contains('calendar-item')) {
+                            // Si hay un overlay de detalles abierto, ir al primer video
+                            if (document.getElementById('matchDetailOverlay')?.style.display === 'block') {
+                                const firstVideoPlaceholder = document.querySelector('#matchDetailOverlay .match-content .video-placeholder');
+                                if (firstVideoPlaceholder) {
+                                    firstVideoPlaceholder.focus();
+                                }
+                            }
+                            // Si no, ir a las tarjetas del calendario
+                            else {
+                                const firstCalendarCard = document.querySelector('.calendar-card');
+                                if (firstCalendarCard) {
+                                    firstCalendarCard.focus();
+                                }
+                            }
+                        }
+                        break;
+                    case 'Enter':
+                    case ' ':
+                        event.preventDefault();
+                        focusedElement.click();
+                        break;
+                }
+            }
+            // Navegación en las tarjetas del calendario
+            else if (focusedElement.classList.contains('calendar-card')) {
+                switch(event.key) {
+                    case 'ArrowDown':
+                        event.preventDefault();
+                        const nextCardIndex = (calendarIndex + 4) % calendarCards.length; // 4 columnas
+                        calendarCards[nextCardIndex].focus();
+                        break;
+                    case 'ArrowUp':
+                        event.preventDefault();
+                        const prevCardIndex = calendarIndex < 4 ? 
+                            calendarCards.length - 4 + (calendarIndex % 4) : 
+                            calendarIndex - 4;
+                        calendarCards[prevCardIndex].focus();
+                        break;
+                    case 'ArrowRight':
+                        event.preventDefault();
+                        const rightCardIndex = (calendarIndex + 1) % calendarCards.length;
+                        calendarCards[rightCardIndex].focus();
+                        break;
+                    case 'ArrowLeft':
+                        event.preventDefault();
+                        // Verificar si hay tarjetas a la izquierda
+                        const leftCardIndex = calendarIndex === 0 ? 
+                            calendarCards.length - 1 : 
+                            calendarIndex - 1;
+                        
+                        // Si estamos en la primera tarjeta, ir al menú
+                        if (calendarIndex === 0) {
+                            const calendarNavItem = document.querySelector('.nav-item.calendar-item');
+                            if (calendarNavItem) {
+                                calendarNavItem.focus();
+                            }
+                        } else {
+                            // Si hay tarjetas a la izquierda, navegar normalmente
+                            calendarCards[leftCardIndex].focus();
+                        }
+                        break;
+                    case 'Enter':
+                    case ' ':
+                        event.preventDefault();
+                        focusedElement.click();
+                        break;
+                }
+            }
+            // Navegación en el overlay de detalles del partido
+            else if (focusedElement.closest('#matchDetailOverlay')) {
+                const videoPlaceholders = document.querySelectorAll('#matchDetailOverlay .video-placeholder');
+                const btnFooter = document.querySelector('#matchDetailOverlay .btn-footer');
+                const currentVideoIndex = Array.from(videoPlaceholders).indexOf(focusedElement);
+                
+                switch(event.key) {
+                    case 'ArrowLeft':
+                        event.preventDefault();
+                        // Si estamos en el primer video, ir al menú
+                        if (focusedElement.classList.contains('video-placeholder') && currentVideoIndex === 0) {
+                            const calendarNavItem = document.querySelector('.nav-item.calendar-item');
+                            if (calendarNavItem) {
+                                calendarNavItem.focus();
+                            }
+                        } else if (focusedElement.classList.contains('video-placeholder') && currentVideoIndex > 0) {
+                            // Si hay videos a la izquierda, navegar al anterior
+                            videoPlaceholders[currentVideoIndex - 1].focus();
+                        } else if (focusedElement === btnFooter) {
+                            // Si estamos en el botón, ir al último video
+                            if (videoPlaceholders.length > 0) {
+                                videoPlaceholders[videoPlaceholders.length - 1].focus();
+                            }
+                        }
+                        break;
+                    case 'ArrowRight':
+                        event.preventDefault();
+                        if (focusedElement.classList.contains('video-placeholder')) {
+                            const nextVideoIndex = (currentVideoIndex + 1) % videoPlaceholders.length;
+                            videoPlaceholders[nextVideoIndex].focus();
+                        } else if (focusedElement === btnFooter) {
+                            if (videoPlaceholders.length > 0) {
+                                videoPlaceholders[0].focus();
+                            }
+                        }
+                        break;
+                    case 'ArrowDown':
+                        event.preventDefault();
+                        if (focusedElement.classList.contains('video-placeholder') && btnFooter) {
+                            btnFooter.focus();
+                        }
+                        break;
+                    case 'ArrowUp':
+                        event.preventDefault();
+                        if (focusedElement === btnFooter && videoPlaceholders.length > 0) {
+                            videoPlaceholders[videoPlaceholders.length - 1].focus();
+                        }
+                        break;
+                    case 'Enter':
+                    case ' ':
+                        event.preventDefault();
+                        if (focusedElement.classList.contains('video-placeholder')) {
+                            focusedElement.click();
+                        } else if (focusedElement === btnFooter) {
+                            focusedElement.click();
+                        }
+                        break;
+                    case 'Escape':
+                        event.preventDefault();
+                        closeMatchDetail();
+                        break;
+                }
+            }
+        }
+
+        // Función para manejar el foco visual
+        function handleFocusVisual() {
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('focus', function() {
+                    // Remover active de todos los elementos
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    // Agregar active solo al elemento con foco
+                    this.classList.add('active');
+                });
+                
+                item.addEventListener('blur', function() {
+                    // Opcional: remover active cuando pierde el foco
+                    // this.classList.remove('active');
+                });
+            });
+        }
+
+        // Función para manejar clicks en nav-items
+        function handleNavItemClicks() {
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const icon = this.querySelector('.icon');
+                    if (icon && icon.textContent === '🏠') {
+                        // Cerrar cualquier overlay abierto
+                        cerrarOverlay();
+                        
+                        // Ocultar el overlay del calendario si está abierto
+                        const calendarOverlay = document.getElementById('calendarOverlay');
+                        if (calendarOverlay) {
+                            calendarOverlay.style.display = 'none';
+                        }
+                        
+                        // Ocultar el overlay de detalles si está abierto
+                        const matchDetailOverlay = document.getElementById('matchDetailOverlay');
+                        if (matchDetailOverlay) {
+                            matchDetailOverlay.style.display = 'none';
+                        }
+                        
+                        // Mostrar el contenido principal
+                        const mainContent = document.querySelector('.main-content');
+                        if (mainContent) {
+                            mainContent.style.display = 'block';
+                        }
+                        
+                        console.log('Regresando al inicio - contenido principal mostrado');
+                    }
+                });
+            });
+        }
+
         // Event listener para el botón de retroceso
         window.addEventListener("appBackButton", () => {
             if (overlayVisible()) {
@@ -2943,6 +3199,39 @@
             const calendarOverlay = document.getElementById('calendarOverlay');
             return (matchDetailOverlay?.style.display === "block") || (calendarOverlay?.style.display === "block");
         }
+
+        // Inicialización cuando se carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hacer todos los nav-items enfocables
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.setAttribute('tabindex', '0');
+            });
+            
+            // Hacer todas las tarjetas del calendario enfocables
+            const calendarCards = document.querySelectorAll('.calendar-card');
+            calendarCards.forEach(card => {
+                card.setAttribute('tabindex', '0');
+            });
+            
+            // Hacer elementos del overlay de detalles enfocables
+            const matchDetailElements = document.querySelectorAll('#matchDetailOverlay .video-placeholder, #matchDetailOverlay .btn-footer');
+            matchDetailElements.forEach(element => {
+                element.setAttribute('tabindex', '0');
+            });
+            
+            // Configurar manejo visual del foco
+            handleFocusVisual();
+            
+            // Configurar clicks en nav-items
+            handleNavItemClicks();
+            
+            // Agregar event listeners para navegación con teclado
+            document.addEventListener('keydown', handleKeyboardNavigation);
+            
+            // Establecer foco inicial
+            setInitialFocus();
+        });
     </script>
 </body>
 </html>
