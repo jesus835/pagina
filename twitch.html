@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aspaszin - Twitch Stream</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .twitch-embed {
+            width: 100%;
+            height: 100%;
+            border: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #9146ff;
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            z-index: 10;
+        }
+
+        .controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 20;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            background-color: #9146ff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #7c3aed;
+        }
+
+        .btn:active {
+            background-color: #6d28d9;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                top: 5px;
+                right: 5px;
+            }
+            
+            .btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="loading" id="loading">Cargando stream de Aspaszin...</div>
+        
+        <div class="controls">
+            <button class="btn" onclick="toggleFullscreen()">Pantalla Completa</button>
+            <button class="btn" onclick="refreshStream()">Actualizar</button>
+        </div>
+
+        <iframe 
+            class="twitch-embed"
+            id="twitch-embed"
+            src="https://player.twitch.tv/?channel=aspaszin&parent=localhost&autoplay=true&muted=false"
+            allowfullscreen="true"
+            scrolling="no"
+            onload="hideLoading()">
+        </iframe>
+    </div>
+
+    <script>
+        console.log('🚀 Iniciando aplicación Twitch Aspaszin');
+        console.log('📡 URL del stream:', 'https://player.twitch.tv/?channel=aspaszin&parent=localhost&autoplay=true&muted=false');
+        
+        function hideLoading() {
+            const loading = document.getElementById('loading');
+            loading.style.display = 'none';
+            console.log('✅ Stream cargado exitosamente - ocultando indicador de carga');
+        }
+
+        function showError(message) {
+            const loading = document.getElementById('loading');
+            loading.innerHTML = `❌ Error: ${message}`;
+            loading.style.color = '#ff4444';
+            console.error('❌ Error en la carga:', message);
+        }
+
+        function toggleFullscreen() {
+            console.log('🖥️ Intentando cambiar modo pantalla completa');
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().then(() => {
+                    console.log('✅ Entrando en pantalla completa');
+                }).catch(err => {
+                    console.error('❌ Error al entrar en pantalla completa:', err);
+                });
+            } else {
+                document.exitFullscreen().then(() => {
+                    console.log('✅ Saliendo de pantalla completa');
+                }).catch(err => {
+                    console.error('❌ Error al salir de pantalla completa:', err);
+                });
+            }
+        }
+
+        function refreshStream() {
+            console.log('🔄 Actualizando stream...');
+            const iframe = document.getElementById('twitch-embed');
+            const loading = document.getElementById('loading');
+            
+            loading.style.display = 'block';
+            loading.innerHTML = 'Cargando stream de Aspaszin...';
+            loading.style.color = '#9146ff';
+            
+            // Limpiar iframe primero
+            iframe.src = 'about:blank';
+            
+            setTimeout(() => {
+                iframe.src = 'https://player.twitch.tv/?channel=aspaszin&parent=localhost&autoplay=true&muted=false';
+                console.log('🔄 Nueva URL cargada:', iframe.src);
+            }, 100);
+        }
+
+        // Eventos del iframe
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📄 DOM cargado completamente');
+            const iframe = document.getElementById('twitch-embed');
+            
+            iframe.addEventListener('load', function() {
+                console.log('✅ Iframe cargado exitosamente');
+                hideLoading();
+            });
+            
+            iframe.addEventListener('error', function(e) {
+                console.error('❌ Error en iframe:', e);
+                showError('No se pudo cargar el stream. Verifica la conexión o el proxy.');
+            });
+            
+            // Verificar si el iframe se carga correctamente
+            setTimeout(() => {
+                try {
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    console.log('📋 Contenido del iframe accesible:', iframeDoc ? 'Sí' : 'No');
+                } catch (e) {
+                    console.warn('⚠️ No se puede acceder al contenido del iframe (normal por CORS):', e.message);
+                }
+            }, 3000);
+        });
+
+        // Detectar tecla F11 para pantalla completa
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F11') {
+                e.preventDefault();
+                console.log('⌨️ Tecla F11 presionada');
+                toggleFullscreen();
+            }
+        });
+
+        // Logs de información del navegador
+        window.addEventListener('load', function() {
+            console.log('🌐 Información del navegador:');
+            console.log('- User Agent:', navigator.userAgent);
+            console.log('- URL actual:', window.location.href);
+            console.log('- Protocolo:', window.location.protocol);
+            console.log('- Host:', window.location.host);
+            
+            // Verificar soporte de pantalla completa
+            if (document.documentElement.requestFullscreen) {
+                console.log('✅ Pantalla completa soportada');
+            } else {
+                console.warn('⚠️ Pantalla completa no soportada en este navegador');
+            }
+            
+            // Verificar si hay errores de CORS
+            window.addEventListener('error', function(e) {
+                if (e.message.includes('CORS') || e.message.includes('cross-origin')) {
+                    console.error('🚫 Error de CORS detectado:', e.message);
+                    showError('Error de CORS detectado. El proxy puede no estar funcionando.');
+                }
+            });
+        });
+
+        // Log de cambios de visibilidad
+        document.addEventListener('visibilitychange', function() {
+            console.log('👁️ Visibilidad de la página:', document.hidden ? 'Oculta' : 'Visible');
+        });
+
+        // Log de errores no capturados
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('❌ Promesa rechazada no manejada:', e.reason);
+        });
+    </script>
+</body>
+</html>
