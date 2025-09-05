@@ -105,7 +105,11 @@
 
         .nav-item.active {
             background: #0066ff;
-            box-shadow: 0 0 2vh rgba(0, 102, 255, 0.5);
+        }
+
+        .nav-item:focus {
+            outline: 2px solid #0066ff;
+            outline-offset: 2px;
         }
 
         .nav-item .icon {
@@ -131,7 +135,7 @@
         }
 
         .calendar-item {
-            background: #0066ff;
+            background: #ffffff1a;
             font-size: 1.4vh;
             font-weight: bold;
         }
@@ -1637,6 +1641,7 @@
         // Utilidades NOW PLAYING desde API
         const API_URL = 'https://ftvhd.com/diaries.json';
         let _apiItemsCache = [];
+        let _lastFocusedVideo = null; // Para recordar el video enfocado antes del stream
 
         // Corrección horaria de visualización (en horas)
         const DISPLAY_HOUR_OFFSET_MS = -1 * 60 * 60 * 1000; // -1h (si API dice 6:00, mostrar 5:00)
@@ -2138,7 +2143,6 @@
         // Función para configurar el calendario
         function setupCalendar() {
             const calendarItem = document.querySelector('.nav-item.calendar-item');
-            const homeItem = document.querySelector('.nav-item.active');
             const mainContent = document.querySelector('.main-content');
             
             if (calendarItem && mainContent) {
@@ -2993,6 +2997,10 @@
             const streamIframe = document.getElementById('streamIframe');
             
             if (streamOverlay && streamTitle && streamIframe) {
+                // Recordar el video que estaba enfocado
+                _lastFocusedVideo = document.activeElement;
+                console.log('Video enfocado guardado:', _lastFocusedVideo);
+                
                 // Configurar título
                 streamTitle.textContent = streamName || 'Stream en Vivo';
                 
@@ -3033,11 +3041,20 @@
                     streamIframe.src = '';
                 }
                 
-                // Regresar foco al video que estaba enfocado
-                const lastFocusedVideo = document.querySelector('#matchDetailOverlay .video-placeholder:focus');
-                if (lastFocusedVideo) {
-                    lastFocusedVideo.focus();
-                }
+                // Regresar foco al video que estaba enfocado antes del stream
+                setTimeout(() => {
+                    if (_lastFocusedVideo && _lastFocusedVideo.classList.contains('video-placeholder')) {
+                        _lastFocusedVideo.focus();
+                        console.log('Foco regresado al video:', _lastFocusedVideo);
+                    } else {
+                        // Si no hay video guardado, ir al primer video
+                        const firstVideo = document.querySelector('#matchDetailOverlay .video-placeholder');
+                        if (firstVideo) {
+                            firstVideo.focus();
+                            console.log('Foco regresado al primer video');
+                        }
+                    }
+                }, 100);
             }
         }
 
@@ -3095,10 +3112,34 @@
 
         // Función para establecer foco inicial
         function setInitialFocus() {
-            const homeNavItem = document.querySelector('.nav-item:first-child');
+            // Buscar el botón inicio por el icono 🏠
+            const navItems = document.querySelectorAll('.nav-item');
+            let homeNavItem = null;
+            
+            navItems.forEach(item => {
+                const icon = item.querySelector('.icon');
+                if (icon && icon.textContent === '🏠') {
+                    homeNavItem = item;
+                }
+            });
+            
             if (homeNavItem) {
-                homeNavItem.focus();
+                // Asegurar que tenga tabindex
                 homeNavItem.setAttribute('tabindex', '0');
+                
+                // Forzar el foco
+                homeNavItem.focus();
+                
+                // Verificar que el foco se estableció
+                if (document.activeElement === homeNavItem) {
+                    console.log('✅ Foco establecido correctamente en botón inicio');
+                } else {
+                    console.log('❌ Error: No se pudo establecer foco en botón inicio');
+                    console.log('Elemento activo actual:', document.activeElement);
+                }
+            } else {
+                console.log('❌ Error: No se encontró el botón inicio');
+                console.log('Nav items encontrados:', navItems.length);
             }
         }
 
@@ -3348,6 +3389,27 @@
                    (streamOverlay?.style.display === "flex");
         }
 
+        // Función para forzar foco inicial
+        function forceInitialFocus() {
+            // Buscar el botón inicio por el icono 🏠
+            const navItems = document.querySelectorAll('.nav-item');
+            let homeNavItem = null;
+            
+            navItems.forEach(item => {
+                const icon = item.querySelector('.icon');
+                if (icon && icon.textContent === '🏠') {
+                    homeNavItem = item;
+                }
+            });
+            
+            if (homeNavItem) {
+                homeNavItem.focus();
+                console.log('🎯 Foco forzado en botón inicio');
+            } else {
+                console.log('❌ No se pudo encontrar botón inicio para forzar foco');
+            }
+        }
+
         // Inicialización cuando se carga la página
         document.addEventListener('DOMContentLoaded', function() {
             // Hacer todos los nav-items enfocables
@@ -3384,7 +3446,36 @@
             document.addEventListener('keydown', handleKeyboardNavigation);
             
             // Establecer foco inicial
-            setInitialFocus();
+            setTimeout(() => {
+                setInitialFocus();
+            }, 1000);
+            
+            // Método alternativo para establecer foco
+            setTimeout(() => {
+                // Buscar el botón inicio por el icono 🏠
+                const navItems = document.querySelectorAll('.nav-item');
+                let homeNavItem = null;
+                
+                navItems.forEach(item => {
+                    const icon = item.querySelector('.icon');
+                    if (icon && icon.textContent === '🏠') {
+                        homeNavItem = item;
+                    }
+                });
+                
+                if (homeNavItem && document.activeElement !== homeNavItem) {
+                    console.log('🔄 Intentando establecer foco alternativo...');
+                    homeNavItem.focus();
+                    homeNavItem.click(); // Forzar activación
+                }
+            }, 2000);
+        });
+
+        // Event listener adicional para cuando la ventana esté completamente cargada
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                forceInitialFocus();
+            }, 500);
         });
     </script>
 </body>
