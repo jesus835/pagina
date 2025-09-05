@@ -2850,11 +2850,24 @@
                     
                     // Hacer clickeable y enfocable
                     const placeholder = videoThumbnail.querySelector('.video-placeholder');
-                    placeholder.onclick = () => {
+                    
+                    // Función para abrir stream
+                    const openStream = () => {
                         if (iframeUrl) {
                             openStreamFromOverlay(iframeUrl, streamName);
                         }
                     };
+                    
+                    // Click
+                    placeholder.onclick = openStream;
+                    
+                    // Enter/Espacio para Android TV
+                    placeholder.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            openStream();
+                        }
+                    });
                     
                     previewVideosContainer.appendChild(videoThumbnail);
                 });
@@ -3118,11 +3131,10 @@
                     case 'Enter':
                     case ' ':
                         event.preventDefault();
-                        if (focusedElement.classList.contains('video-placeholder')) {
-                            focusedElement.click();
-                        } else if (focusedElement === btnFooter) {
+                        if (focusedElement === btnFooter) {
                             focusedElement.click();
                         }
+                        // Los video-placeholder manejan su propio Enter
                         break;
                     case 'Escape':
                         event.preventDefault();
