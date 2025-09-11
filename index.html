@@ -4081,21 +4081,145 @@
                 }
             });
         }, 2000);
+    </script>
 
-        // ===== DETECTOR INSPIRADO EN M3U8 SNIFFER =====
-        console.log('🎯 Configurando detector estilo M3U8 Sniffer...');
-        
-        // Crear overlay visual como el m3u8 Sniffer
-        const createM3U8Overlay = () => {
-            // Verificar si ya existe
-            if (document.getElementById('customM3u8Overlay')) return;
+    <script>
+        // M3U8 Extractor Universal que funciona
+        (function() {
+            'use strict';
+            let m3u8Urls = [];
+            let overlay = null;
+
+            function createOverlay() {
+                if (document.getElementById('m3u8ExtractorOverlay')) return;
+                
+                overlay = document.createElement('div');
+                overlay.id = 'm3u8ExtractorOverlay';
+                overlay.style.cssText = `
+                    position: fixed;
+                    top: 10px;
+                    left: 10px;
+                    z-index: 999999;
+                    background: rgba(0, 0, 0, 0.9);
+                    border: 2px solid #00ffcc;
+                    border-radius: 8px;
+                    color: white;
+                    font-family: Arial, sans-serif;
+                    font-size: 12px;
+                    padding: 8px;
+                    max-width: 600px;
+                    min-width: 300px;
+                `;
+                
+                overlay.innerHTML = `
+                    <div style="margin-bottom: 8px;">
+                        <span style="color: #00ffcc; font-weight: bold;">M3U8 Extractor [<span id="m3u8Count">0</span>]</span>
+                        <button onclick="this.parentElement.parentElement.style.display='none'" style="float: right; background: #c00; color: white; border: none; padding: 2px 6px; cursor: pointer;">X</button>
+                    </div>
+                    <div id="m3u8CurrentUrl" style="word-break: break-all; margin-bottom: 8px;">No M3U8 detected yet...</div>
+                    <button onclick="copyM3U8()" style="background: #333; color: white; border: 1px solid #555; padding: 4px 8px; margin-right: 4px; cursor: pointer;">Copy</button>
+                    <button onclick="openM3U8()" style="background: #333; color: white; border: 1px solid #555; padding: 4px 8px; cursor: pointer;">Open</button>
+                `;
+                
+                document.body.appendChild(overlay);
+            }
+
+            function addM3U8Url(url) {
+                if (m3u8Urls.includes(url)) return;
+                
+                m3u8Urls.push(url);
+                console.log('🎯 M3U8 detectado:', url);
+                
+                createOverlay();
+                document.getElementById('m3u8Count').textContent = m3u8Urls.length;
+                document.getElementById('m3u8CurrentUrl').textContent = url;
+                
+                // Auto copy
+                setTimeout(() => {
+                    navigator.clipboard.writeText(url).then(() => {
+                        console.log('📋 URL copiada automáticamente:', url);
+                    });
+                }, 1000);
+            }
+
+            // Global functions
+            window.copyM3U8 = function() {
+                const url = m3u8Urls[m3u8Urls.length - 1];
+                if (url) {
+                    navigator.clipboard.writeText(url);
+                    console.log('📋 URL copiada:', url);
+                }
+            };
+
+            window.openM3U8 = function() {
+                const url = m3u8Urls[m3u8Urls.length - 1];
+                if (url) {
+                    window.open(url, '_blank');
+                    console.log('▶️ Abriendo:', url);
+                }
+            };
+
+            // Interceptors
+            const originalFetch = window.fetch;
+            window.fetch = function(...args) {
+                const url = args[0];
+                if (typeof url === 'string' && url.includes('.m3u8')) {
+                    addM3U8Url(url);
+                }
+                return originalFetch.apply(this, args);
+            };
+
+            const originalXHROpen = XMLHttpRequest.prototype.open;
+            XMLHttpRequest.prototype.open = function(method, url, ...args) {
+                if (typeof url === 'string' && url.includes('.m3u8')) {
+                    addM3U8Url(url);
+                }
+                return originalXHROpen.apply(this, [method, url, ...args]);
+            };
+
+            // DOM search
+            function searchDOM() {
+                const scripts = document.querySelectorAll('script');
+                scripts.forEach(script => {
+                    if (script.textContent && script.textContent.includes('.m3u8')) {
+                        const matches = script.textContent.match(/https?:\/\/[^\s"']*\.m3u8[^\s"']*/g);
+                        if (matches) {
+                            matches.forEach(url => addM3U8Url(url));
+                        }
+                    }
+                });
+            }
+
+            // Observer
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node.nodeType === 1 && node.textContent && node.textContent.includes('.m3u8')) {
+                            const matches = node.textContent.match(/https?:\/\/[^\s"']*\.m3u8[^\s"']*/g);
+                            if (matches) {
+                                matches.forEach(url => addM3U8Url(url));
+                            }
+                        }
+                    });
+                });
+            });
+
+            observer.observe(document.body, { childList: true, subtree: true });
+
+            // Init con escaneo continuo cada segundo
+            setTimeout(searchDOM, 1000);
             
-            const overlay = document.createElement('div');
-            overlay.id = 'customM3u8Overlay';
-            overlay.style.cssText = `
-                position: fixed;
-                top: 10px;
-                right: 10px;
+            // Escanear cada segundo continuamente
+            setInterval(() => {
+                searchDOM();
+                console.log('🔄 Escaneando M3U8s...');
+            }, 1000);
+            
+            console.log('✅ M3U8 Extractor Universal iniciado con escaneo continuo');
+        })();
+    </script>
+</body>
+</html>
                 background: rgba(0, 0, 0, 0.9);
                 color: white;
                 padding: 10px;
@@ -4312,6 +4436,442 @@
         console.log('  - 🆕 Detector estilo M3U8 Sniffer');
         console.log('  - 🆕 Overlay visual de URLs detectadas');
         console.log('  - 🆕 Monitor DOM agresivo');
+    </script>
+
+    <script>
+// M3U8 Extractor Universal - Replica la funcionalidad del extractor de M3U8
+// Compatible con cualquier página que tenga streams M3U8
+
+(function() {
+    'use strict';
+
+    // Configuración
+    const CONFIG = {
+        overlayId: 'm3u8ExtractorOverlay',
+        title: 'M3U8 Extractor Universal',
+        position: 'top-left', // top-left, top-right, bottom-left, bottom-right
+        autoHide: false,
+        showCount: true,
+        copyToClipboard: true,
+        autoPlay: false
+    };
+
+    // Estado global
+    let m3u8Urls = [];
+    let currentUrlIndex = 0;
+    let overlay = null;
+    let isOverlayVisible = true;
+    let isExpanded = true;
+
+    // Función principal de inicialización
+    function initM3U8Extractor() {
+        console.log('🚀 Iniciando M3U8 Extractor Universal...');
+        
+        // Crear overlay
+        createOverlay();
+        
+        // Configurar interceptores
+        setupInterceptors();
+        
+        // Configurar observadores
+        setupObservers();
+        
+        // Configurar atajos de teclado
+        setupKeyboardShortcuts();
+        
+        console.log('✅ M3U8 Extractor Universal iniciado');
+    }
+
+    // Crear el overlay
+    function createOverlay() {
+        // Remover overlay existente si existe
+        const existingOverlay = document.getElementById(CONFIG.overlayId);
+        if (existingOverlay) {
+            existingOverlay.remove();
+        }
+
+        // Crear contenedor principal
+        overlay = document.createElement('div');
+        overlay.id = CONFIG.overlayId;
+        overlay.style.cssText = `
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 999999;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ffcc;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            padding: 8px;
+            max-width: 600px;
+            min-width: 300px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        `;
+
+        // Crear contenido del overlay
+        overlay.innerHTML = `
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-weight: bold; color: #00ffcc;">${CONFIG.title}</span>
+                    ${CONFIG.showCount ? '<span id="m3u8Count" style="background: #00ffcc; color: black; padding: 2px 6px; border-radius: 10px; font-size: 10px; font-weight: bold;">0</span>' : ''}
+                </div>
+                <div style="display: flex; gap: 4px;">
+                    <button id="m3u8ToggleExpand" style="background: #333; border: 1px solid #555; color: white; padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 10px;">-</button>
+                    <button id="m3u8Copy" style="background: #333; border: 1px solid #555; color: white; padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 10px;">Copy</button>
+                    <button id="m3u8Play" style="background: #333; border: 1px solid #555; color: white; padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 10px;">Play</button>
+                    <button id="m3u8Close" style="background: #c00; border: 1px solid #f00; color: white; padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 10px;">X</button>
+                </div>
+            </div>
+            <div id="m3u8Content" style="display: block;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <select id="m3u8UrlSelect" style="background: #333; border: 1px solid #555; color: white; padding: 4px; border-radius: 4px; font-size: 11px; min-width: 80px;">
+                        <option value="first">First</option>
+                        <option value="last">Last</option>
+                    </select>
+                    <span id="m3u8CurrentUrl" style="color: #ccc; font-size: 11px; word-break: break-all;">No M3U8 URLs detected yet...</span>
+                </div>
+                <div id="m3u8UrlList" style="max-height: 200px; overflow-y: auto; display: none;">
+                    <div style="font-size: 10px; color: #888; margin-bottom: 4px;">All detected URLs:</div>
+                    <div id="m3u8UrlItems"></div>
+                </div>
+            </div>
+        `;
+
+        // Agregar al documento
+        document.body.appendChild(overlay);
+
+        // Configurar eventos
+        setupOverlayEvents();
+    }
+
+    // Configurar eventos del overlay
+    function setupOverlayEvents() {
+        // Botón de expandir/contraer
+        const toggleBtn = document.getElementById('m3u8ToggleExpand');
+        toggleBtn.addEventListener('click', toggleExpand);
+
+        // Botón de copiar
+        const copyBtn = document.getElementById('m3u8Copy');
+        copyBtn.addEventListener('click', copyCurrentUrl);
+
+        // Botón de reproducir
+        const playBtn = document.getElementById('m3u8Play');
+        playBtn.addEventListener('click', playCurrentUrl);
+
+        // Botón de cerrar
+        const closeBtn = document.getElementById('m3u8Close');
+        closeBtn.addEventListener('click', hideOverlay);
+
+        // Selector de URL
+        const urlSelect = document.getElementById('m3u8UrlSelect');
+        urlSelect.addEventListener('change', updateCurrentUrl);
+
+        // Hacer el overlay arrastrable
+        makeOverlayDraggable();
+    }
+
+    // Hacer el overlay arrastrable
+    function makeOverlayDraggable() {
+        let isDragging = false;
+        let startX, startY, startLeft, startTop;
+
+        overlay.addEventListener('mousedown', (e) => {
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'SELECT') return;
+            
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            startLeft = parseInt(overlay.style.left);
+            startTop = parseInt(overlay.style.top);
+            
+            overlay.style.cursor = 'grabbing';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            
+            const deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
+            
+            overlay.style.left = (startLeft + deltaX) + 'px';
+            overlay.style.top = (startTop + deltaY) + 'px';
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            overlay.style.cursor = 'grab';
+        });
+    }
+
+    // Configurar interceptores de red
+    function setupInterceptors() {
+        // Interceptar Fetch API
+        const originalFetch = window.fetch;
+        window.fetch = function(...args) {
+            const url = args[0];
+            if (typeof url === 'string' && url.includes('.m3u8')) {
+                addM3U8Url(url);
+            }
+            return originalFetch.apply(this, args);
+        };
+
+        // Interceptar XMLHttpRequest
+        const originalXHROpen = XMLHttpRequest.prototype.open;
+        XMLHttpRequest.prototype.open = function(method, url, ...args) {
+            if (typeof url === 'string' && url.includes('.m3u8')) {
+                addM3U8Url(url);
+            }
+            return originalXHROpen.apply(this, [method, url, ...args]);
+        };
+
+        // Buscar en el DOM existente
+        searchForM3U8InDOM();
+        
+        // Escaneo continuo cada segundo
+        setInterval(() => {
+            searchForM3U8InDOM();
+            console.log('🔄 Escaneando DOM para M3U8s...');
+        }, 1000);
+    }
+
+    // Buscar M3U8 en el DOM
+    function searchForM3U8InDOM() {
+        // Buscar en scripts
+        const scripts = document.querySelectorAll('script');
+        scripts.forEach(script => {
+            if (script.textContent && script.textContent.includes('.m3u8')) {
+                const matches = script.textContent.match(/https?:\/\/[^\s"']*\.m3u8[^\s"']*/g);
+                if (matches) {
+                    matches.forEach(url => addM3U8Url(url));
+                }
+            }
+        });
+
+        // Buscar en atributos
+        const elements = document.querySelectorAll('*');
+        elements.forEach(element => {
+            const attributes = ['src', 'href', 'data-src', 'data-url'];
+            attributes.forEach(attr => {
+                const value = element.getAttribute(attr);
+                if (value && value.includes('.m3u8')) {
+                    addM3U8Url(value);
+                }
+            });
+        });
+    }
+
+    // Configurar observadores
+    function setupObservers() {
+        // Observar cambios en el DOM
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.nodeType === Node.ELEMENT_NODE) {
+                        // Buscar M3U8 en nuevos elementos
+                        if (node.textContent && node.textContent.includes('.m3u8')) {
+                            const matches = node.textContent.match(/https?:\/\/[^\s"']*\.m3u8[^\s"']*/g);
+                            if (matches) {
+                                matches.forEach(url => addM3U8Url(url));
+                            }
+                        }
+                    }
+                });
+            });
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    }
+
+    // Configurar atajos de teclado
+    function setupKeyboardShortcuts() {
+        document.addEventListener('keydown', (e) => {
+            // Alt + M: Mostrar/ocultar overlay
+            if (e.altKey && e.key === 'm') {
+                e.preventDefault();
+                toggleOverlay();
+            }
+
+            // Alt + C: Copiar URL actual
+            if (e.altKey && e.key === 'c') {
+                e.preventDefault();
+                copyCurrentUrl();
+            }
+
+            // Alt + P: Reproducir URL actual
+            if (e.altKey && e.key === 'p') {
+                e.preventDefault();
+                playCurrentUrl();
+            }
+
+            // Alt + X: Cerrar overlay
+            if (e.altKey && e.key === 'x') {
+                e.preventDefault();
+                hideOverlay();
+            }
+        });
+    }
+
+    // Agregar URL M3U8
+    function addM3U8Url(url) {
+        // Limpiar URL
+        url = url.trim();
+        
+        // Verificar si ya existe
+        if (m3u8Urls.includes(url)) {
+            return;
+        }
+
+        // Agregar a la lista
+        m3u8Urls.push(url);
+        console.log('🎯 M3U8 detectado:', url);
+
+        // Actualizar overlay
+        updateOverlay();
+
+        // Auto-copiar si está habilitado
+        if (CONFIG.copyToClipboard && m3u8Urls.length === 1) {
+            setTimeout(() => copyCurrentUrl(), 1000);
+        }
+    }
+
+    // Actualizar overlay
+    function updateOverlay() {
+        if (!overlay) return;
+
+        // Actualizar contador
+        const countElement = document.getElementById('m3u8Count');
+        if (countElement) {
+            countElement.textContent = m3u8Urls.length;
+        }
+
+        // Actualizar URL actual
+        updateCurrentUrl();
+    }
+
+    // Actualizar URL actual
+    function updateCurrentUrl() {
+        const urlSelect = document.getElementById('m3u8UrlSelect');
+        const currentUrlElement = document.getElementById('m3u8CurrentUrl');
+        
+        if (!urlSelect || !currentUrlElement) return;
+
+        const selection = urlSelect.value;
+        let url = '';
+
+        if (m3u8Urls.length > 0) {
+            if (selection === 'first') {
+                url = m3u8Urls[0];
+                currentUrlIndex = 0;
+            } else {
+                url = m3u8Urls[m3u8Urls.length - 1];
+                currentUrlIndex = m3u8Urls.length - 1;
+            }
+        }
+
+        currentUrlElement.textContent = url || 'No M3U8 URLs detected yet...';
+    }
+
+    // Alternar expandir/contraer
+    function toggleExpand() {
+        isExpanded = !isExpanded;
+        const content = document.getElementById('m3u8Content');
+        const toggleBtn = document.getElementById('m3u8ToggleExpand');
+        
+        if (isExpanded) {
+            content.style.display = 'block';
+            toggleBtn.textContent = '-';
+        } else {
+            content.style.display = 'none';
+            toggleBtn.textContent = '+';
+        }
+    }
+
+    // Copiar URL actual
+    async function copyCurrentUrl() {
+        const url = m3u8Urls[currentUrlIndex];
+        if (!url) {
+            console.log('No M3U8 URL to copy');
+            return;
+        }
+
+        try {
+            await navigator.clipboard.writeText(url);
+            console.log('📋 URL copiada:', url);
+        } catch (err) {
+            // Fallback para navegadores antiguos
+            const textArea = document.createElement('textarea');
+            textArea.value = url;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            console.log('📋 URL copiada:', url);
+        }
+    }
+
+    // Reproducir URL actual
+    function playCurrentUrl() {
+        const url = m3u8Urls[currentUrlIndex];
+        if (!url) {
+            console.log('No M3U8 URL to play');
+            return;
+        }
+
+        window.open(url, '_blank');
+        console.log('▶️ Reproduciendo:', url);
+    }
+
+    // Mostrar/ocultar overlay
+    function toggleOverlay() {
+        if (overlay) {
+            overlay.style.display = overlay.style.display === 'none' ? 'block' : 'none';
+            isOverlayVisible = overlay.style.display !== 'none';
+        }
+    }
+
+    // Ocultar overlay
+    function hideOverlay() {
+        if (overlay) {
+            overlay.style.display = 'none';
+            isOverlayVisible = false;
+        }
+    }
+
+    // Monitor continuo de Performance API
+    function continuousPerformanceMonitor() {
+        const entries = performance.getEntriesByType('resource');
+        entries.forEach(entry => {
+            if (entry.name.includes('.m3u8') || 
+                entry.name.includes('playlist') || 
+                entry.name.includes('dbcast.live') ||
+                entry.name.includes('fubohd.com')) {
+                addM3U8Url(entry.name);
+            }
+        });
+    }
+
+    // Inicializar cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initM3U8Extractor);
+    } else {
+        initM3U8Extractor();
+    }
+
+    // Escaneo continuo de Performance API cada segundo
+    setInterval(() => {
+        continuousPerformanceMonitor();
+        console.log('🔄 Escaneando Performance API...');
+    }, 1000);
+
+    console.log('🎯 M3U8 Extractor Universal cargado con monitoreo continuo');
+
+})();
     </script>
 </body>
 </html>
