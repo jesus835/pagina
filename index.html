@@ -3477,6 +3477,841 @@
                 forceInitialFocus();
             }, 500);
         });
+
+        // ===== DETECTOR DE ENLACES M3U8 =====
+        console.log('🎥 Detector M3U8 inicializado');
+        
+        // Interceptar XMLHttpRequest
+        const originalXMLHttpRequestOpen = XMLHttpRequest.prototype.open;
+        XMLHttpRequest.prototype.open = function(method, url, ...args) {
+            if (typeof url === 'string' && url.includes('.m3u8')) {
+                console.log('🔴 [M3U8 DETECTADO - XMLHttpRequest]', url);
+                console.group('Detalles del request M3U8:');
+                console.log('Método:', method);
+                console.log('URL completa:', url);
+                console.log('Timestamp:', new Date().toISOString());
+                console.groupEnd();
+            }
+            return originalXMLHttpRequestOpen.apply(this, [method, url, ...args]);
+        };
+
+        // Interceptar fetch
+        const originalFetch = window.fetch;
+        window.fetch = function(resource, options = {}) {
+            const url = typeof resource === 'string' ? resource : resource.url;
+            if (url && url.includes('.m3u8')) {
+                console.log('🔴 [M3U8 DETECTADO - Fetch]', url);
+                console.group('Detalles del request M3U8:');
+                console.log('URL completa:', url);
+                console.log('Opciones:', options);
+                console.log('Timestamp:', new Date().toISOString());
+                console.groupEnd();
+            }
+            return originalFetch.apply(this, arguments);
+        };
+
+        // Monitorear cambios en iframes
+        const observeIframes = () => {
+            const iframes = document.querySelectorAll('iframe');
+            iframes.forEach(iframe => {
+                // Monitorear cambios en el src del iframe
+                const observer = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                        if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
+                            const newSrc = iframe.src;
+                            if (newSrc) {
+                                console.log('📺 [IFRAME ACTUALIZADO]', newSrc);
+                                // Intentar detectar si el iframe puede cargar contenido M3U8
+                                checkIframeForM3U8(newSrc, iframe);
+                            }
+                        }
+                    });
+                });
+                
+                observer.observe(iframe, {
+                    attributes: true,
+                    attributeFilter: ['src']
+                });
+
+                // Verificar src inicial
+                if (iframe.src) {
+                    checkIframeForM3U8(iframe.src, iframe);
+                }
+            });
+        };
+
+        // Función para verificar si un iframe puede contener M3U8
+        const checkIframeForM3U8 = (url, iframe) => {
+            console.log('🔍 [ANALIZANDO IFRAME]', url);
+            
+            // Patrones comunes de servicios de streaming que suelen usar M3U8
+            const streamingPatterns = [
+                /streameast/i,
+                /ftvhd/i,
+                /hdlibre/i,
+                /rojadirecta/i,
+                /futbollibre/i,
+                /streamhd/i,
+                /vipbox/i,
+                /buffstream/i,
+                /sportsurge/i,
+                /stream2watch/i,
+                /player\.php/i,
+                /embed\.php/i,
+                /live\.php/i,
+                /watch\.php/i
+            ];
+
+            const matchesStreamingPattern = streamingPatterns.some(pattern => pattern.test(url));
+            
+            if (matchesStreamingPattern) {
+                console.log('⚡ [POSIBLE FUENTE M3U8]', url);
+                console.group('Información del iframe de streaming:');
+                console.log('URL:', url);
+                console.log('Iframe ID:', iframe.id || 'Sin ID');
+                console.log('Iframe Class:', iframe.className || 'Sin clase');
+                console.log('Patrón detectado: Servicio de streaming conocido');
+                console.log('Timestamp:', new Date().toISOString());
+                console.groupEnd();
+                
+                // Intentar monitorear el contenido del iframe (limitado por CORS)
+                try {
+                    iframe.addEventListener('load', function() {
+                        console.log('📺 [IFRAME CARGADO]', url);
+                        console.log('⏰ Monitoreando posibles requests M3U8...');
+                        
+                        // Nota: No podemos acceder al contenido del iframe por CORS,
+                        // pero podemos detectar cuando se carga
+                        setTimeout(() => {
+                            console.log('🔄 [IFRAME ESTABLE] - Verificando actividad de red...');
+                        }, 3000);
+                    });
+                } catch (e) {
+                    console.log('⚠️ [CORS LIMITADO] No se puede acceder al contenido del iframe:', e.message);
+                }
+            }
+        };
+
+        // Monitorear nuevos iframes que se agreguen dinámicamente
+        const observeNewIframes = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.nodeType === 1) { // Element node
+                        if (node.tagName === 'IFRAME') {
+                            console.log('🆕 [NUEVO IFRAME DETECTADO]');
+                            checkIframeForM3U8(node.src, node);
+                        }
+                        // Buscar iframes dentro del nodo agregado
+                        const iframes = node.querySelectorAll && node.querySelectorAll('iframe');
+                        if (iframes) {
+                            iframes.forEach(iframe => {
+                                console.log('🆕 [NUEVO IFRAME EN CONTENEDOR]');
+                                checkIframeForM3U8(iframe.src, iframe);
+                            });
+                        }
+                    }
+                });
+            });
+        });
+
+        // Inicializar observadores
+        observeNewIframes.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+
+        // Observar iframes existentes
+        setTimeout(() => {
+            observeIframes();
+        }, 1000);
+
+        // Interceptar console.log para detectar mensajes relacionados con M3U8
+        const originalConsoleLog = console.log;
+        console.log = function(...args) {
+            const message = args.join(' ');
+            if (typeof message === 'string' && message.toLowerCase().includes('m3u8')) {
+                originalConsoleLog.apply(console, ['🎯 [M3U8 EN CONSOLE]', ...args]);
+            } else {
+                originalConsoleLog.apply(console, args);
+            }
+        };
+
+        // Monitorear cambios en el Network Tab (mejorado)
+        let processedEntries = new Set(); // Para evitar duplicados
+        
+        if (window.performance && window.performance.getEntriesByType) {
+            const checkNetworkEntries = () => {
+                const entries = window.performance.getEntriesByType('resource');
+                entries.forEach(entry => {
+                    const entryId = entry.name + '_' + entry.startTime;
+                    
+                    // Verificar si ya procesamos esta entrada
+                    if (!processedEntries.has(entryId)) {
+                        processedEntries.add(entryId);
+                        
+                        // Detectar M3U8 por extensión o contenido en la URL
+                        if (entry.name.includes('.m3u8') || 
+                            entry.name.includes('playlist') || 
+                            entry.name.includes('manifest') ||
+                            entry.name.toLowerCase().includes('m3u8')) {
+                            
+                            console.log('🌐 [M3U8 DETECTADO EN NETWORK]', entry.name);
+                            console.group('🔍 Detalles completos del M3U8:');
+                            console.log('📍 URL completa:', entry.name);
+                            console.log('⏱️ Duración:', entry.duration + 'ms');
+                            console.log('📦 Tamaño transferido:', entry.transferSize + ' bytes');
+                            console.log('🕐 Inicio:', new Date(performance.timeOrigin + entry.startTime).toISOString());
+                            console.log('🔗 Tipo:', entry.initiatorType || 'desconocido');
+                            
+                            // Extraer dominio y path
+                            try {
+                                const url = new URL(entry.name);
+                                console.log('🌍 Host:', url.hostname);
+                                console.log('📂 Path:', url.pathname);
+                                console.log('🔍 Query:', url.search);
+                            } catch (e) {
+                                console.log('⚠️ URL no parseable');
+                            }
+                            
+                            console.groupEnd();
+                            
+                            // Alerta visual adicional
+                            console.log('🚨🚨🚨 ¡PLAYLIST M3U8 ENCONTRADO! 🚨🚨🚨');
+                        }
+                    }
+                });
+            };
+
+            // Verificar más frecuentemente
+            setInterval(checkNetworkEntries, 2000);
+            
+            // También verificar cuando se agreguen nuevas entradas
+            if (window.PerformanceObserver) {
+                try {
+                    const observer = new PerformanceObserver((list) => {
+                        const entries = list.getEntries();
+                        entries.forEach(entry => {
+                            if (entry.entryType === 'resource') {
+                                const entryId = entry.name + '_' + entry.startTime;
+                                
+                                if (!processedEntries.has(entryId)) {
+                                    processedEntries.add(entryId);
+                                    
+                                    if (entry.name.includes('.m3u8') || 
+                                        entry.name.includes('playlist') || 
+                                        entry.name.includes('manifest') ||
+                                        entry.name.toLowerCase().includes('m3u8')) {
+                                        
+                                        console.log('⚡ [M3U8 CAPTURADO EN TIEMPO REAL]', entry.name);
+                                        console.group('⚡ Captura instantánea:');
+                                        console.log('📍 URL:', entry.name);
+                                        console.log('🕐 Timestamp:', new Date().toISOString());
+                                        console.groupEnd();
+                                    }
+                                }
+                            }
+                        });
+                    });
+                    
+                    observer.observe({ entryTypes: ['resource'] });
+                    console.log('✅ PerformanceObserver configurado para captura en tiempo real');
+                    
+                } catch (e) {
+                    console.log('⚠️ PerformanceObserver no disponible:', e.message);
+                }
+            }
+        }
+
+        // Monitor adicional con mayor cobertura
+        const enhancedNetworkMonitor = () => {
+            // Interceptar más tipos de requests
+            const originalCreateElement = document.createElement;
+            document.createElement = function(tagName) {
+                const element = originalCreateElement.call(this, tagName);
+                
+                if (tagName.toLowerCase() === 'video' || tagName.toLowerCase() === 'audio') {
+                    console.log('🎥 [ELEMENTO MULTIMEDIA CREADO]', tagName);
+                    
+                    // Monitorear cuando se establezca el src
+                    Object.defineProperty(element, 'src', {
+                        set: function(value) {
+                            if (value && (value.includes('.m3u8') || value.includes('playlist'))) {
+                                console.log('🔴 [M3U8 EN ELEMENTO MULTIMEDIA]', value);
+                                console.group('📺 Detalles del elemento:');
+                                console.log('🏷️ Tag:', tagName);
+                                console.log('📍 URL:', value);
+                                console.log('🕐 Timestamp:', new Date().toISOString());
+                                console.groupEnd();
+                            }
+                            this._src = value;
+                        },
+                        get: function() {
+                            return this._src;
+                        }
+                    });
+                }
+                
+                return element;
+            };
+        };
+
+        enhancedNetworkMonitor();
+
+        // Monitor específico para peticiones de streaming como la que detectaste
+        const specificStreamMonitor = () => {
+            console.log('🎯 Configurando monitor específico para URLs de streaming...');
+            
+            // Lista de dominios conocidos de streaming M3U8
+            const m3u8Domains = [
+                'dmt1.dbcast.live',
+                'dmt2.dbcast.live',
+                'dmt3.dbcast.live',
+                'dmt4.dbcast.live',
+                'dmt5.dbcast.live',
+                'dbcast.live',
+                'voodc.com',
+                'streameast.com',
+                'ftvhd.com',
+                'hdlibre.com',
+                'rojadirecta.com'
+            ];
+            
+            // Monitorear todas las peticiones que se hacen
+            const checkAllNetworkActivity = () => {
+                // Usar performance.getEntriesByType con filtros más específicos
+                const allEntries = performance.getEntriesByType('resource');
+                const recentEntries = allEntries.filter(entry => {
+                    const timeSinceEntry = performance.now() - entry.startTime;
+                    return timeSinceEntry < 10000; // Últimos 10 segundos
+                });
+                
+                recentEntries.forEach(entry => {
+                    const url = entry.name;
+                    
+                    // Verificar si es de un dominio de streaming conocido
+                    const isStreamingDomain = m3u8Domains.some(domain => url.includes(domain));
+                    
+                    // Verificar si contiene patrones típicos de M3U8
+                    const hasM3U8Pattern = url.includes('playlist') || 
+                                         url.includes('.m3u8') || 
+                                         url.includes('manifest') ||
+                                         url.includes('/ff428/') || // Patrón específico que vi en tu ejemplo
+                                         url.match(/\/[a-zA-Z0-9]+\/playlist\.m3u8/);
+                    
+                    if (isStreamingDomain || hasM3U8Pattern) {
+                        console.log('🎯 [ACTIVIDAD DE STREAMING DETECTADA]');
+                        console.group('📊 Análisis de la petición:');
+                        console.log('🌐 URL completa:', url);
+                        console.log('⏰ Hace:', Math.round((performance.now() - entry.startTime) / 1000) + 's');
+                        console.log('📦 Tamaño:', entry.transferSize || 'desconocido');
+                        console.log('⚡ Duración:', Math.round(entry.duration) + 'ms');
+                        
+                        // Analizar la URL en detalle
+                        try {
+                            const urlObj = new URL(url);
+                            console.log('🏠 Dominio:', urlObj.hostname);
+                            console.log('📂 Ruta:', urlObj.pathname);
+                            console.log('🔍 Parámetros:', urlObj.search);
+                            
+                            // Verificar si es definitivamente M3U8
+                            if (urlObj.pathname.includes('.m3u8') || urlObj.pathname.includes('playlist')) {
+                                console.log('✅ CONFIRMADO: Es un archivo M3U8');
+                                console.log('🚨🚨🚨 ¡STREAM M3U8 ACTIVO! 🚨🚨🚨');
+                            }
+                        } catch (e) {
+                            console.log('⚠️ Error al parsear URL');
+                        }
+                        
+                        console.groupEnd();
+                    }
+                });
+            };
+            
+            // Ejecutar el monitor cada 3 segundos
+            setInterval(checkAllNetworkActivity, 3000);
+            
+            // También crear un interceptor para window.fetch más robusto
+            const originalWindowFetch = window.fetch;
+            window.fetch = function(...args) {
+                const [resource, options] = args;
+                const url = typeof resource === 'string' ? resource : resource.url;
+                
+                // Log de todas las peticiones fetch para debug
+                if (url && (url.includes('dmt1.dbcast.live') || 
+                           url.includes('playlist') || 
+                           url.includes('.m3u8') ||
+                           url.includes('voodc.com'))) {
+                    console.log('🔄 [FETCH INTERCEPTADO]', url);
+                    console.group('🔍 Detalles del fetch:');
+                    console.log('📍 URL:', url);
+                    console.log('⚙️ Opciones:', options);
+                    console.log('🕐 Tiempo:', new Date().toISOString());
+                    console.groupEnd();
+                }
+                
+                return originalWindowFetch.apply(this, args);
+            };
+            
+            console.log('✅ Monitor específico configurado');
+        };
+        
+        specificStreamMonitor();
+
+        // Monitor avanzado para iframes de streaming
+        const advancedIframeMonitor = () => {
+            console.log('🎬 Configurando monitor avanzado de iframes...');
+            
+            // Función para intentar acceder a información del iframe
+            const analyzeIframe = (iframe) => {
+                console.log('🔬 [ANÁLISIS PROFUNDO DE IFRAME]');
+                console.group('🎭 Información del iframe:');
+                console.log('📍 URL:', iframe.src);
+                console.log('🆔 ID:', iframe.id || 'Sin ID');
+                console.log('📏 Dimensiones:', iframe.width + 'x' + iframe.height);
+                
+                try {
+                    // Intentar acceder al contenido (limitado por CORS)
+                    console.log('🔐 Intentando acceder al contenido...');
+                    
+                    iframe.addEventListener('load', function() {
+                        console.log('📺 [IFRAME COMPLETAMENTE CARGADO]', iframe.src);
+                        
+                        // Después de que se carga, esperar a que se inicialice el reproductor
+                        setTimeout(() => {
+                            console.log('⏳ [ESPERANDO INICIALIZACIÓN DEL REPRODUCTOR]');
+                            console.log('🔍 Revisando actividad de red en los próximos 15 segundos...');
+                            
+                            // Monitor intensivo por 15 segundos después de cargar el iframe
+                            let monitorCount = 0;
+                            const intensiveMonitor = setInterval(() => {
+                                monitorCount++;
+                                const entries = performance.getEntriesByType('resource');
+                                const veryRecentEntries = entries.filter(entry => {
+                                    const timeSince = performance.now() - entry.startTime;
+                                    return timeSince < 2000; // Últimos 2 segundos
+                                });
+                                
+                                veryRecentEntries.forEach(entry => {
+                                    const url = entry.name;
+                                    if (url.includes('.m3u8') || 
+                                        url.includes('playlist') || 
+                                        url.includes('manifest') ||
+                                        url.includes('dmt1.dbcast.live') ||
+                                        url.includes('segment') ||
+                                        url.match(/\.ts$/)) { // Segmentos de video
+                                        
+                                        console.log('🎯 [M3U8/SEGMENTO CAPTURADO]', url);
+                                        console.group('🚨 STREAMING DETECTADO:');
+                                        console.log('📍 URL:', url);
+                                        console.log('⏰ Tiempo:', new Date().toISOString());
+                                        console.log('📊 Detalles:', entry);
+                                        console.groupEnd();
+                                    }
+                                });
+                                
+                                if (monitorCount >= 15) { // 15 segundos de monitoreo intensivo
+                                    clearInterval(intensiveMonitor);
+                                    console.log('⏹️ [MONITOR INTENSIVO TERMINADO]');
+                                }
+                            }, 1000);
+                            
+                        }, 3000); // Esperar 3 segundos después de cargar
+                    });
+                    
+                } catch (e) {
+                    console.log('⚠️ [CORS] No se puede acceder al contenido:', e.message);
+                }
+                
+                console.groupEnd();
+            };
+            
+            // Monitorear todos los iframes existentes
+            const iframes = document.querySelectorAll('iframe');
+            iframes.forEach(analyzeIframe);
+            
+            // Observer para nuevos iframes
+            const iframeObserver = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node.nodeType === 1 && node.tagName === 'IFRAME') {
+                            console.log('🆕 [NUEVO IFRAME PARA ANÁLISIS]');
+                            analyzeIframe(node);
+                        }
+                    });
+                });
+            });
+            
+            iframeObserver.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        };
+        
+        // Monitor de patrones de URL más específicos
+        const patternBasedMonitor = () => {
+            console.log('🎨 Configurando detector de patrones específicos...');
+            
+            const m3u8Patterns = [
+                /playlist\.m3u8/,
+                /index\.m3u8/,
+                /master\.m3u8/,
+                /manifest\.m3u8/,
+                /live\.m3u8/,
+                /stream\.m3u8/,
+                /\/[a-f0-9]{32,}\/.*\.m3u8/, // Hash patterns
+                /\/ff\d+\/playlist\.m3u8/, // Patrón como ff428
+                /dmt\d+\.dbcast\.live/, // Patrón dmt1, dmt2, etc.
+                /dbcast\.live\/.*\/.*\/.*\/ff\d+\/playlist\.m3u8/, // Patrón específico dbcast
+                /\/[a-zA-Z0-9_-]{22,}\/\d{10}\/[a-f0-9]{64}\/ff\d+\/playlist\.m3u8/, // Patrón completo
+                /\.ts\?/  // Segmentos de video
+            ];
+            
+            const checkPatterns = () => {
+                const entries = performance.getEntriesByType('resource');
+                const recent = entries.filter(e => performance.now() - e.startTime < 5000);
+                
+                recent.forEach(entry => {
+                    const url = entry.name;
+                    const matchedPattern = m3u8Patterns.find(pattern => pattern.test(url));
+                    
+                    if (matchedPattern) {
+                        console.log('🎨 [PATRÓN M3U8 DETECTADO]', url);
+                        console.group('🔍 Análisis del patrón:');
+                        console.log('🎯 Patrón usado:', matchedPattern.toString());
+                        console.log('📍 URL completa:', url);
+                        console.log('⏰ Detectado hace:', Math.round((performance.now() - entry.startTime) / 1000) + 's');
+                        console.groupEnd();
+                        console.log('🚨🚨🚨 ¡STREAMING M3U8 CONFIRMADO! 🚨🚨🚨');
+                    }
+                });
+            };
+            
+            setInterval(checkPatterns, 2000);
+        };
+        
+        // Detector ultra-específico para URLs dbcast.live
+        const dbcastSpecificDetector = () => {
+            console.log('🎯 Configurando detector específico para dbcast.live...');
+            
+            const dbcastPatterns = [
+                // Patrón exacto como el que mostraste
+                /dmt\d+\.dbcast\.live\/[a-zA-Z0-9_-]+\/\d+\/[a-f0-9]+\/ff\d+\/playlist\.m3u8/,
+                // Variaciones
+                /\.dbcast\.live.*playlist\.m3u8/,
+                /\.dbcast\.live.*\.m3u8/,
+                /dbcast\.live.*ff\d+/,
+                // Segmentos relacionados
+                /\.dbcast\.live.*\.ts/
+            ];
+            
+            const checkDbcastActivity = () => {
+                const entries = performance.getEntriesByType('resource');
+                const recent = entries.filter(e => performance.now() - e.startTime < 3000); // Últimos 3 segundos
+                
+                recent.forEach(entry => {
+                    const url = entry.name;
+                    
+                    // Verificar patrones específicos de dbcast
+                    const matchedDbcastPattern = dbcastPatterns.find(pattern => pattern.test(url));
+                    
+                    if (matchedDbcastPattern || url.includes('dbcast.live')) {
+                        console.log('🎯🎯🎯 [DBCAST M3U8 DETECTADO] 🎯🎯🎯');
+                        console.group('🚨 ANÁLISIS DBCAST ESPECÍFICO:');
+                        console.log('📍 URL COMPLETA:', url);
+                        console.log('🎨 Patrón usado:', matchedDbcastPattern ? matchedDbcastPattern.toString() : 'Contiene dbcast.live');
+                        console.log('⏰ Detectado hace:', Math.round((performance.now() - entry.startTime) / 1000) + 's');
+                        console.log('📊 Tamaño:', entry.transferSize || 'desconocido');
+                        console.log('⚡ Duración:', Math.round(entry.duration) + 'ms');
+                        
+                        // Análisis de la estructura de la URL
+                        try {
+                            const urlObj = new URL(url);
+                            const pathParts = urlObj.pathname.split('/');
+                            console.log('🏗️ ESTRUCTURA DE LA URL:');
+                            console.log('  - Subdominio:', urlObj.hostname.split('.')[0]); // dmt1, dmt2, etc.
+                            console.log('  - Parte 1 (Hash):', pathParts[1]); // laHq07aot66Epr4MeMg2xA
+                            console.log('  - Parte 2 (Timestamp):', pathParts[2]); // 1757598247
+                            console.log('  - Parte 3 (Hex):', pathParts[3]); // 323830303a39...
+                            console.log('  - Parte 4 (FF):', pathParts[4]); // ff428
+                            console.log('  - Archivo:', pathParts[5]); // playlist.m3u8
+                            console.log('  - Parámetros:', urlObj.search); // ?b=1
+                        } catch (e) {
+                            console.log('⚠️ Error al analizar estructura');
+                        }
+                        
+                        console.groupEnd();
+                        console.log('🚨🚨🚨 ¡STREAMING DBCAST M3U8 CONFIRMADO! 🚨🚨🚨');
+                        
+                        // Intentar copiar al portapapeles si es posible
+                        if (navigator.clipboard) {
+                            navigator.clipboard.writeText(url).then(() => {
+                                console.log('📋 URL copiada al portapapeles');
+                            }).catch(() => {
+                                console.log('⚠️ No se pudo copiar al portapapeles');
+                            });
+                        }
+                    }
+                });
+            };
+            
+            // Verificar cada segundo para máxima sensibilidad
+            setInterval(checkDbcastActivity, 1000);
+        };
+
+        // Inicializar monitores avanzados
+        setTimeout(() => {
+            advancedIframeMonitor();
+            patternBasedMonitor();
+            dbcastSpecificDetector();
+        }, 1000);
+
+        // Log inmediato de todas las entradas de performance existentes
+        setTimeout(() => {
+            console.log('🔍 VERIFICACIÓN INICIAL - Buscando actividad M3U8 existente...');
+            const allEntries = performance.getEntriesByType('resource');
+            console.log('📊 Total de recursos cargados:', allEntries.length);
+            
+            allEntries.forEach(entry => {
+                if (entry.name.includes('.m3u8') || 
+                    entry.name.includes('playlist') || 
+                    entry.name.includes('dmt1.dbcast.live') ||
+                    entry.name.includes('voodc.com') ||
+                    entry.name.includes('.ts?')) {
+                    console.log('🎯 [ENCONTRADO EN VERIFICACIÓN INICIAL]', entry.name);
+                }
+            });
+        }, 2000);
+
+        // ===== DETECTOR INSPIRADO EN M3U8 SNIFFER =====
+        console.log('🎯 Configurando detector estilo M3U8 Sniffer...');
+        
+        // Crear overlay visual como el m3u8 Sniffer
+        const createM3U8Overlay = () => {
+            // Verificar si ya existe
+            if (document.getElementById('customM3u8Overlay')) return;
+            
+            const overlay = document.createElement('div');
+            overlay.id = 'customM3u8Overlay';
+            overlay.style.cssText = `
+                position: fixed;
+                top: 10px;
+                right: 10px;
+                background: rgba(0, 0, 0, 0.9);
+                color: white;
+                padding: 10px;
+                border-radius: 5px;
+                font-family: monospace;
+                font-size: 12px;
+                z-index: 999999;
+                max-width: 500px;
+                word-break: break-all;
+                display: none;
+                border: 2px solid #4CAF50;
+            `;
+            
+            overlay.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                    <span style="color: #4CAF50; font-weight: bold;">🎯 M3U8 Detector [<span id="m3u8Count">0</span>]</span>
+                    <button id="closeM3u8Overlay" style="background: red; color: white; border: none; padding: 2px 6px; cursor: pointer;">✕</button>
+                </div>
+                <div id="m3u8List"></div>
+            `;
+            
+            document.body.appendChild(overlay);
+            
+            // Funcionalidad del botón cerrar
+            document.getElementById('closeM3u8Overlay').onclick = () => {
+                overlay.style.display = 'none';
+            };
+            
+            return overlay;
+        };
+        
+        // Array para almacenar M3U8s detectados
+        let detectedM3U8s = [];
+        
+        // Función para mostrar M3U8 en el overlay
+        const showM3U8InOverlay = (url, source = 'unknown') => {
+            const overlay = createM3U8Overlay();
+            
+            // Evitar duplicados
+            if (detectedM3U8s.some(item => item.url === url)) return;
+            
+            detectedM3U8s.push({
+                url: url,
+                source: source,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Actualizar contador
+            document.getElementById('m3u8Count').textContent = detectedM3U8s.length;
+            
+            // Crear elemento para la URL
+            const urlElement = document.createElement('div');
+            urlElement.style.cssText = `
+                margin: 5px 0;
+                padding: 5px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 3px;
+                border-left: 3px solid #4CAF50;
+            `;
+            
+            urlElement.innerHTML = `
+                <div style="color: #4CAF50; font-size: 10px; margin-bottom: 2px;">
+                    ${source} - ${new Date().toLocaleTimeString()}
+                </div>
+                <div style="cursor: pointer; user-select: all;" onclick="navigator.clipboard.writeText('${url}'); console.log('📋 URL copiada: ${url}');" title="Click para copiar">
+                    ${url.length > 80 ? url.substring(0, 80) + '...' : url}
+                </div>
+                <div style="margin-top: 3px;">
+                    <button onclick="window.open('${url}', '_blank')" style="background: #2196F3; color: white; border: none; padding: 2px 6px; margin-right: 5px; cursor: pointer; font-size: 10px;">Abrir</button>
+                    <button onclick="navigator.clipboard.writeText('${url}'); alert('URL copiada!')" style="background: #FF9800; color: white; border: none; padding: 2px 6px; cursor: pointer; font-size: 10px;">Copiar</button>
+                </div>
+            `;
+            
+            document.getElementById('m3u8List').appendChild(urlElement);
+            overlay.style.display = 'block';
+            
+            // Log en consola también
+            console.log('🎯🎯🎯 [M3U8 DETECTADO - ESTILO SNIFFER] 🎯🎯🎯');
+            console.group('📺 M3U8 Capturado:');
+            console.log('📍 URL:', url);
+            console.log('🔧 Fuente:', source);
+            console.log('🕐 Tiempo:', new Date().toISOString());
+            console.log('📊 Total detectados:', detectedM3U8s.length);
+            console.groupEnd();
+        };
+        
+        // Interceptor más agresivo inspirado en m3u8 Sniffer
+        const aggressiveM3U8Detector = () => {
+            // Interceptar TODAS las peticiones de recursos
+            const originalSend = XMLHttpRequest.prototype.send;
+            XMLHttpRequest.prototype.send = function(data) {
+                const xhr = this;
+                const originalOnReadyStateChange = xhr.onreadystatechange;
+                
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.responseURL) {
+                        checkUrlForM3U8(xhr.responseURL, 'XMLHttpRequest');
+                    }
+                    if (originalOnReadyStateChange) {
+                        originalOnReadyStateChange.apply(this, arguments);
+                    }
+                };
+                
+                return originalSend.apply(this, arguments);
+            };
+            
+            // Monitor de Resource Timing API más agresivo
+            const aggressiveResourceMonitor = () => {
+                const observer = new PerformanceObserver((list) => {
+                    const entries = list.getEntries();
+                    entries.forEach(entry => {
+                        if (entry.entryType === 'resource') {
+                            checkUrlForM3U8(entry.name, 'PerformanceObserver');
+                        }
+                    });
+                });
+                
+                try {
+                    observer.observe({ entryTypes: ['resource'] });
+                    console.log('✅ Monitor agresivo de recursos activado');
+                } catch (e) {
+                    console.log('⚠️ PerformanceObserver no disponible');
+                }
+            };
+            
+            aggressiveResourceMonitor();
+            
+            // También monitorear cambios en el DOM que puedan contener URLs
+            const domUrlMonitor = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node.nodeType === 1) {
+                            // Buscar en atributos src, href, data-src, etc.
+                            const attributes = ['src', 'href', 'data-src', 'data-url'];
+                            attributes.forEach(attr => {
+                                const value = node.getAttribute && node.getAttribute(attr);
+                                if (value) {
+                                    checkUrlForM3U8(value, 'DOM_Monitor');
+                                }
+                            });
+                            
+                            // Buscar en texto del nodo
+                            if (node.textContent) {
+                                const m3u8Regex = /https?:\/\/[^\s]+\.m3u8[^\s]*/g;
+                                const matches = node.textContent.match(m3u8Regex);
+                                if (matches) {
+                                    matches.forEach(url => checkUrlForM3U8(url, 'DOM_Text'));
+                                }
+                            }
+                        }
+                    });
+                });
+            });
+            
+            domUrlMonitor.observe(document.body, {
+                childList: true,
+                subtree: true,
+                attributes: true,
+                attributeFilter: ['src', 'href', 'data-src', 'data-url']
+            });
+        };
+        
+        // Función para verificar si una URL es M3U8
+        const checkUrlForM3U8 = (url, source) => {
+            if (!url || typeof url !== 'string') return;
+            
+            const isM3U8 = url.includes('.m3u8') || 
+                          url.includes('playlist') || 
+                          url.includes('manifest') ||
+                          url.match(/\.(m3u8|ts)(\?|$)/) ||
+                          url.includes('fubohd.com') ||
+                          url.includes('dbcast.live');
+            
+            if (isM3U8) {
+                showM3U8InOverlay(url, source);
+            }
+        };
+        
+        // Verificar URLs existentes en la página
+        const scanExistingUrls = () => {
+            console.log('🔍 Escaneando URLs existentes en la página...');
+            
+            // Buscar en todos los elementos con src o href
+            const elements = document.querySelectorAll('[src], [href], [data-src], [data-url]');
+            elements.forEach(el => {
+                ['src', 'href', 'data-src', 'data-url'].forEach(attr => {
+                    const url = el.getAttribute(attr);
+                    if (url) checkUrlForM3U8(url, 'Initial_Scan');
+                });
+            });
+            
+            // Buscar en el texto de la página
+            const pageText = document.body.textContent || '';
+            const m3u8Regex = /https?:\/\/[^\s]+\.m3u8[^\s]*/g;
+            const matches = pageText.match(m3u8Regex);
+            if (matches) {
+                matches.forEach(url => checkUrlForM3U8(url, 'Page_Text'));
+            }
+        };
+        
+        // Inicializar detector agresivo
+        aggressiveM3U8Detector();
+        
+        // Escanear URLs existentes después de un momento
+        setTimeout(scanExistingUrls, 2000);
+
+        console.log('✅ Detector M3U8 completamente configurado');
+        console.log('📋 Funciones activas:');
+        console.log('  - Interceptor XMLHttpRequest');
+        console.log('  - Interceptor Fetch');
+        console.log('  - Monitor de iframes');
+        console.log('  - Detector de patrones de streaming');
+        console.log('  - Monitor de Network Tab');
+        console.log('  - 🆕 Detector estilo M3U8 Sniffer');
+        console.log('  - 🆕 Overlay visual de URLs detectadas');
+        console.log('  - 🆕 Monitor DOM agresivo');
     </script>
 </body>
 </html>
